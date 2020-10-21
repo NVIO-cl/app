@@ -36,16 +36,16 @@ router.post('/login', upload.none(), function (req, res, next) {
       if (err) {
         res.send(err);
       }
-      const token = jwt.sign({user, iat: Math.floor(Date.now()/1000)}, process.env.JWT_SECRET, {expiresIn: expiresIn, });
-      res.cookie('token', token, {maxAge: maxAge, secure: false, httpOnly: true,});
       if (user.includes("ADMIN")){
-        return res.redirect('/');
+        return res.redirect('/login');
       }
       else if (user.includes("USER")) {
-        return res.redirect('/');
+        return res.redirect('/login');
       }
       else if (user.includes("COMPANY")){
-        return res.redirect('/dashboard');
+        const token = jwt.sign({user, iat: Math.floor(Date.now()/1000)}, process.env.JWT_SECRET, {expiresIn: expiresIn, });
+        res.cookie('token', token, {maxAge: maxAge, secure: false, httpOnly: true,});
+        return res.redirect('/');
       }
     });
   })(req, res);
