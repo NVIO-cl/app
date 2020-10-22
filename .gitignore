@@ -109,3 +109,4 @@ dist
 !.elasticbeanstalk/*.global.yml
 
 .DS_Store
+.idea/*

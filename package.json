@@ -23,5 +23,18 @@
     "pug": "^3.0.0",
     "rut.js": "^1.0.2",
     "validator": "^13.1.17"
-  }
+  },
+  "description": "NVIO App",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NVIO-cl/app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NVIO-cl/app/issues"
+  },
+  "homepage": "https://github.com/NVIO-cl/app#readme"
 }
