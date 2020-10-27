@@ -8,11 +8,9 @@ aws.config.update({
 
 module.exports = {
   query: async function (params) {
-    console.log("RUNNING QUERY");
     try {
       var dynamoDbClient = new aws.DynamoDB();
       const queryOutput = await dynamoDbClient.query(params).promise();
-      console.info('Query successful.');
       return queryOutput;
     } catch (err) {
       console.log(err);

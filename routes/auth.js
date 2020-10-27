@@ -8,12 +8,11 @@ const jwt = require('jsonwebtoken');
 const passport = require("passport");
 
 router.post('/login', upload.none(), function (req, res, next) {
-  console.log("Logging in");
   var maxAge = 86400000;
   var expiresIn = "1d";
-  if (req.body.remember_me) {
+  if (req.body.remember) {
     maxAge = 2629746000;
-    expiresIn = "1m";
+    expiresIn = "30d";
   }
 
   if (!validator.isEmail(req.body.email)){
@@ -23,11 +22,9 @@ router.post('/login', upload.none(), function (req, res, next) {
   if (validator.isEmpty(req.body.password)){
     return res.redirect('/login');
   }
-  console.log("Data validated");
 
   //Passport Authentication
   passport.authenticate('local', {session: false}, (err, user, info) => {
-    console.log("Passport Auth");
     if (err || !user) {
       res.cookie('error', true);
       return res.redirect('/login');
