@@ -11,10 +11,8 @@ router.get('/', function(req, res, next) {
 router.get('/login', (req, res) => {
   const name = "Login";
   var errormsg;
-  console.log("Login requested");
   var date = new Date();
   var year = date.getFullYear();
-  console.log(req.cookies);
   if (req.cookies.error == true) {
     errormsg = "Correo o contraseña incorrectos";
   }
