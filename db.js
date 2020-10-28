@@ -47,9 +47,9 @@ module.exports = {
   put: async function(params){
     console.log("RUNNING PUT");
     try {
-      var dynamoDbClient = new aws.DynamoDB();
+      var docClient = new aws.DynamoDB.DocumentClient();
       const putOutput = await docClient.put(params).promise();
-      console.info('Update successful.');
+      console.info('Put successful.');
       return putOutput;
     } catch (err) {
       console.log(err);
