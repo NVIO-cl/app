@@ -23,32 +23,32 @@ main.page.payment-page
                             .form-row
                                 .col-sm-8(style='max-width: 186px;')
                                     .form-group
-                                        label(for='card-number') nombre
-                                        input#card-number-1.form-control(type='text' placeholder='Nombre')
+                                        label(for='nombre') Nombre
+                                        input#nombre.form-control(type='text' placeholder='Nombre')
                                 .col-sm-4
                                     .form-group
-                                        label(for='cvc') Apellido
-                                        input#cvc.form-control(type='text' placeholder='Apellido' style='width: 100%;')
+                                        label(for='apellido') Apellido
+                                        input#apellido.form-control(type='text' placeholder='Apellido' style='width: 100%;')
                                 .col-sm-8
                                     .form-group
-                                        label(for='card-number') Direcci&oacute;n
-                                        input#card-number-2.form-control(type='text' placeholder='Dirección')
+                                        label(for='direccion') Dirección
+                                        input#direccion.form-control(type='text' placeholder='Dirección')
                                 .col-sm-4
                                     .form-group
-                                        label(for='cvc') apartado
-                                        input#cvc-1.form-control(type='text' placeholder='Apartado')
+                                        label(for='apart') Apartado
+                                        input#apart.form-control(type='text' placeholder='Apartado')
                                 .col-sm-8
                                     .form-group
-                                        label(for='card-number') Comuna
-                                        input#card-number-3.form-control(type='text' placeholder='Comuna')
+                                        label(for='comuna') Comuna
+                                        input#comuna.form-control(type='text' placeholder='Comuna' value=orderData.clientData.M.address.M.locality.S)
                                 .col-sm-8
                                     .form-group
-                                        label(for='card-number') Tel&eacute;fono de contacto
-                                        input#card-number-4.form-control(type='text' placeholder='+569 9999 9999')
+                                        label(for='telefono') Teléfono de contacto
+                                        input#telefono.form-control(type='text' placeholder='+569 9999 9999')
                                 .col-sm-8
                                     .form-group
-                                        label(for='card-number') Email de contacto
-                                        input#card-number-7.form-control(type='text' placeholder='hola@email.com')
+                                        label(for='email') Email de contacto
+                                        input#email.form-control(type='text' placeholder='hola@email.com')
                                 .col-sm-8
                                     .form-group
                                         label(for='card-number') Comprobante de pago
@@ -59,16 +59,16 @@ main.page.payment-page
                                     .form-group
                                         .form-check(style='margin-bottom: -7px;')
                                             input#formCheck-1.form-check-input(type='checkbox')
-                                            label.form-check-label(for='formCheck-1') Acepto los t&eacute;rminos y condiciones
+                                            label.form-check-label(for='formCheck-1') Acepto los términos y condiciones
                                 .col-sm-12(style='margin-top: -22px;')
                                     .form-group
                                         button.btn.btn-primary.btn-block(type='submit' style='padding-top: 12px;') Enviar
                 .col
                     .products
                         h3.title
-                            | Checkout
+                            | Orden
                             strong #
-                            | 123
+                            | #{orderID}
                         .item
                             span.price $200
                             p.item-name Producto 1

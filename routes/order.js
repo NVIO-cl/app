@@ -115,7 +115,36 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
 });
 
 router.get('/:id',  async(req, res) => {
-  res.render('/order/client', { title: 'NVIO' });
+  if(!validator.isAlphanumeric(req.params.id) || !validator.isLength(req.params.id,{min:12, max: 12})){
+    res.redirect('/404')
+  }
+  var companyID = "COMPANY#" + req.params.id.substring(0, 6);
+  var profileID = "PROFILE#" + req.params.id.substring(0, 6);
+  var orderID = "ORDER#" + req.params.id.substring(6, 12);
+
+  var params = {
+    "TableName": "app",
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": {"S":companyID},":cd421": {"S":orderID}}
+  }
+
+  getOrder = await db.query(params);
+  if (getOrder.Count != 1) {
+    res.redirect('/404');
+  }
+
+  params = {
+    "TableName": "app",
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ProjectionExpression": "companyName, paymentData",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": {"S":companyID},":cd421": {"S":profileID}}
+  }
+
+  getCompany = await db.query(params);
+
+  res.render('order/client', { title: 'NVIO', orderData: getOrder.Items[0], orderID: req.params.id, companyData: getCompany.Items[0]});
 });
 
 module.exports = router;
