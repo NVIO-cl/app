@@ -2,7 +2,7 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Dashboard - NVIO
+    title Table - NVIO
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
@@ -14,7 +14,7 @@ head
             hr.sidebar-divider.my-0
             ul#accordionSidebar.nav.navbar-nav.text-light
                 li.nav-item
-                    a.nav-link.active(href='/index.html')
+                    a.nav-link(href='/index.html')
                         i.fas.fa-tachometer-alt
                         span Dashboard
                 li.nav-item
@@ -22,7 +22,7 @@ head
                         i.fas.fa-user
                         span Perfil
                 li.nav-item
-                    a.nav-link(href='/historial.html')
+                    a.nav-link.active(href='/historial.html')
                         i.fas.fa-table
                         span Historial de Ventas
                 li.nav-item
@@ -148,118 +148,153 @@ head
                                         i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                         | &nbsp;Logout
             .container-fluid
-                .d-sm-flex.justify-content-between.align-items-center.mb-4
-                    h3.text-dark.mb-0 Dashboard
-                    a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='#' style='background: #6e3c8e;')
-                        i.fas.fa-download.fa-sm.text-white-50
-                        | &nbsp;Descargar Plantilla
-                .row
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-primary.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                            span Ventas Semanal
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span $178,000
-                                    .col-auto
-                                        i.fas.fa-calendar.fa-2x.text-gray-300
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-success.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-success.font-weight-bold.text-xs.mb-1
-                                            span Ventas Mensual
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span $615,000
-                                    .col-auto
-                                        i.fas.fa-dollar-sign.fa-2x.text-gray-300
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-warning.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-warning.font-weight-bold.text-xs.mb-1
-                                            span Consultas
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span 18
-                                    .col-auto
-                                        i.fas.fa-comments.fa-2x.text-gray-300
-                .row
-                    .col-lg-7.col-xl-8
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Visualizaci&oacute;n Anual
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                .chart-area
-                                    canvas(data-bs-chart='{"type":"line","data":{"labels":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],"datasets":[{"label":"Earnings","fill":true,"data":["0","10000","5000","15000","10000","20000","15000","25000"],"backgroundColor":"rgba(78, 115, 223, 0.05)","borderColor":"rgba(78, 115, 223, 1)"}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{},"scales":{"xAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"],"drawOnChartArea":false},"ticks":{"fontColor":"#858796","padding":20}}],"yAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"]},"ticks":{"fontColor":"#858796","padding":20}}]}}}')
-                    .col-lg-5.col-xl-4
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Canales de Venta
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                .chart-area
-                                    canvas(data-bs-chart='{"type":"doughnut","data":{"labels":["Direct","Social","Referral"],"datasets":[{"label":"","backgroundColor":["#4e73df","#1cc88a","#36b9cc"],"borderColor":["#ffffff","#ffffff","#ffffff"],"data":["50","30","15"]}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{}}}')
-                                .text-center.small.mt-4
-                                    span.mr-2
-                                        i.fas.fa-circle.text-primary
-                                        | &nbsp;Instagram
-                                    span.mr-2
-                                        i.fas.fa-circle.text-success
-                                        | &nbsp;Tienda Web
-                                    span.mr-2
-                                        i.fas.fa-circle.text-info
-                                        | &nbsp;Otro
-                .row
-                    .col
-                        .card.shadow.mb-4
-                            .card-header.py-3
-                                h6.text-primary.font-weight-bold.m-0 &Uacute;ltimos Pedidos
-                            ul.list-group.list-group-flush
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Camiseta Roja XL
-                                            span.text-xs Jos&eacute; Luis Fernandez - 10:30 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Pantal&oacute;n Beige Talla 36
-                                            span.text-xs Ana Jer&eacute;z - 9:30 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Poler&oacute;n Negro L
-                                            span.text-xs Crist&oacute;bal Matute - 8:00 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
+                h3.text-dark.mb-4 Historial de Ventas
+                .card.shadow
+                    .card-header.py-3
+                        p.text-primary.m-0.font-weight-bold Employee Info
+                    .card-body
+                        .row
+                            .col-md-6.text-nowrap
+                                #dataTable_length.dataTables_length(aria-controls='dataTable')
+                                    label
+                                        | Show&nbsp;
+                                        select.form-control.form-control-sm.custom-select.custom-select-sm
+                                            option(value='10' selected='') 10
+                                            option(value='25') 25
+                                            option(value='50') 50
+                                            option(value='100') 100
+                            .col-md-6
+                                #dataTable_filter.text-md-right.dataTables_filter
+                                    label
+                                        input.form-control.form-control-sm(type='search' aria-controls='dataTable' placeholder='Search')
+                        #dataTable.table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
+                            table#dataTable.table.my-0
+                                thead
+                                    tr(style='font-size: 14px;text-align: center;')
+                                        th N&uacute;mero Pedido
+                                        th Fecha
+                                        th Cliente
+                                        th Monto
+                                        th Pago
+                                        th Preparaci&oacute;n
+                                        th Items
+                                        th M&eacute;todo Entrega
+                                        th Notas y Comentarios
+                                        th Vista Detallada
+                                tbody
+                                    tr.text-center
+                                        td 123456789
+                                        td 22/2/2022
+                                        td Juanes
+                                        td 123
+                                        td Pendiente
+                                        td Pendiente
+                                        td Item
+                                        td Por Retirar
+                                        td Comentario sobre juanita
+                                        td
+                                            button.btn.btn-info(type='button') Detalle
+                                    tr.text-center
+                                        td
+                                            | 123456789
+                                            br
+                                        td
+                                            | 22/2/2022
+                                            br
+                                        td Juanes
+                                        td 123
+                                        td Pendiente
+                                        td Pendiente
+                                        td Item
+                                        td Por Retirar
+                                        td Comentario sobre juanita
+                                        td
+                                            button.btn.btn-info(type='button') Detalle
+                                    tr.text-center
+                                        td
+                                            | 123456789
+                                            br
+                                        td
+                                            | 22/2/2022
+                                            br
+                                            br
+                                        td Juanes
+                                        td 123
+                                        td Pendiente
+                                        td Pendiente
+                                        td Item
+                                        td Por Retirar
+                                        td Comentario sobre juanita
+                                        td
+                                            button.btn.btn-info(type='button') Detalle
+                                    tr.text-center
+                                        td 123456789
+                                        td
+                                            | 22/2/2022
+                                            br
+                                        td Juanes
+                                        td 123
+                                        td Pendiente
+                                        td Pendiente
+                                        td Item
+                                        td Por Retirar
+                                        td Comentario sobre juanita
+                                        td
+                                            button.btn.btn-info(type='button') Detalle
+                                    tr.text-center
+                                        td 123456789
+                                        td
+                                            | 22/2/2022
+                                            br
+                                        td Juanes
+                                        td 123
+                                        td Pendiente
+                                        td Pendiente
+                                        td Item
+                                        td Por Retirar
+                                        td Comentario sobre juanita
+                                        td
+                                            button.btn.btn-info(type='button') Detalle
+                                tfoot
+                                    tr(style='font-size: 14px;text-align: center;')
+                                        td
+                                            strong N&uacute;mero Pedido
+                                        td
+                                            strong Fecha
+                                        td
+                                            strong Cliente
+                                        td
+                                            strong Monto
+                                        td
+                                            strong Pago
+                                        td
+                                            strong Preparaci&oacute;n
+                                        td
+                                            strong Items
+                                        td
+                                            strong M&eacute;todo Entrega
+                                        td
+                                            strong Notas y Comentarios
+                                        td
+                                            strong Vista Detallada
+                        .row
+                            .col-md-6.align-self-center
+                                p#dataTable_info.dataTables_info(role='status' aria-live='polite') Mostrando del 1 al 5 de un total de 27
+                            .col-md-6
+                                nav.d-lg-flex.justify-content-lg-end.dataTables_paginate.paging_simple_numbers
+                                    ul.pagination
+                                        li.page-item.disabled
+                                            a.page-link(href='#' aria-label='Previous')
+                                                span(aria-hidden='true') &laquo;
+                                        li.page-item.active(style='background: radial-gradient(black, white);')
+                                            a.page-link(href='#') 1
+                                        li.page-item
+                                            a.page-link(href='#') 2
+                                        li.page-item
+                                            a.page-link(href='#') 3
+                                        li.page-item
+                                            a.page-link(href='#' aria-label='Next')
+                                                span(aria-hidden='true') &raquo;
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright

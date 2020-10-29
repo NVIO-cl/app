@@ -1,0 +1,148 @@
+doctype html
+head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
+    title Form
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css')
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/css/styles.min.css')
+main.page.payment-page
+    section.clean-block.payment-form.dark
+        .container
+            .row
+                .col.align-self-center(style='text-align: center;')
+                    img(src='https://nvio.s3.amazonaws.com/assets_form/img/logo_nvio_fondo.png' style='max-width: 68%;' width='100%')
+                .col(style='text-align: center;')
+                    img(src='https://nvio.s3.amazonaws.com/assets_form/img/unnamed.png' style='max-width: 171px;')
+            .row
+                .col.align-self-center
+                    form
+                        .card-details
+                            h3.title Informaci&oacute;n del Cliente
+                            .form-row
+                                .col-sm-8(style='max-width: 186px;')
+                                    .form-group
+                                        label(for='card-number') nombre
+                                        input#card-number-1.form-control(type='text' placeholder='Nombre')
+                                .col-sm-4
+                                    .form-group
+                                        label(for='cvc') Apellido
+                                        input#cvc.form-control(type='text' placeholder='Apellido' style='width: 100%;')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='card-number') Direcci&oacute;n
+                                        input#card-number-2.form-control(type='text' placeholder='Dirección')
+                                .col-sm-4
+                                    .form-group
+                                        label(for='cvc') apartado
+                                        input#cvc-1.form-control(type='text' placeholder='Apartado')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='card-number') Comuna
+                                        input#card-number-3.form-control(type='text' placeholder='Comuna')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='card-number') Tel&eacute;fono de contacto
+                                        input#card-number-4.form-control(type='text' placeholder='+569 9999 9999')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='card-number') Email de contacto
+                                        input#card-number-7.form-control(type='text' placeholder='hola@email.com')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='card-number') Comprobante de pago
+                                        .form-row
+                                            .col
+                                                button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;') Adjuntar archivo
+                                .col-sm-8
+                                    .form-group
+                                        .form-check(style='margin-bottom: -7px;')
+                                            input#formCheck-1.form-check-input(type='checkbox')
+                                            label.form-check-label(for='formCheck-1') Acepto los t&eacute;rminos y condiciones
+                                .col-sm-12(style='margin-top: -22px;')
+                                    .form-group
+                                        button.btn.btn-primary.btn-block(type='submit' style='padding-top: 12px;') Enviar
+                .col
+                    .products
+                        h3.title
+                            | Checkout
+                            strong #
+                            | 123
+                        .item
+                            span.price $200
+                            p.item-name Producto 1
+                        .item
+                            span.price $120
+                            p.item-name Producto 2
+                        .item
+                            span.price $120
+                            p.item-name Despacho
+                            p.item-description Retiro / Comuna
+                        .total
+                            span Total
+                            span.price $320
+                    .products(style='margin-top: 0px;padding: 40px;padding-top: 40px;padding-bottom: 56px;')
+                        h3.title Datos de transferencia
+                        .item
+                            p.item-name Angelo Romano Jara
+                        .item
+                            p.item-name 19.624.481-6
+                        .item
+                            p.item-name Banco de Chile
+                        .item
+                            p.item-name Cuenta Corriente
+                        .item
+                            p.item-name 012345678910
+                        .item
+                            p.item-name
+                                | angelorj97
+                                strong @
+                                | hotmail.com
+                        .item(style='text-align: center;')
+                            p.item-name(style='font-size: 18px;margin-top: 45px;') &iexcl;Recuerda dejar en el comentario de transferencia el #123!
+footer.page-footer.dark
+    .container
+        .row
+            .col-sm-3
+                h5 Get started
+                ul
+                    li
+                        a(href='#') Home
+                    li
+                        a(href='#') Sign up
+                    li
+                        a(href='#') Downloads
+            .col-sm-3
+                h5 About us
+                ul
+                    li
+                        a(href='#') Company Information
+                    li
+                        a(href='#') Contact us
+                    li
+                        a(href='#') Reviews
+            .col-sm-3
+                h5 Support
+                ul
+                    li
+                        a(href='#') FAQ
+                    li
+                        a(href='#') Help desk
+                    li
+                        a(href='#') Forums
+            .col-sm-3
+                h5 Legal
+                ul
+                    li
+                        a(href='#') Terms of Service
+                    li
+                        a(href='#') Terms of Use
+                    li
+                        a(href='#') Privacy Policy
+    .footer-copyright
+        p &copy; 2020 NVIO
+script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js')
+script(src='https://nvio.s3.amazonaws.com/assets_form/js/script.min.js')

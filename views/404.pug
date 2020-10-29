@@ -2,7 +2,7 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Dashboard - NVIO
+    title Page Not Found - NVIO
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
@@ -14,7 +14,7 @@ head
             hr.sidebar-divider.my-0
             ul#accordionSidebar.nav.navbar-nav.text-light
                 li.nav-item
-                    a.nav-link.active(href='/index.html')
+                    a.nav-link(href='/index.html')
                         i.fas.fa-tachometer-alt
                         span Dashboard
                 li.nav-item
@@ -148,118 +148,12 @@ head
                                         i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                         | &nbsp;Logout
             .container-fluid
-                .d-sm-flex.justify-content-between.align-items-center.mb-4
-                    h3.text-dark.mb-0 Dashboard
-                    a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='#' style='background: #6e3c8e;')
-                        i.fas.fa-download.fa-sm.text-white-50
-                        | &nbsp;Descargar Plantilla
-                .row
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-primary.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                            span Ventas Semanal
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span $178,000
-                                    .col-auto
-                                        i.fas.fa-calendar.fa-2x.text-gray-300
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-success.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-success.font-weight-bold.text-xs.mb-1
-                                            span Ventas Mensual
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span $615,000
-                                    .col-auto
-                                        i.fas.fa-dollar-sign.fa-2x.text-gray-300
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-warning.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-warning.font-weight-bold.text-xs.mb-1
-                                            span Consultas
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span 18
-                                    .col-auto
-                                        i.fas.fa-comments.fa-2x.text-gray-300
-                .row
-                    .col-lg-7.col-xl-8
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Visualizaci&oacute;n Anual
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                .chart-area
-                                    canvas(data-bs-chart='{"type":"line","data":{"labels":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],"datasets":[{"label":"Earnings","fill":true,"data":["0","10000","5000","15000","10000","20000","15000","25000"],"backgroundColor":"rgba(78, 115, 223, 0.05)","borderColor":"rgba(78, 115, 223, 1)"}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{},"scales":{"xAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"],"drawOnChartArea":false},"ticks":{"fontColor":"#858796","padding":20}}],"yAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"]},"ticks":{"fontColor":"#858796","padding":20}}]}}}')
-                    .col-lg-5.col-xl-4
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Canales de Venta
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                .chart-area
-                                    canvas(data-bs-chart='{"type":"doughnut","data":{"labels":["Direct","Social","Referral"],"datasets":[{"label":"","backgroundColor":["#4e73df","#1cc88a","#36b9cc"],"borderColor":["#ffffff","#ffffff","#ffffff"],"data":["50","30","15"]}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{}}}')
-                                .text-center.small.mt-4
-                                    span.mr-2
-                                        i.fas.fa-circle.text-primary
-                                        | &nbsp;Instagram
-                                    span.mr-2
-                                        i.fas.fa-circle.text-success
-                                        | &nbsp;Tienda Web
-                                    span.mr-2
-                                        i.fas.fa-circle.text-info
-                                        | &nbsp;Otro
-                .row
-                    .col
-                        .card.shadow.mb-4
-                            .card-header.py-3
-                                h6.text-primary.font-weight-bold.m-0 &Uacute;ltimos Pedidos
-                            ul.list-group.list-group-flush
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Camiseta Roja XL
-                                            span.text-xs Jos&eacute; Luis Fernandez - 10:30 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Pantal&oacute;n Beige Talla 36
-                                            span.text-xs Ana Jer&eacute;z - 9:30 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Poler&oacute;n Negro L
-                                            span.text-xs Crist&oacute;bal Matute - 8:00 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
+                .text-center.mt-5
+                    .error.mx-auto(data-text='404')
+                        p.m-0(style='color: #058791;') 404
+                    p.text-dark.mb-5.lead P&aacute;gina no encontrada
+                    p.text-black-50.mb-0 Algo sali&oacute; mal...
+                    a(href='/') &larr; Regresar al Dashboard
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
