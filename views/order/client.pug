@@ -2,7 +2,7 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Form
+    title form
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css')
@@ -15,10 +15,10 @@ main.page.payment-page
                     img(src='https://nvio.s3.amazonaws.com/assets_form/img/logo_nvio_fondo.png' style='max-width: 68%;' width='100%')
                 .col(style='text-align: center;')
                     img(src='https://nvio.s3.amazonaws.com/assets_form/img/unnamed.png' style='max-width: 171px;')
-            .row
+            .row.row-cols-sm-1.row-cols-md-1.row-cols-lg-1.row-cols-xl-2(style='min-height: auto;')
                 .col.align-self-center
                     form
-                        .card-details
+                        .card-details(style='max-height: 100%;')
                             h3.title Informaci&oacute;n del Cliente
                             .form-row
                                 .col-sm-8(style='max-width: 186px;')
@@ -63,26 +63,36 @@ main.page.payment-page
                                 .col-sm-12(style='margin-top: -22px;')
                                     .form-group
                                         button.btn.btn-primary.btn-block(type='submit' style='padding-top: 12px;') Enviar
-                .col
-                    .products
-                        h3.title
-                            | Orden
-                            strong #
-                            | #{orderID}
-                        .item
-                            span.price $200
-                            p.item-name Producto 1
-                        .item
-                            span.price $120
-                            p.item-name Producto 2
-                        .item
-                            span.price $120
-                            p.item-name Despacho
-                            p.item-description Retiro / Comuna
-                        .total
-                            span Total
-                            span.price $320
-                    .products(style='margin-top: 0px;padding: 40px;padding-top: 40px;padding-bottom: 56px;')
+                .col-md-auto.offset-md-0.m-auto(style='height: 865.359px;')
+                    .products(style='border-bottom-width: 1px;padding-right: 0px;max-height: 100%;height: 865.359px;')
+                        h3.title Checkout&nbsp;#123
+                        .table-responsive
+                            table.table
+                                thead
+                                    tr
+                                        th.text-center Item
+                                        th.text-center Precio
+                                        th.text-center Cantidad
+                                        th.text-center Subtotal
+                                tbody.text-center
+                                    tr.text-center
+                                        td.text-center Pantal&oacute;n gris claro S
+                                        td.text-center $15.200
+                                        td.text-center x1
+                                        td.text-center $5.200
+                                    tr.text-center
+                                        td.text-center Chaqueta verde L
+                                        td.text-center $43.200
+                                        td.text-center x2
+                                        td.text-center $8.400
+                        .item(style='padding-top: 12px;')
+                            span.price(style='margin-right: 19px;') $3.000
+                            p.item-name(style='margin-right: 19px;') Despacho
+                            p.item-description(style='margin-right: 19px;') Retiro / Comuna
+                        .total(style='margin-right: 19px;')
+                            span(style='margin-right: 19px;') Total
+                            span.price(style='margin-right: 0px;') $16.600
+                        div(style='height: 6%;')
                         h3.title Datos de transferencia
                         .item
                             p.item-name Angelo Romano Jara
@@ -100,7 +110,7 @@ main.page.payment-page
                                 strong @
                                 | hotmail.com
                         .item(style='text-align: center;')
-                            p.item-name(style='font-size: 18px;margin-top: 45px;') &iexcl;Recuerda dejar en el comentario de transferencia el #123!
+                            p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia el #123!
 footer.page-footer.dark
     .container
         .row
