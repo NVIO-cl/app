@@ -40,7 +40,7 @@ main.page.payment-page
                                 .col-sm-8
                                     .form-group
                                         label(for='comuna') Comuna
-                                        p Placeholder comuna
+                                        p #{orderData.clientData.M.address.M.locality.S}
                                 .col-sm-8
                                     .form-group
                                         label(for='telefono') Teléfono de contacto
@@ -65,7 +65,7 @@ main.page.payment-page
                                         button.btn.btn-primary.btn-block(type='submit' style='padding-top: 12px;') Enviar
                 .col-md-auto.offset-md-0.m-auto(style='height: 865.359px;')
                     .products(style='border-bottom-width: 1px;padding-right: 0px;max-height: 100%;height: 865.359px;')
-                        h3.title Checkout&nbsp;#123
+                        h3.title ID de pedido: #{orderID}
                         .table-responsive
                             table.table
                                 thead
@@ -75,42 +75,38 @@ main.page.payment-page
                                         th.text-center Cantidad
                                         th.text-center Subtotal
                                 tbody.text-center
-                                    tr.text-center
-                                        td.text-center Pantal&oacute;n gris claro S
-                                        td.text-center $15.200
-                                        td.text-center x1
-                                        td.text-center $5.200
-                                    tr.text-center
-                                        td.text-center Chaqueta verde L
-                                        td.text-center $43.200
-                                        td.text-center x2
-                                        td.text-center $8.400
+                                    each item in orderData.items.L
+                                      tr.text-center
+                                          td.text-center #{item.M.product.S}
+                                          td.text-center #{parseInt(item.M.price.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                                          td.text-center #{item.M.quantity.N}
+                                          td.text-center #{parseInt(item.M.price.N * item.M.quantity.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
                         .item(style='padding-top: 12px;')
-                            span.price(style='margin-right: 19px;') $3.000
+                            span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.order.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                            p.item-name(style='margin-right: 19px;') Total productos
+                        .item(style='padding-top: 12px;')
+                            span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
                             p.item-name(style='margin-right: 19px;') Despacho
                             p.item-description(style='margin-right: 19px;') Retiro / Comuna
                         .total(style='margin-right: 19px;')
                             span(style='margin-right: 19px;') Total
-                            span.price(style='margin-right: 0px;') $16.600
+                            span.price(style='margin-right: 0px;') #{(parseInt(orderData.cost.M.order.N) + parseInt(orderData.cost.M.shipping.N)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
                         div(style='height: 6%;')
                         h3.title Datos de transferencia
                         .item
-                            p.item-name Angelo Romano Jara
+                            p.item-name Nombre: #{companyData.paymentData.M.name.S}
                         .item
-                            p.item-name 19.624.481-6
+                            p.item-name RUT: #{companyData.paymentData.M.rut.S}
                         .item
-                            p.item-name Banco de Chile
+                            p.item-name Banco: #{companyData.paymentData.M.bank.S}
                         .item
-                            p.item-name Cuenta Corriente
+                            p.item-name Cuenta: #{companyData.paymentData.M.accType.S}
                         .item
-                            p.item-name 012345678910
+                            p.item-name Nº Cuenta: #{companyData.paymentData.M.accNum.S}
                         .item
-                            p.item-name
-                                | angelorj97
-                                strong @
-                                | hotmail.com
+                            p.item-name Correo: #{companyData.paymentData.M.email.S}
                         .item(style='text-align: center;')
-                            p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia el #123!
+                            p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID}"!
 footer.page-footer.dark
     .container
         .row
