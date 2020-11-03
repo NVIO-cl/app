@@ -159,6 +159,10 @@ router.get('/:id',  async(req, res) => {
 });
 
 router.post('/fill', upload.single('comprobante'), async(req,res)=> {
+  var fullID = req.headers.referer.slice(req.headers.referer.length - 12);
+  var companyID = "COMPANY#" + fullID.substring(0, 6);
+  var profileID = "PROFILE#" + fullID.substring(0, 6);
+  var orderID = "ORDER#" + fullID.substring(6, 12);
 
   //Check Terms
   if (req.body.tyc != 'on') {
@@ -220,8 +224,8 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
   var params = {
     "TableName": "app",
     "Key": {
-      "PK":"COMPANY#123456",
-      "SK": "ORDER#Y3Bp3r"
+      "PK":companyID,
+      "SK": orderID
     },
     "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
     "ExpressionAttributeNames": {
@@ -252,8 +256,8 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
   params = {
     "TableName": "app",
     "Key": {
-      "PK":"COMPANY#123456",
-      "SK": "ORDER#Y3Bp3r"
+      "PK": companyID,
+      "SK": orderID
     },
     "UpdateExpression": "set #status.#comments = list_append(#status.#comments,:comment)",
     "ExpressionAttributeNames": {
