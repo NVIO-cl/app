@@ -117,6 +117,10 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
 
 });
 
+router.get('/finished', async (req,res)=> {
+  res.render('order/orderconfirmed');
+})
+
 router.get('/:id',  async(req, res) => {
   if(!validator.isAlphanumeric(req.params.id) || !validator.isLength(req.params.id,{min:12, max: 12})){
     res.redirect('/404')
@@ -135,6 +139,10 @@ router.get('/:id',  async(req, res) => {
   getOrder = await db.query(params);
   if (getOrder.Count != 1) {
     res.redirect('/404');
+  }
+
+  if (getOrder.Items[0].status.M.order.N > 0) {
+    res.redirect('/order/finished');
   }
 
   params = {
@@ -260,7 +268,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     }
   }
   commentResult = await db.update(params);
-  //Change state
+  res.redirect('/order/finished')
 
 });
 
