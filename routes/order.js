@@ -122,7 +122,7 @@ router.get('/finished', async (req,res)=> {
 })
 
 router.get('/:id',  async(req, res) => {
-  if(!validator.isAlphanumeric(req.params.id) || !validator.isLength(req.params.id,{min:12, max: 12})){
+  if(!validator.isLength(req.params.id,{min:12, max: 12})){
     res.redirect('/404')
   }
   var companyID = "COMPANY#" + req.params.id.substring(0, 6);
