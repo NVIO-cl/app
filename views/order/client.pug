@@ -31,11 +31,11 @@ main.page.payment-page
                                         input#apellido.form-control(type='text' placeholder='Apellido' style='width: 100%;' name='apellido')
                                 .col-sm-8
                                     .form-group
-                                        label(for='direccion') Dirección
+                                        label(for='direccion') Dirección (calle y número)
                                         input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
                                 .col-sm-4
                                     .form-group
-                                        label(for='apart') Apartado
+                                        label(for='apart') Casa/depto.
                                         input#apart.form-control(type='text' placeholder='Apartado' name='apart')
                                 .col-sm-8
                                     .form-group
@@ -92,8 +92,8 @@ main.page.payment-page
                             p.item-name(style='margin-right: 19px;') Total productos
                         .item(style='padding-top: 12px;')
                             span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
-                            p.item-name(style='margin-right: 19px;') Despacho
-                            p.item-description(style='margin-right: 19px;') Retiro / Comuna
+                            p.item-name(style='margin-right: 19px;') Entrega
+                            p.item-description(style='margin-right: 19px;') #{orderData.shippingMethod.S} / #{orderData.clientData.M.address.M.locality.S}
                         .total(style='margin-right: 19px;')
                             span(style='margin-right: 19px;') Total
                             span.price(style='margin-right: 0px;') #{(parseInt(orderData.cost.M.order.N) + parseInt(orderData.cost.M.shipping.N)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}

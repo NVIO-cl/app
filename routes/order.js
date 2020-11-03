@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const { nanoid } = require("nanoid");
 const validator = require('validator');
+const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
 
@@ -156,46 +157,32 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     console.log("Terms and conditions NOT OK");
     res.redirect(req.headers.referer);
   }
-  else {
-    console.log("Terms and condition OK");
-  }
 
-  //Check fields first
-  if (!validator.isAlpha(req.body.nombre,'es-ES')) {
+  //Check fields
+  if (await !validator.isAlpha(req.body.nombre,'es-ES')) {
     console.log("Nombre NOT OK");
     res.redirect(req.headers.referer);
   }
-  else {
-    console.log("Nombre OK");
-  }
 
-  if (!validator.isAlpha(req.body.apellido,'es-ES')) {
+  if (await !validator.isAlpha(req.body.apellido,'es-ES')) {
     console.log("Apellido NOT OK");
     res.redirect(req.headers.referer);
   }
-  else {
-    console.log("Apellido OK");
-  }
 
-  if (!validator.isMobilePhone(req.body.telefono, 'es-CL')) {
+  if (await !validator.isMobilePhone(req.body.telefono, 'es-CL')) {
     console.log("Telefono NOT OK");
     res.redirect(req.headers.referer);
   }
-  else {
-    console.log("Telefono OK");
-  }
 
-  if (!validator.isEmail(req.body.email)) {
+  if (await !validator.isEmail(req.body.email)) {
     console.log("Correo NOT OK");
     res.redirect(req.headers.referer);
   }
-  else {
-    console.log("Correo OK");
-  }
 
   //Check image uploading and save the image
+  var s3up;
   if (req.file) {
-    if (!req.file.mimetype.startsWith("image")) {
+    if (await !req.file.mimetype.startsWith("image")) {
       console.log("INVALID image");
       res.redirect(req.headers.referer);
     }
@@ -204,44 +191,75 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       var mimetype = req.file.mimetype.split("/");
       var params = {
         Bucket: process.env.AWS_S3_BUCKET,
-        Key: 'COMPROBANTE'+req.headers.referer.substr(req.headers.referer.length - 12)+"."+mimetype[mimetype.length - 1],
+        Key: 'COMPROBANTE#'+req.headers.referer.substr(req.headers.referer.length - 12)+"."+mimetype[mimetype.length - 1],
         ACL: 'public-read',
         Body: req.file.buffer
       }
-      s3.putObject(params, function (err, data) {
+      s3up = await s3.putObject(params, function (err, data) {
         if (err) {
           console.log("Error: ", err);
         } else {
-          //console.log(data);
-          //return res.json("ok");
+          console.log("Image uploaded OK");
         }
-      });
+      }).promise();
     }
   }
   else {
     console.log("NO IMAGE");
     res.redirect(req.headers.referer);
   }
-
   //Save the order order data
   var params = {
     "TableName": "app",
     "Key": {
-      "PK": {"S": "COMPANY#123456"},
-      "SK": {"S": "ORDER#ZnnG-0"}
+      "PK":"COMPANY#123456",
+      "SK": "ORDER#Y3Bp3r"
     },
-    "UpdateExpression": "SET clientData = :9e6f0",
+    "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
+    "ExpressionAttributeNames": {
+      "#clientData":"clientData",
+      "#firstName":"firstName",
+      "#lastName":"lastName",
+      "#email":"email",
+      "#contactNumber":"contactNumber",
+      "#comment":"comment",
+      "#status":"status",
+      "#order":"order",
+      "#updatedAt":"updatedAt"
+    },
     "ExpressionAttributeValues": {
-      ":9e6f0": {"S": "Eduardo"}
+      ":firstName": req.body.nombre,
+      ":lastName": req.body.apellido,
+      ":email": req.body.email,
+      ":contactNumber": req.body.telefono,
+      ":comment": req.body.comentario,
+      ":order": 1,
+      ":updatedAt": Date.now()
     },
+    "ReturnValues": "ALL_NEW"
   }
   updateResult = await db.update(params);
-  console.log(updateResult);
-
 
   //Add commentary
-
-
+  params = {
+    "TableName": "app",
+    "Key": {
+      "PK":"COMPANY#123456",
+      "SK": "ORDER#Y3Bp3r"
+    },
+    "UpdateExpression": "set #status.#comments = list_append(#status.#comments,:comment)",
+    "ExpressionAttributeNames": {
+      "#status": "status",
+      "#comments": "comments"
+    },
+    "ExpressionAttributeValues": {
+      ":comment": [{
+        "comment": "Datos de cliente ingresados.",
+        "timestamp": Date.now()
+      }]
+    }
+  }
+  commentResult = await db.update(params);
   //Change state
 
 });
