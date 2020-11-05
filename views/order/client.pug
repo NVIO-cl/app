@@ -1,0 +1,160 @@
+doctype html
+head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
+    title form
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css')
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/css/styles.min.css')
+main.page.payment-page
+    section.clean-block.payment-form.dark
+        .container
+            .row
+                .col.align-self-center(style='text-align: center;')
+                    img(src='https://nvio.s3.amazonaws.com/assets_form/img/logo_nvio_fondo.png' style='max-width: 68%;' width='100%')
+                .col(style='text-align: center;')
+                    img(src='https://nvio.s3.amazonaws.com/assets_form/img/unnamed.png' style='max-width: 171px;')
+            .row.row-cols-sm-1.row-cols-md-1.row-cols-lg-1.row-cols-xl-2(style='min-height: auto;')
+                .col.align-self-center
+                    form(action='/order/fill' method='POST' enctype="multipart/form-data")
+                        .card-details(style='max-height: 100%;')
+                            h3.title Informaci&oacute;n del Cliente
+                            .form-row
+                                .col-sm-8(style='max-width: 186px;')
+                                    .form-group
+                                        label(for='nombre') Nombre
+                                        input#nombre.form-control(type='text' placeholder='Nombre' name='nombre')
+                                .col-sm-4
+                                    .form-group
+                                        label(for='apellido') Apellido
+                                        input#apellido.form-control(type='text' placeholder='Apellido' style='width: 100%;' name='apellido')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='direccion') Dirección (calle y número)
+                                        input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
+                                .col-sm-4
+                                    .form-group
+                                        label(for='apart') Casa/depto.
+                                        input#apart.form-control(type='text' placeholder='Apartado' name='apart')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='comuna') Comuna
+                                        p #{orderData.clientData.M.address.M.locality.S}
+                                .col-sm-8
+                                    .form-group
+                                        label(for='telefono') Teléfono de contacto
+                                        input#telefono.form-control(type='text' placeholder='+569 9999 9999' name='telefono')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='email') Email de contacto
+                                        input#email.form-control(type='text' placeholder='hola@email.com' name='email')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='comentario') Comentarios adicionales
+                                        input#comentario.form-control(type='text' name='comentario')
+                                .col-sm-8
+                                    .form-group
+                                        label(for='card-number') Comprobante de pago
+                                        .form-row
+                                            .col
+                                                //-button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;')   Adjuntar archivo
+                                                input#comprobante(type='file' accept="image/png, image/jpeg" name='comprobante')
+                                                  
+                                .col-sm-8
+                                    .form-group
+                                        .form-check(style='margin-bottom: -7px;')
+                                            input#tyc.form-check-input(type='checkbox' name='tyc')
+                                            label.form-check-label(for='tyc') Acepto los términos y condiciones
+                                .col-sm-12(style='margin-top: -22px;')
+                                    .form-group
+                                        button.btn.btn-primary.btn-block(type='submit' style='padding-top: 12px;') Enviar
+                .col-md-auto.offset-md-0.m-auto(style='height: 865.359px;')
+                    .products(style='border-bottom-width: 1px;padding-right: 0px;max-height: 100%;height: 865.359px;')
+                        h3.title ID de pedido: #{orderID}
+                        .table-responsive
+                            table.table
+                                thead
+                                    tr
+                                        th.text-center Item
+                                        th.text-center Precio
+                                        th.text-center Cantidad
+                                        th.text-center Subtotal
+                                tbody.text-center
+                                    each item in orderData.items.L
+                                      tr.text-center
+                                          td.text-center #{item.M.product.S}
+                                          td.text-center #{parseInt(item.M.price.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                                          td.text-center #{item.M.quantity.N}
+                                          td.text-center #{parseInt(item.M.price.N * item.M.quantity.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                        .item(style='padding-top: 12px;')
+                            span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.order.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                            p.item-name(style='margin-right: 19px;') Total productos
+                        .item(style='padding-top: 12px;')
+                            span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                            p.item-name(style='margin-right: 19px;') Entrega
+                            p.item-description(style='margin-right: 19px;') #{orderData.shippingMethod.S} / #{orderData.clientData.M.address.M.locality.S}
+                        .total(style='margin-right: 19px;')
+                            span(style='margin-right: 19px;') Total
+                            span.price(style='margin-right: 0px;') #{(parseInt(orderData.cost.M.order.N) + parseInt(orderData.cost.M.shipping.N)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                        div(style='height: 6%;')
+                        h3.title Datos de transferencia
+                        .item
+                            p.item-name Nombre: #{companyData.paymentData.M.name.S}
+                        .item
+                            p.item-name RUT: #{companyData.paymentData.M.rut.S}
+                        .item
+                            p.item-name Banco: #{companyData.paymentData.M.bank.S}
+                        .item
+                            p.item-name Cuenta: #{companyData.paymentData.M.accType.S}
+                        .item
+                            p.item-name Nº Cuenta: #{companyData.paymentData.M.accNum.S}
+                        .item
+                            p.item-name Correo: #{companyData.paymentData.M.email.S}
+                        .item(style='text-align: center;')
+                            p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID}"!
+footer.page-footer.dark
+    .container
+        .row
+            .col-sm-3
+                h5 Get started
+                ul
+                    li
+                        a(href='#') Home
+                    li
+                        a(href='#') Sign up
+                    li
+                        a(href='#') Downloads
+            .col-sm-3
+                h5 About us
+                ul
+                    li
+                        a(href='#') Company Information
+                    li
+                        a(href='#') Contact us
+                    li
+                        a(href='#') Reviews
+            .col-sm-3
+                h5 Support
+                ul
+                    li
+                        a(href='#') FAQ
+                    li
+                        a(href='#') Help desk
+                    li
+                        a(href='#') Forums
+            .col-sm-3
+                h5 Legal
+                ul
+                    li
+                        a(href='#') Terms of Service
+                    li
+                        a(href='#') Terms of Use
+                    li
+                        a(href='#') Privacy Policy
+    .footer-copyright
+        p &copy; 2020 NVIO
+script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js')
+script(src='https://nvio.s3.amazonaws.com/assets_form/js/script.min.js')

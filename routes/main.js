@@ -11,10 +11,8 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 router.get('/login', (req, res) => {
   const name = "Login";
   var errormsg;
-  console.log("Login requested");
   var date = new Date();
   var year = date.getFullYear();
-  console.log(req.cookies);
   if (req.cookies.error == true) {
     errormsg = "Correo o contraseña incorrectos";
   }
@@ -22,5 +20,12 @@ router.get('/login', (req, res) => {
   res.render('login', {title: name, error: errormsg});
 });
 
+router.get('/profile', (req, res) => {
+  const name = "Profile";
+  var errormsg;
+  var date = new Date();
+  var year = date.getFullYear();
+  res.render('profile', {title: name, error: errormsg});
+});
 
 module.exports = router;

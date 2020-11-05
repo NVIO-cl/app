@@ -1,0 +1,36 @@
+doctype html
+head
+  meta(charset='utf-8')
+h1 hola
+form(action='/order/create' method='POST')
+  label(for='locality') Locality:
+  br
+  input#locality(type='text' name='locality')
+  br
+  label(for='shippingCost') Shipping cost:
+  br
+  input#shippingCost(type='text' name='shippingCost')
+  br
+  label(for='shippingMethod') Shipping method:
+  br
+  input#shippingMethod(type='text' name='shippingMethod')
+  br
+  br
+  br
+  br
+  input.form-control(type='text' placeholder='product' name="items[0][product]" id="items")
+  input.form-control(type='text' placeholder='quantity' name="items[0][quantity]")
+  input.form-control(type='text' placeholder='price' name="items[0][price]")
+  br
+  br
+  input.form-control(type='text' placeholder='product' name="items[1][product]")
+  input.form-control(type='text' placeholder='quantity' name="items[1][quantity]")
+  input.form-control(type='text' placeholder='price' name="items[1][price]")
+  br
+  br
+  input.form-control(type='text' placeholder='product' name="items[2][product]")
+  input.form-control(type='text' placeholder='quantity' name="items[2][quantity]")
+  input.form-control(type='text' placeholder='price' name="items[2][price]")
+  br
+  br
+  input(type='submit' value='Submit')
