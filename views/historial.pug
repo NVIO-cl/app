@@ -14,19 +14,19 @@ head
             hr.sidebar-divider.my-0
             ul#accordionSidebar.nav.navbar-nav.text-light
                 li.nav-item
-                    a.nav-link(href='/index.html')
+                    a.nav-link(href='/')
                         i.fas.fa-tachometer-alt
                         span Dashboard
                 li.nav-item
-                    a.nav-link(href='/profile.html')
+                    a.nav-link(href='/profile')
                         i.fas.fa-user
                         span Perfil
                 li.nav-item
-                    a.nav-link.active(href='/historial.html')
+                    a.nav-link.active(href='/historial')
                         i.fas.fa-table
                         span Historial de Ventas
                 li.nav-item
-                    a.nav-link(href='/login.html')
+                    a.nav-link(href='/login')
                         i.far.fa-user-circle
                         span Cerrar Sesi&oacute;n
                 li.nav-item
@@ -167,7 +167,7 @@ head
                                 #dataTable_filter.text-md-right.dataTables_filter
                                     label
                                         input.form-control.form-control-sm(type='search' aria-controls='dataTable' placeholder='Search')
-                        #dataTable.table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
+                        .table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
                             table#dataTable.table.my-0
                                 thead
                                     tr(style='font-size: 14px;text-align: center;')

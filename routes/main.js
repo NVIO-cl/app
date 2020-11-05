@@ -20,5 +20,12 @@ router.get('/login', (req, res) => {
   res.render('login', {title: name, error: errormsg});
 });
 
+router.get('/profile', (req, res) => {
+  const name = "Profile";
+  var errormsg;
+  var date = new Date();
+  var year = date.getFullYear();
+  res.render('profile', {title: name, error: errormsg});
+});
 
 module.exports = router;
