@@ -8,6 +8,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/main');
 var authRouter = require('./routes/auth');
+var orderRouter = require('./routes/order');
 
 var app = express();
 
@@ -25,13 +26,13 @@ app.use(function (req, res, next) {
 
 //app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
-
+app.use('/order',orderRouter);
 
 
 //Use cookieParser
@@ -41,7 +42,6 @@ app.use(cookieParser());
 require('./passport');
 
 //Use JSON parser
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // catch 404 and forward to error handler
