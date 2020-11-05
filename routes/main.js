@@ -3,7 +3,7 @@ const passport = require('passport');
 const router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   res.render('index', { title: 'NVIO' });
 });
 
@@ -20,5 +20,12 @@ router.get('/login', (req, res) => {
   res.render('login', {title: name, error: errormsg});
 });
 
+router.get('/profile', (req, res) => {
+  const name = "Profile";
+  var errormsg;
+  var date = new Date();
+  var year = date.getFullYear();
+  res.render('profile', {title: name, error: errormsg});
+});
 
 module.exports = router;
