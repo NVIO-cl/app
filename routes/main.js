@@ -12,6 +12,11 @@ aws.config.update({
   secretAccessKey: process.env.SECRET
 });
 
+const xl = require('excel4node');
+const wb = new xl.Workbook();
+const ws = wb.addWorksheet('Pedidos');
+var date_parser = require("../date_parser");
+
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   res.render('index', { title: 'NVIO' });
@@ -19,6 +24,31 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
 router.get('/profile',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   res.render('profile', { title: 'NVIO' });
+});
+
+router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log("Detail requested")
+  const name = "Detail" + req.params.id;
+  var params={
+    "TableName": "app",
+    "ScanIndexForward": false,
+    "ConsistentRead": false,
+    "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
+    "ExpressionAttributeValues": {
+      ":cd420": {
+        "S": req.user.user
+      },
+      ":cd421": {
+        "S": "ORDER#" + req.params.id
+      }
+    },
+    "ExpressionAttributeNames": {
+      "#cd420": "PK",
+      "#cd421": "SK"
+    }
+  };
+  detailQuery = await db.query(params);
+  res.render('detail', {title: name, orders: detailQuery.Items, companyId: req.user.user.replace("COMPANY#","")});
 });
 
 /* GET historial. */
@@ -45,6 +75,163 @@ router.get('/historial',passport.authenticate('jwt', {session: false, failureRed
   };
   historialQuery = await db.query(params);
   res.render('historial', {title: name, orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#","")});
+});
+
+router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+
+  var params={
+    "TableName": "app",
+    "ScanIndexForward": false,
+    "ConsistentRead": false,
+    "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
+    "ExpressionAttributeValues": {
+      ":cd420": {
+        "S": req.user.user
+      },
+      ":cd421": {
+        "S": "ORDER"
+      }
+    },
+    "ExpressionAttributeNames": {
+      "#cd420": "PK",
+      "#cd421": "SK"
+    }
+  };
+  historialQuery = await db.query(params);
+
+  var data = [];
+
+  // Iterates over all orders
+  for (var j = 0; j < historialQuery.Items.length; j++){
+
+    // Iterates over "product"
+    let productos = []
+    for (var i = 0; i < historialQuery.Items[j].items.L.length; i++){
+      if (i > 0){
+        let item = " " + historialQuery.Items[j].items.L[i].M.product.S
+        productos.push(item)
+      } else{
+        let item = historialQuery.Items[j].items.L[i].M.product.S
+        productos.push(item)
+      }
+    }
+    let string_productos = productos.toString()
+
+
+    // Iterates over "quantity"
+    let cantidad = []
+    for (var i = 0; i < historialQuery.Items[j].items.L.length; i++){
+      if (i > 0){
+        let item = " " + historialQuery.Items[j].items.L[i].M.quantity.N
+        cantidad.push(item)
+      } else{
+        let item = historialQuery.Items[j].items.L[i].M.quantity.N
+        cantidad.push(item)
+      }
+    }
+    let string_cantidad = cantidad.toString()
+
+
+    // Iterates over "price"
+    let precio = []
+    for (var i = 0; i < historialQuery.Items[j].items.L.length; i++){
+      if (i > 0){
+        let item = " " + historialQuery.Items[j].items.L[i].M.price.N
+        precio.push(item)
+      } else{
+        let item = historialQuery.Items[j].items.L[i].M.price.N
+        precio.push(item)
+      }
+    }
+    let string_precio = precio.toString()
+
+
+    // Iterates over "comments"
+    let comentarios = []
+    for (var i = 0; i < historialQuery.Items[j].status.M.comments.L.length; i++){
+      if (i > 0){
+        var db_date = historialQuery.Items[j].status.M.comments.L[i].M.timestamp.N
+        var parsed_date = date_parser.parse_date(db_date);
+        let item = " " + parsed_date + " " + "-" + " " + historialQuery.Items[j].status.M.comments.L[i].M.comment.S
+        comentarios.push(item)
+      } else{
+        var db_date = historialQuery.Items[j].status.M.comments.L[i].M.timestamp.N
+        var parsed_date = date_parser.parse_date(db_date);
+        let item = parsed_date + " " + "-" + " " + historialQuery.Items[j].status.M.comments.L[i].M.comment.S
+        comentarios.push(item)
+      }
+    }
+    let string_comentarios = comentarios.toString()
+
+
+    var created_at = historialQuery.Items[j].createdAt.N
+    var parsed_created_at = date_parser.parse_date(created_at);
+
+    var paid_at = historialQuery.Items[j].paidAt.N
+    var parsed_paid_at = date_parser.parse_date(paid_at);
+
+
+    var order = {
+      "Número Pedido": historialQuery.Items[j].SK.S.replace("ORDER#",""),
+      "Fecha de creación": parsed_created_at,
+      "Cliente": historialQuery.Items[j].clientData.M.firstName.S + " " + historialQuery.Items[j].clientData.M.lastName.S,
+      "Teléfono":historialQuery.Items[j].clientData.M.contactNumber.N,
+      "Email": historialQuery.Items[j].clientData.M.email.S,
+      "Dirección": historialQuery.Items[j].clientData.M.address.M.street.S + " " + historialQuery.Items[j].clientData.M.address.M.number.N + " " + historialQuery.Items[j].clientData.M.address.M.apart.S + " " + historialQuery.Items[j].clientData.M.address.M.locality.S,
+      "Comentario de despacho": historialQuery.Items[j].comment.S,
+      "Producto": string_productos,
+      "Cantidad": string_cantidad,
+      "Precio": string_precio,
+      "Total de Orden": historialQuery.Items[j].cost.M.order.N,
+      "Estado de Pago": historialQuery.Items[j].status.M.payment.N,
+      "Fecha de Pago": parsed_paid_at,
+      "Estado de Orden": historialQuery.Items[j].status.M.order.N,
+      "Método de Despacho": historialQuery.Items[j].shippingMethod.S,
+      "Costo de Despacho": historialQuery.Items[j].cost.M.shipping.N,
+      "Comentarios Personales": string_comentarios
+    }
+    data.push(order)
+  }
+
+  const headingColumnNames = [
+    "Número Pedido",
+    "Fecha de creación",
+    "Cliente",
+    "Teléfono",
+    "Email",
+    "Dirección",
+    "Comentario de despacho",
+    "Producto",
+    "Cantidad",
+    "Precio",
+    "Total de Orden",
+    "Estado de Pago",
+    "Fecha de Pago",
+    "Estado de Orden",
+    "Método de Despacho",
+    "Costo de Despacho",
+    "Comentarios Personales",
+  ]
+
+//Write Column Title in Excel file
+  let headingColumnIndex = 1;
+  headingColumnNames.forEach(heading => {
+    ws.cell(1, headingColumnIndex++)
+        .string(heading)
+  });
+
+//Write Data in Excel file
+  let rowIndex = 2;
+  data.forEach( record => {
+    let columnIndex = 1;
+    Object.keys(record ).forEach(columnName =>{
+      ws.cell(rowIndex,columnIndex++)
+          .string(record [columnName])
+    });
+    rowIndex++;
+  });
+
+  wb.write('Pedidos.xlsx', res);
 });
 
 //Login route

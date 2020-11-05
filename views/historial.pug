@@ -152,7 +152,7 @@ head
                 .card.shadow
                     .card-header.py-3
                         p.text-primary.m-0.font-weight-bold Vista Resumida
-                            a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='#' style='background: #6e3c8e; float: right;')
+                            a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='excel/' style='background: #6e3c8e; float: right;')
                                 i.fas.fa-download.fa-sm.text-white-50
                                 | &nbsp;Descargar Plantilla
                     .card-body
@@ -260,7 +260,7 @@ head
 
                                             td #{b}
                                             td
-                                                button.btn.btn-info(type='button') Detalle
+                                                a.btn.btn-info(type='button' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
 
                                     tfoot
                                         tr(style='font-size: 14px;text-align: center;')
