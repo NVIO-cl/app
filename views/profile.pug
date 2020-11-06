@@ -28,7 +28,7 @@ head
                 li.nav-item
                     a.nav-link(href='/login')
                         i.far.fa-user-circle
-                        span Cerrar Sesi&oacute;n
+                        span Cerrar Sesión
                 li.nav-item
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
@@ -217,27 +217,22 @@ head
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='username')
+                                                        label(for='companyName')
                                                             strong Nombre de Empresa
                                                             br
-                                                        input.form-control(type='text' placeholder='Nombre Empresa' name='username')
+                                                        input.form-control#companyName(type='text' placeholder='Nombre Empresa' name='companyName' value=companyData.companyName.S)
                                                 .col
                                                     .form-group
-                                                        label(for='email')
+                                                        label(for='firstName')
                                                             strong Nombre Representante
-                                                        input.form-control(type='email' placeholder='Nombre Representante' name='email')
+                                                        input.form-control#firstName(type='text' placeholder='Nombre Representante' name='firstName' value=companyData.firstName.S)
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='first_name')
-                                                            strong Apellido Paterno Representante
+                                                        label(for='lastName')
+                                                            strong Apellidos Representante
                                                             br
-                                                        input.form-control(type='text' placeholder='Apellido Paterno' name='first_name')
-                                                .col
-                                                    .form-group
-                                                        label(for='last_name')
-                                                            strong Apellido Materno Representante
-                                                        input.form-control(type='text' placeholder='Apellido Materno' name='last_name')
+                                                        input.form-control#lastName(type='text' placeholder='Apellidos' name='lastName' value=companyData.lastName.S)
                                             .form-group
                                                 button.btn.btn-primary.btn-sm(type='submit') Guardar
                                 .card.shadow.mb-3
@@ -248,14 +243,14 @@ head
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='city')
+                                                        label(for='contactNumber')
                                                             strong Tel&eacute;fono del Representante
-                                                        input.form-control(type='text' placeholder='+56 9 0000 0000' name='city')
+                                                        input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+569" + companyData.contactNumber.N)
                                                 .col
                                                     .form-group
-                                                        label(for='country')
+                                                        label(for='email')
                                                             strong Correo del Representante
-                                                        input.form-control(type='text' placeholder='ejemplo@email.com' name='country')
+                                                        input.form-control#email(type='text' placeholder='ejemplo@email.com' name='email' value=companyData.email.S)
                                             .form-group
                                                 button.btn.btn-primary.btn-sm(type='submit') Guardar
                                 .card.shadow.mb-3
@@ -267,53 +262,53 @@ head
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='city')
+                                                        label(for='companyTurn')
                                                             strong Giro
-                                                        input.form-control(type='text' placeholder='Giro SII' name='city')
+                                                        input.form-control#companyTurn(type='text' placeholder='Giro SII' name='companyTurn' value=companyData.companyTurn.S)
                                                 .col
                                                     .form-group
-                                                        label(for='country')
+                                                        label(for='companyRut')
                                                             strong RUT Empresa
-                                                        input.form-control(type='text' placeholder='1.234.567-8' name='country')
+                                                        input.form-control#companyRut(type='text' placeholder='1.234.567-8' name='companyRut' value=companyData.companyRut.S)
                                         p.text-primary.m-0.font-weight-bold Transferencia
                                         form
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='city')
+                                                        label(for='paymentDataName')
                                                             strong Nombre Asociado a Cuenta
-                                                        input.form-control(type='text' placeholder='Nombre' name='city')
+                                                        input.form-control#paymentDataName(type='text' placeholder='Nombre' name='paymentDataName' value=companyData.paymentData.M.name.S)
                                                 .col
                                                     .form-group
-                                                        label(for='country')
+                                                        label(for='paymentDataRut')
                                                             strong RUT
-                                                        input.form-control(type='text' placeholder='RUT' name='country')
+                                                        input.form-control#paymentDataRut(type='text' placeholder='RUT' name='paymentDataRut' value=companyData.paymentData.M.rut.S)
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='city')
+                                                        label(for='paymentDataBank')
                                                             strong Banco
                                                             br
-                                                        input.form-control(type='text' placeholder='Banco' name='city')
+                                                        input.form-control#paymentDataBank(type='text' placeholder='Banco' name='paymentDataBank' value=companyData.paymentData.M.bank.S)
                                                 .col
                                                     .form-group
-                                                        label(for='country')
+                                                        label(for='paymentDataAccType')
                                                             strong Tipo de Cuenta
                                                             br
-                                                        input.form-control(type='text' placeholder='Tipo Cuenta' name='country')
+                                                        input.form-control#paymentDataaccType(type='text' placeholder='Tipo Cuenta' name='paymentDataAccType' value=companyData.paymentData.M.accType.S)
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='city')
-                                                            strong N&uacute;mero de Cuenta
+                                                        label(for='paymentDataAccNum')
+                                                            strong Número de Cuenta
                                                             br
-                                                        input.form-control(type='text' placeholder='Número Cuenta' name='city')
+                                                        input.form-control#paymentDataAccNum(type='text' placeholder='Número Cuenta' name='paymentDataAccNum' value=companyData.paymentData.M.accNum.S)
                                                 .col
                                                     .form-group
-                                                        label(for='country')
+                                                        label(for='paymentDataEmail')
                                                             strong Correo Electr&oacute;nico Cuenta
                                                             br
-                                                        input.form-control(type='text' placeholder='Correo' name='country')
+                                                        input.form-control#paymentDataEmail(type='text' placeholder='Correo' name='paymentDataEmail' value=companyData.paymentData.M.email.S)
                                         .form-group
                                             button.btn.btn-primary.btn-sm(type='submit') Guardar
         footer.bg-white.sticky-footer
