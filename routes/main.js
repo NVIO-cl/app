@@ -163,22 +163,56 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
     }
     let string_comentarios = comentarios.toString()
 
-
     var created_at = historialQuery.Items[j].createdAt.N
     var parsed_created_at = date_parser.parse_date(created_at);
 
-    var paid_at = historialQuery.Items[j].paidAt.N
-    var parsed_paid_at = date_parser.parse_date(paid_at);
+    try{
+      var cliente = historialQuery.Items[j].clientData.M.firstName.S + " " + historialQuery.Items[j].clientData.M.lastName.S
+      var phone = historialQuery.Items[j].clientData.M.contactNumber.N
+      var email = historialQuery.Items[j].clientData.M.email.S
+      var calle = historialQuery.Items[j].clientData.M.address.M.street.S
+      var num = " " + historialQuery.Items[j].clientData.M.address.M.number.N
+    } catch (err){
+      var cliente = ""
+      var phone = ""
+      var email = ""
+      var calle = ""
+      var num = ""
+    }
 
+    try{
+      var apart = " " + historialQuery.Items[j].clientData.M.address.M.apart.S
+    } catch (err){
+      var apart = ""
+    }
+
+    try{
+      var locality = " " + historialQuery.Items[j].clientData.M.address.M.locality.S
+    } catch (err){
+      var locality = ""
+    }
+
+    try{
+      var comment = " " + historialQuery.Items[j].comment.S
+    } catch (err){
+      var comment = ""
+    }
+
+    try{
+      var paid_at = historialQuery.Items[j].paidAt.N
+      var parsed_paid_at = date_parser.parse_date(paid_at);
+    } catch (err){
+      var parsed_paid_at = ""
+    }
 
     var order = {
       "Número Pedido": historialQuery.Items[j].SK.S.replace("ORDER#",""),
       "Fecha de creación": parsed_created_at,
-      "Cliente": historialQuery.Items[j].clientData.M.firstName.S + " " + historialQuery.Items[j].clientData.M.lastName.S,
-      "Teléfono":historialQuery.Items[j].clientData.M.contactNumber.N,
-      "Email": historialQuery.Items[j].clientData.M.email.S,
-      "Dirección": historialQuery.Items[j].clientData.M.address.M.street.S + " " + historialQuery.Items[j].clientData.M.address.M.number.N + " " + historialQuery.Items[j].clientData.M.address.M.apart.S + " " + historialQuery.Items[j].clientData.M.address.M.locality.S,
-      "Comentario de despacho": historialQuery.Items[j].comment.S,
+      "Cliente": cliente,
+      "Teléfono": phone,
+      "Email": email,
+      "Dirección": calle + num + apart + locality,
+      "Comentario de despacho": comment,
       "Producto": string_productos,
       "Cantidad": string_cantidad,
       "Precio": string_precio,
