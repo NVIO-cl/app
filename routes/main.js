@@ -48,7 +48,9 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
     }
   };
   detailQuery = await db.query(params);
-  res.render('detail', {title: name, orders: detailQuery.Items, companyId: req.user.user.replace("COMPANY#","")});
+
+  console.log(detailQuery.Items)
+  res.render('detail', {title: name, order: detailQuery.Items[0], companyId: req.user.user.replace("COMPANY#","")});
 });
 
 /* GET historial. */
@@ -167,16 +169,40 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
     var parsed_created_at = date_parser.parse_date(created_at);
 
     try{
-      var cliente = historialQuery.Items[j].clientData.M.firstName.S + " " + historialQuery.Items[j].clientData.M.lastName.S
+      var nombre = historialQuery.Items[j].clientData.M.firstName.S
+    } catch (err){
+      var nombre = ""
+    }
+
+    try{
+      var apellido = " " + historialQuery.Items[j].clientData.M.lastName.S
+    } catch (err){
+      var apellido = ""
+    }
+
+    try{
       var phone = historialQuery.Items[j].clientData.M.contactNumber.N
+    } catch (err){
+      var phone = ""
+    }
+
+    try{
       var email = historialQuery.Items[j].clientData.M.email.S
+    } catch (err){
+      var email = ""
+    }
+
+    try{
       var calle = historialQuery.Items[j].clientData.M.address.M.street.S
+
+    } catch (err){
+      var calle = ""
+
+    }
+
+    try{
       var num = " " + historialQuery.Items[j].clientData.M.address.M.number.N
     } catch (err){
-      var cliente = ""
-      var phone = ""
-      var email = ""
-      var calle = ""
       var num = ""
     }
 
@@ -208,7 +234,7 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
     var order = {
       "Número Pedido": historialQuery.Items[j].SK.S.replace("ORDER#",""),
       "Fecha de creación": parsed_created_at,
-      "Cliente": cliente,
+      "Cliente": nombre + apellido,
       "Teléfono": phone,
       "Email": email,
       "Dirección": calle + num + apart + locality,
