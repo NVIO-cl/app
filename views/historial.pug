@@ -157,120 +157,121 @@ head
                                 i.fas.fa-download.fa-sm.text-white-50
                                 | &nbsp;Descargar Plantilla
                     .card-body
-                        table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
-                            table#dataTable.table.my-0
-                                thead
-                                    tr(style='font-size: 14px;text-align: center;')
-                                        th Número Pedido
-                                        th Fecha
-                                        th Cliente
-                                        th Monto
-                                        th Pago
-                                        th Preparación
-                                        th Items
-                                        th Método Entrega
-                                        th Notas y Comentarios
-                                        th Vista Detallada
-                                tbody
-                                    each ORD, index in orders
-                                        tr.text-center
-                                            td #{ORD.SK.S.replace("ORDER#","")}
-                                            td
-                                                if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
-                                                    | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
-                                                else
-                                                    | #{new Date(parseInt(ORD.createdAt.N)).getDate()}
-                                                if    new Date(parseInt(ORD.createdAt.N)).getMonth() + 1 < 10
-                                                    | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                else
-                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
-                                                    | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
-                                                else
-                                                    | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
-
-                                            // Make it prettier pls
-                                            -
-                                                try {
-                                                    a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
-                                                } catch (err) {
-                                                    a = ""
-                                                }
-
-                                            td #{a}
-                                            td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
-                                            td #{ORD.status.M.payment.N}
-                                            td #{ORD.status.M.order.N}
-
-                                            td
-                                                if (a = parseInt(ORD.items.L.length)) > 2
-                                                    | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S + ", y " + parseInt(ORD.items.L.length - 2) + " más"}
-                                                else if (a = parseInt(ORD.items.L.length)) === 2
-                                                    | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S}
-                                                else
-                                                    | #{ORD.items.L[0].M.product.S}
-
-                                            td #{ORD.shippingMethod.S}
-
-                                             -
-                                                 try {
-                                                     b = ORD.status.M.comments.L.length
-                                                     c = ORD.status.M.comments.L[0].M.timestamp.N
-
-                                                     if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate() < 10)
-                                                         z = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
-                                                     else
-                                                         z = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
-
-                                                     if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1 < 10)
-                                                         y = "/0" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
-                                                     else
-                                                         y = "/" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
-                                                     x = "/" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getFullYear() + " " + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getHours() + ":"
-                                                     if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes() > 10)
-                                                         w = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
-                                                     else
-                                                         w = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
-
-                                                     var date_string = z+y+x+w;
-
-                                                     if (parseInt(b) > 1)
-                                                        b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S + ", y " + parseInt(ORD.status.M.comments.L.length - 1) + " más"
-                                                     else if (parseInt(b) == 1)
-                                                        b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S
-                                                     else
-                                                        b = ""
-                                                 } catch (err) {
-                                                     b = "Error"
-                                                 }
-
-                                            td #{b}
-                                            td
-                                                a.btn.btn-info(type='button' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
-
-                                    tfoot
+                        .container-fluid(style="overflow-x:auto;")
+                            table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
+                                table#dataTable.table.my-0
+                                    thead
                                         tr(style='font-size: 14px;text-align: center;')
-                                            td
-                                                strong Número Pedido
-                                            td
-                                                strong Fecha
-                                            td
-                                                strong Cliente
-                                            td
-                                                strong Monto
-                                            td
-                                                strong Pago
-                                            td
-                                                strong Preparación
-                                            td
-                                                strong Items
-                                            td
-                                                strong Método Entrega
-                                            td
-                                                strong Notas y Comentarios
-                                            td
-                                                strong Vista Detallada
+                                            th Número Pedido
+                                            th Fecha
+                                            th Cliente
+                                            th Monto
+                                            th Pago
+                                            th Preparación
+                                            th Items
+                                            th Método Entrega
+                                            th Notas y Comentarios
+                                            th Vista Detallada
+                                    tbody
+                                        each ORD, index in orders
+                                            tr.text-center
+                                                td #{ORD.SK.S.replace("ORDER#","")}
+                                                td
+                                                    if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
+                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                    else
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                    if    new Date(parseInt(ORD.createdAt.N)).getMonth() + 1 < 10
+                                                        | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                    else
+                                                        | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+                                                    else
+                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+
+                                                // Make it prettier pls
+                                                -
+                                                    try {
+                                                        a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
+                                                    } catch (err) {
+                                                        a = ""
+                                                    }
+
+                                                td #{a}
+                                                td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
+                                                td #{ORD.status.M.payment.N}
+                                                td #{ORD.status.M.order.N}
+
+                                                td
+                                                    if (a = parseInt(ORD.items.L.length)) > 2
+                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S + ", y " + parseInt(ORD.items.L.length - 2) + " más"}
+                                                    else if (a = parseInt(ORD.items.L.length)) === 2
+                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S}
+                                                    else
+                                                        | #{ORD.items.L[0].M.product.S}
+
+                                                td #{ORD.shippingMethod.S}
+
+                                                 -
+                                                     try {
+                                                         b = ORD.status.M.comments.L.length
+                                                         c = ORD.status.M.comments.L[0].M.timestamp.N
+
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate() < 10)
+                                                             z = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+                                                         else
+                                                             z = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1 < 10)
+                                                             y = "/0" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                         else
+                                                             y = "/" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                         x = "/" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getFullYear() + " " + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getHours() + ":"
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes() > 10)
+                                                             w = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+                                                         else
+                                                             w = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+
+                                                         var date_string = z+y+x+w;
+
+                                                         if (parseInt(b) > 1)
+                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S + ", y " + parseInt(ORD.status.M.comments.L.length - 1) + " más"
+                                                         else if (parseInt(b) == 1)
+                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S
+                                                         else
+                                                            b = ""
+                                                     } catch (err) {
+                                                         b = "Error"
+                                                     }
+
+                                                td #{b}
+                                                td
+                                                    a.btn.btn-info(type='button' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
+
+                                        tfoot
+                                            tr(style='font-size: 14px;text-align: center;')
+                                                td
+                                                    strong Número Pedido
+                                                td
+                                                    strong Fecha
+                                                td
+                                                    strong Cliente
+                                                td
+                                                    strong Monto
+                                                td
+                                                    strong Pago
+                                                td
+                                                    strong Preparación
+                                                td
+                                                    strong Items
+                                                td
+                                                    strong Método Entrega
+                                                td
+                                                    strong Notas y Comentarios
+                                                td
+                                                    strong Vista Detallada
             footer.bg-white.sticky-footer
                 .container.my-auto
                     .text-center.my-auto.copyright

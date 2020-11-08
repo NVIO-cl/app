@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $('#dataTable').DataTable({
         "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+        "responsive": true,
         "language": {
             "lengthMenu": "Mostrando _MENU_ por página",
             "zeroRecords": "No se encontró nada",
