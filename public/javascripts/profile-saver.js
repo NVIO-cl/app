@@ -116,3 +116,32 @@ $( "#transferForm" ).submit(function( event ) {
     }
   });
 });
+
+$("#imageUploadForm").submit(function(event){
+  console.log("UPLOAD!");
+  event.preventDefault();
+  var formData = new FormData($(this)[0]);
+  $.ajax({
+    url: '/profile/saveImage',
+    type: 'POST',
+    data: formData,
+    async: true,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      console.log("RETURN DATA IS: ",returndata);
+    },
+    error: function (err) {
+      console.log("ERROR: ",err);
+    }
+  });
+});
+
+$("#imageUpload").change(function(){
+  var reader = new FileReader();
+  reader.readAsDataURL(this.files[0]);
+  reader.onload = function(){
+    $("#imageUploadPreview").attr("src", reader.result);
+  }
+});

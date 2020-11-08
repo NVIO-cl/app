@@ -130,4 +130,12 @@ router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failur
   return res.json(updateResult);
 })
 
+router.post('/saveImage', upload.single('imageUpload'),passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log("SAVE IMAGE");
+  console.log(req.file);
+  return res.json("ok");
+})
+
+
+
 module.exports = router;
