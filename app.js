@@ -9,6 +9,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/main');
 var authRouter = require('./routes/auth');
 var orderRouter = require('./routes/order');
+var profileRouter = require('./routes/profile');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/order',orderRouter);
+app.use('/profile',profileRouter);
 
 
 //Use cookieParser
