@@ -47,10 +47,19 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
       "#cd421": "SK"
     }
   };
+
   detailQuery = await db.query(params);
 
-  console.log(detailQuery.Items)
-  res.render('detail', {title: name, order: detailQuery.Items[0], companyId: req.user.user.replace("COMPANY#","")});
+  var created_at = detailQuery.Items[0].createdAt.N;
+  var parsed_created_at = date_parser.parse_date(created_at);
+
+  let comentarios = []
+  for (var i = 0; i < detailQuery.Items[0].status.M.comments.L.length; i++){
+      var db_date = detailQuery.Items[0].status.M.comments.L[i].M.timestamp.N
+      var parsed_date = date_parser.parse_date(db_date);
+      comentarios.push(parsed_date);
+  }
+  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#","")});
 });
 
 /* GET historial. */

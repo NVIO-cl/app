@@ -2,10 +2,12 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Table - NVIO
+    title Detalle - NVIO
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
 #wrapper
     nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
         .container-fluid.d-flex.flex-column.p-0
@@ -40,24 +42,24 @@ head
                         i.fas.fa-bars
                     form.form-inline.d-none.d-sm-inline-block.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search
                         .input-group
-                            input.bg-light.form-control.border-0.small(type='text', placeholder='Buscar...')
+                            input.bg-light.form-control.border-0.small(type='text' placeholder='Buscar...')
                             .input-group-append
-                                button.btn.btn-primary.py-0(type='button', style='background: #6e3c8e;')
+                                button.btn.btn-primary.py-0(type='button' style='background: #6e3c8e;')
                                     i.fas.fa-search
                     ul.nav.navbar-nav.flex-nowrap.ml-auto
                         li.nav-item.dropdown.d-sm-none.no-arrow
-                            a.dropdown-toggle.nav-link(data-toggle='dropdown', aria-expanded='false', href='#')
+                            a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
                                 i.fas.fa-search
                             .dropdown-menu.dropdown-menu-right.p-3.animated--grow-in(aria-labelledby='searchDropdown')
                                 form.form-inline.mr-auto.navbar-search.w-100
                                     .input-group
-                                        input.bg-light.form-control.border-0.small(type='text', placeholder='Search for ...')
+                                        input.bg-light.form-control.border-0.small(type='text' placeholder='Search for ...')
                                         .input-group-append
                                             button.btn.btn-primary.py-0(type='button')
                                                 i.fas.fa-search
                         li.nav-item.dropdown.no-arrow.mx-1
                             .nav-item.dropdown.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown', aria-expanded='false', href='#')
+                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
                                     span.badge.badge-danger.badge-counter 3+
                                     i.fas.fa-bell.fa-fw
                                 .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
@@ -86,14 +88,14 @@ head
                                     a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
                         li.nav-item.dropdown.no-arrow.mx-1
                             .nav-item.dropdown.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown', aria-expanded='false', href='#')
+                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
                                     i.fas.fa-envelope.fa-fw
                                     span.badge.badge-danger.badge-counter 7
                                 .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
                                     h6.dropdown-header alerts center
                                     a.d-flex.align-items-center.dropdown-item(href='#')
                                         .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='avatars/avatar4.jpeg')
+                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar4.jpeg')
                                             .bg-success.status-indicator
                                         .font-weight-bold
                                             .text-truncate
@@ -101,7 +103,7 @@ head
                                             p.small.text-gray-500.mb-0 Emily Fowler - 58m
                                     a.d-flex.align-items-center.dropdown-item(href='#')
                                         .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='avatars/avatar2.jpeg')
+                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar2.jpeg')
                                             .status-indicator
                                         .font-weight-bold
                                             .text-truncate
@@ -109,7 +111,7 @@ head
                                             p.small.text-gray-500.mb-0 Jae Chun - 1d
                                     a.d-flex.align-items-center.dropdown-item(href='#')
                                         .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='avatars/avatar3.jpeg')
+                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar3.jpeg')
                                             .bg-warning.status-indicator
                                         .font-weight-bold
                                             .text-truncate
@@ -118,7 +120,7 @@ head
                                             p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
                                     a.d-flex.align-items-center.dropdown-item(href='#')
                                         .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='avatars/avatar5.jpeg')
+                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar5.jpeg')
                                             .bg-success.status-indicator
                                         .font-weight-bold
                                             .text-truncate
@@ -130,7 +132,7 @@ head
                         .d-none.d-sm-block.topbar-divider
                         li.nav-item.dropdown.no-arrow
                             .nav-item.dropdown.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown', aria-expanded='false', href='#')
+                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
                                     span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
                                     img.border.rounded-circle.img-profile(src='https://nvio.s3.amazonaws.com/assets/img/dogs/image3.jpeg')
                                 .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
@@ -148,16 +150,16 @@ head
                                         i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                         | &nbsp;Logout
             .container-fluid
-                a.btn.btn-primary(type='button', style='margin-bottom: 10px;background: #6e3c8e;' href='../historial')
+                a.btn.btn-primary(type='button' style='margin-bottom: 10px;background: #6e3c8e;' href='../historial')
                     i.fa.fa-arrow-left
                     | &nbsp;Regresar
                 .row
                     .col
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Orden #XXXXX
+                                h6.text-primary.font-weight-bold.m-0 Orden ##{order[0].SK.S.replace("ORDER#","")}
                                 .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='button')
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
                                         i.fas.fa-ellipsis-v.text-gray-400
                                     .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
                                         p.text-center.dropdown-header dropdown header:
@@ -167,35 +169,54 @@ head
                                         a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
                                 p(style='width: 100%;')
-                                    | Estado: En Despacho
+                                    | Fecha de Creación #{parsed_created_at}
                                     br
-                                    | M&eacute;todo Entrega: Retiro en Tienda
+                                    | Estado: #{order[0].status.M.order.N}
                                     br
-                                strong Listado de Art&iacute;culos
-                                .table-responsive
+                                    | Método Entrega: #{order[0].shippingMethod.S}
+                                    br
+                                strong Listado de Artículos
+                                .table-responsive(style='text-align: center;')
                                     table.table
                                         thead
                                             tr
                                                 th Nombre Producto
                                                 th Precio Unitario
                                                 th Cantidad
-                                                th Precio Total
+                                                th Subtotal
                                         tbody
+                                        each ORD, index in order[0].items.L
                                             tr
-                                                td Producto 1
-                                                td $$$
-                                                td 5
-                                                td $$$*5
-                                            tr
-                                                td Producto 2
-                                                td $$$
-                                                td 3
-                                                td $$$*3
+                                                td #{ORD.M.product.S}
+                                                td #{ORD.M.price.N}
+                                                td #{ORD.M.quantity.N}
+                                                td
+                                                    - var subtotal = parseInt(ORD.M.price.N) * parseInt(ORD.M.quantity.N)
+                                                        | #{subtotal}
+
+                                .row
+                                    .col
+                                        strong Total Productos
+                                    .col.col-3(style='text-align: center;')
+                                        p $ #{order[0].cost.M.order.N}
+                                .row
+                                    .col
+                                        strong Total Despacho
+                                    .col.col-3(style='text-align: center;')
+                                        p $ #{order[0].cost.M.shipping.N}
+                                hr
+                                .row
+                                    .col
+                                        strong Total
+                                    .col.col-3
+                                        p(style='text-align: center;') $
+                                            - var subtotal = parseInt(order[0].cost.M.order.N) + parseInt(order[0].cost.M.shipping.N)
+                                                | #{subtotal}
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Estado de Pago
                                 .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='button')
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
                                         i.fas.fa-ellipsis-v.text-gray-400
                                     .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
                                         p.text-center.dropdown-header dropdown header:
@@ -206,33 +227,15 @@ head
                             .card-body
                                 strong Comprobante de Pago
                                 p
-                                .row
-                                    .col
-                                        p(style='width: 80%;')
-                                            | Item 1
-                                            br
-                                    .col.col-3
-                                        p $&nbsp;Precio
-                                .row
-                                    .col
-                                        p(style='width: 80%;')
-                                            | Item 2
-                                            br
-                                    .col.col-3
-                                        p $ Precio
-                                hr
-                                .row
-                                    .col
-                                        strong Total
-                                    .col.col-3
-                                        p $ Precio
                                 .text-center.small.mt-4
-                    .col.col-sm-5
+                                    img(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar5.jpeg' style='margin-bottom: 5px;')
+                                button.btn.btn-primary(type='button' style='background: #6e3c8e;') Descargar Comprobante
+                    .col
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Notas Adicionales
+                                h6.text-primary.font-weight-bold.m-0 Notas Del Cliente
                                 .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='button')
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
                                         i.fas.fa-ellipsis-v.text-gray-400
                                     .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
                                         p.text-center.dropdown-header dropdown header:
@@ -241,12 +244,19 @@ head
                                         .dropdown-divider
                                         a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
-                                p No hay notas adicionales para esta orden
+                                -
+                                    try {
+                                        var nota = order[0].comment.S
+                                    } catch (err) {
+                                        var nota = "Aún no hay notas del cliente para esta orden"
+                                    }
+                                p #{nota}
+
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Detalles Cliente
                                 .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='button')
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
                                         i.fas.fa-ellipsis-v.text-gray-400
                                     .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
                                         p.text-center.dropdown-header dropdown header:
@@ -255,40 +265,86 @@ head
                                         .dropdown-divider
                                         a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
+                                -
+                                    try {
+                                        var cliente = order[0].clientData.M.firstName.S + " " + order[0].clientData.M.lastName.S
+                                    } catch (err) {
+                                        var cliente = "El cliente aún no ha registrado su nombre"
+                                    }
                                 p
-                                    strong Nombre Apellido
+                                    strong #{cliente}
                                 hr
                                 .row
                                     .col
-                                        p(style='width: 80%;') Informaci&oacute;n de Contacto
-                                    .col.col-3
-                                        a(href='#') Editar
+                                        p(style='width: 80%;') Información de Contacto
+                                    .col.col-3(style='text-align: right;')
+                                        a(href='#')
+                                            i.fa.fa-pencil
+                                -
+                                    try {
+                                        var email = order[0].clientData.M.email.S
+                                    } catch (err) {
+                                        var email = "El cliente no ha registrado su email"
+                                    }
+
+                                -
+                                    try {
+                                        var telefono = "+" + order[0].clientData.M.contactNumber.N
+                                    } catch (err) {
+                                        var telefono = "El cliente no ha registrado su teléfono"
+                                    }
+
                                 p
-                                    | ejemplo@email.com
+                                    | #{email}
                                     br
-                                    | +56 9 1111 1111
+                                    | #{telefono}
                                 hr
                                 .row
                                     .col
                                         p(style='width: 80%;') Direcci&oacute;n de Despacho
-                                    .col.col-3
-                                        a(href='#') Editar
+                                    .col.col-3(style='text-align: right;')
+                                        a(href='#')
+                                            i.fa.fa-pencil
+                                -
+                                    try {
+                                        var direccion = order[0].clientData.M.address.M.street.S + " " + order[0].clientData.M.address.M.number.N + " " + order[0].clientData.M.address.M.apart.S
+                                        var comuna = order[0].clientData.M.address.M.locality.S
+                                    } catch (err) {
+                                        var direccion = "El cliente no ha registrado sus datos"
+                                        var comuna = " "
+                                    }
+
                                 p
-                                    | Av. Calle 123, Departamento 1
+                                    | #{direccion}
                                     br
-                                    | Comuna, Ciudad
+                                    | #{comuna}
                                     br
+                        .card.shadow.mb-4
+                            .card-header.d-flex.justify-content-between.align-items-center
+                                h6.text-primary.font-weight-bold.m-0 Comentarios
+                                .dropdown.no-arrow
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                        i.fas.fa-ellipsis-v.text-gray-400
+                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                        p.text-center.dropdown-header dropdown header:
+                                        a.dropdown-item(href='#') &nbsp;Action
+                                        a.dropdown-item(href='#') &nbsp;Another action
+                                        .dropdown-divider
+                                        a.dropdown-item(href='#') &nbsp;Something else here
+                            .card-body
+                                .table-responsive(style='text-align: center;')
+                                    table.table
+                                        tbody
+                                        each ORD, index in order[0].status.M.comments.L
+                                            tr
+                                                td #{ORD.M.comment.S}
+                                                td #{parsed_comments_date[index]}
                                 hr
-                                .row
-                                    .col
-                                        p(style='width: 80%;') Direcci&oacute;n de Facturaci&oacute;n
-                                    .col.col-3
-                                        a(href='#') Editar
-                                p
-                                    | Av. Calle 123, Departamento 1
-                                    br
-                                    | Comuna, Ciudad
-                                    br
+                                .input-group
+                                    .input-group-prepend
+                                    input.form-control(type='text')
+                                    .input-group-append
+                                        button.btn.btn-primary(type='button' style='background: #6e3c8e;') Comentar
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
