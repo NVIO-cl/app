@@ -34,7 +34,6 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 });
 
 router.post('/saveName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req.body);
 
   var params = {
     "TableName": "app",
@@ -54,8 +53,77 @@ router.post('/saveName',passport.authenticate('jwt', {session: false, failureRed
       ":lastName": req.body.lastName,
       ":companyName": req.body.companyName,
       ":updatedAt": Date.now()
+    }
+  }
+  updateResult = await db.update(params);
+
+  return res.json(updateResult);
+})
+
+router.post('/saveContact',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.body);
+  var params = {
+    "TableName": "app",
+    "Key": {
+      "PK":req.user.user,
+      "SK": req.user.user.replace("COMPANY", "PROFILE")
     },
-    "ReturnValues": "UPDATED_NEW"
+    "UpdateExpression": "set #contactNumber = :contactNumber, #email = :email, #updatedAt = :updatedAt ",
+    "ExpressionAttributeNames": {
+      "#contactNumber":"contactNumber",
+      "#email":"email",
+      "#updatedAt":"updatedAt"
+    },
+    "ExpressionAttributeValues": {
+      ":contactNumber": parseInt(req.body.contactNumber),
+      ":email": req.body.email,
+      ":updatedAt": Date.now()
+    }
+  }
+  updateResult = await db.update(params);
+
+  return res.json(updateResult);
+})
+
+router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.body);
+  /*
+  paymentDataRut:paymentDataRut,
+  paymentDataBank:paymentDataBank,
+  paymentDataAccType:paymentDataAccType,
+  paymentDataAccNum:paymentDataAccNum,
+  paymentDataEmail:paymentDataEmail
+  */
+  var params = {
+    "TableName": "app",
+    "Key": {
+      "PK":req.user.user,
+      "SK": req.user.user.replace("COMPANY", "PROFILE")
+    },
+    "UpdateExpression": "set #paymentData.#name = :name, #updatedAt = :updatedAt, #companyTurn=:companyTurn, #companyRut=:companyRut, #paymentData.#rut=:rut, #paymentData.#bank=:bank, #paymentData.#accType=:accType, #paymentData.#accNum=:accNum, #paymentData.#email=:email ",
+    "ExpressionAttributeNames": {
+      "#companyTurn":"companyTurn",
+      "#companyRut":"companyRut",
+      "#paymentData":"paymentData",
+      "#name":"name",
+      "#rut":"rut",
+      "#bank":"bank",
+      "#accType":"accType",
+      "#accNum":"accNum",
+      "#email":"email",
+      "#updatedAt":"updatedAt"
+    },
+    "ExpressionAttributeValues": {
+      ":companyTurn": req.body.companyTurn,
+      ":companyRut": req.body.companyRut,
+      ":name": req.body.paymentDataName,
+      ":rut": req.body.paymentDataRut,
+      ":bank": req.body.paymentDataBank,
+      ":accType": req.body.paymentDataAccType,
+      ":accNum": req.body.paymentDataAccNum,
+      ":email": req.body.paymentDataEmail,
+      ":updatedAt": Date.now()
+    }
   }
   updateResult = await db.update(params);
 

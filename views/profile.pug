@@ -242,39 +242,40 @@ head
                                     .card-header.py-3
                                         p.text-primary.m-0.font-weight-bold Configuraci&oacute;n de Contacto
                                     .card-body
-                                        form
+                                        form#contactForm
                                             .form-row
                                                 .col
                                                     .form-group
                                                         label(for='contactNumber')
                                                             strong Tel&eacute;fono del Representante
-                                                        input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+569" + companyData.contactNumber.N)
+                                                        input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+" + companyData.contactNumber.N)
                                                 .col
                                                     .form-group
                                                         label(for='email')
-                                                            strong Correo del Representante
+                                                            strong Correo del Representante (este NO es tu correo para inicar sesión)
                                                         input.form-control#email(type='text' placeholder='ejemplo@email.com' name='email' value=companyData.email.S)
                                             .form-group
-                                                button.btn.btn-primary.btn-sm(type='submit') Guardar
+                                                button.btn.btn-primary.btn-sm#contactFormButton(type='submit') Guardar
                                 .card.shadow.mb-3
                                     .card-header.py-3
                                         p.text-primary.m-0.font-weight-bold Datos para Factura y Transferencia
                                     .card-body
-                                        p.text-primary.m-0.font-weight-bold Factura
-                                        form
+                                            
+                                        form#transferForm
+                                          p.text-primary.m-0.font-weight-bold Factura
                                             .form-row
-                                                .col
-                                                    .form-group
-                                                        label(for='companyTurn')
-                                                            strong Giro
-                                                        input.form-control#companyTurn(type='text' placeholder='Giro SII' name='companyTurn' value=companyData.companyTurn.S)
-                                                .col
-                                                    .form-group
-                                                        label(for='companyRut')
-                                                            strong RUT Empresa
-                                                        input.form-control#companyRut(type='text' placeholder='1.234.567-8' name='companyRut' value=companyData.companyRut.S)
-                                        p.text-primary.m-0.font-weight-bold Transferencia
-                                        form
+                                              .col
+                                                  .form-group
+                                                      label(for='companyTurn')
+                                                          strong Giro
+                                                      input.form-control#companyTurn(type='text' placeholder='Giro SII' name='companyTurn' value=companyData.companyTurn.S)
+                                              .col
+                                                  .form-group
+                                                      label(for='companyRut')
+                                                          strong RUT Empresa
+                                                      input.form-control#companyRut(type='text' placeholder='1.234.567-8' name='companyRut' value=companyData.companyRut.S)
+                                      
+                                          p.text-primary.m-0.font-weight-bold Transferencia
                                             .form-row
                                                 .col
                                                     .form-group
@@ -312,8 +313,8 @@ head
                                                             strong Correo Electr&oacute;nico Cuenta
                                                             br
                                                         input.form-control#paymentDataEmail(type='text' placeholder='Correo' name='paymentDataEmail' value=companyData.paymentData.M.email.S)
-                                        .form-group
-                                            button.btn.btn-primary.btn-sm(type='submit') Guardar
+                                            .form-group
+                                              button.btn.btn-primary.btn-sm#transferFormButton(type='submit') Guardar
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
