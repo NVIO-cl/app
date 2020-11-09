@@ -6,6 +6,7 @@ const validator = require('validator');
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
+var Jimp = require('jimp');
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -199,13 +200,16 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       res.redirect(req.headers.referer);
     }
     else {
+
+      var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+      var scaled = await file.scaleToFit(500, 1000);
+      var buffer = await scaled.getBufferAsync(Jimp.AUTO);
       var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
-      var mimetype = req.file.mimetype.split("/");
       var params = {
         Bucket: process.env.AWS_S3_BUCKET,
-        Key: 'COMPROBANTE#'+req.headers.referer.substr(req.headers.referer.length - 12)+"."+mimetype[mimetype.length - 1],
+        Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
         ACL: 'public-read',
-        Body: req.file.buffer
+        Body: buffer
       }
       s3up = await s3.putObject(params, function (err, data) {
         if (err) {
@@ -214,6 +218,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
           console.log("Image uploaded OK");
         }
       }).promise();
+
     }
   }
   else {
