@@ -208,7 +208,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       var params = {
         Bucket: process.env.AWS_S3_BUCKET,
         Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
-        ACL: 'public-read',
+        ACL: 'private',
         Body: buffer
       }
       s3up = await s3.putObject(params, function (err, data) {

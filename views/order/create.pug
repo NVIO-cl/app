@@ -158,9 +158,9 @@ head
           .col
             .card.shadow.mb-3
               .card-header.py-3
-                p.text-primary.m-0.font-weight-bold Generando nueva venta
+                p.text-primary.m-0.font-weight-bold Crear Nueva Orden
               .card-body
-                form
+                form(action='/order/create' method='POST')
                   .form-row.align-items-center
                     .col
                       .table-responsive
@@ -193,6 +193,12 @@ head
                               td ----
                             tr
                               td
+                              td
+                              td
+                              td
+                                  a.btn.btn-primary.btn-sm(type='submit' value='Submit') Agregar otro producto
+                            tr
+                              td
                                 .col
                                   p Total Productos
                                 .col
@@ -211,16 +217,36 @@ head
                             .col.text-left.align-self-center
                               .form-row
                                 .col
-                                  p.font-weight-bold.m-0 M&eacute;todo de Despacho
+                                  p.font-weight-bold.m-0 Comuna del Destinatario
                                   input.form-control(type='text')
                                   small
-                                    | Aqu&iacute; puedes especificar si el producto ser&aacute; retirado en local o si ser&aacute; enviado. En caso de ser enviado especifica que servicio se utilizar&aacute;
+                                    | Debes ingresar la comuna a la cual se enviará el pedido
+                                    br
+                                    | En caso de que no aplique, ingresar "Retiro"
                                 .col
-                                  p.font-weight-bold.m-0 Ingresar precio de despacho
+                                  p.font-weight-bold.m-0 Método de Despacho
+                                  input.form-control(type='text')
+                                  small
+                                    | Debes especificar si el producto será retirado en local o si será despachado por alguien (Courier, Pyme, etc).
+                                    br
+                                    | Ejemplos:
+                                    br
+                                    | - Retiro en local
+                                    br
+                                    | - Starken
+                                .col
+                                  p.font-weight-bold.m-0 Precio del Despacho
                                   input.form-control(type='number')
-                                  small Si elegiste enviar el producto recuerda indicar el precio
-                  .form-group
-                    button.btn.btn-primary.btn-sm(type='submit') Crear Venta
+                                  small
+                                    | Debes ingresar el valor asociado al método de despacho escogido
+                                    br
+                                    | Ejemplos:
+                                    br
+                                    | - Retiro en local --> 0
+                                    br
+                                    | - Starken --> El valor correspondiente hacia la comuna del cliente
+                  .form-group(style="text-align: center;")
+                    a.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
