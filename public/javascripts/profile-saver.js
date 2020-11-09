@@ -74,7 +74,7 @@ $( "#transferForm" ).submit(function( event ) {
   $("#transferFormButton").prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Guardando...');
 
   if ($("#transferFormSuccess").length) {
-    $("#transferFormSuccess").fadeOut()
+    $("#transferFormSuccess").fadeOut("slow")
   }
 
   // Stop form from submitting normally
@@ -118,7 +118,7 @@ $( "#transferForm" ).submit(function( event ) {
 });
 
 $("#imageUploadForm").submit(function(event){
-  console.log("UPLOAD!");
+  $("#imageUploadStatus").html('<div class="text-info"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Subiendo...</div>')
   event.preventDefault();
   var formData = new FormData($(this)[0]);
   $.ajax({
@@ -130,10 +130,10 @@ $("#imageUploadForm").submit(function(event){
     contentType: false,
     processData: false,
     success: function (returndata) {
-      console.log("RETURN DATA IS: ",returndata);
+      $("#imageUploadStatus").html('<div class="text-success"><i class="fas fa-check mr-1"></i>Foto subida</div>')
     },
     error: function (err) {
-      console.log("ERROR: ",err);
+      $("#imageUploadStatus").html('<div class="text-danger"><i class="fas fa-times mr-1"></i>ERROR</div>')
     }
   });
 });
@@ -144,4 +144,5 @@ $("#imageUpload").change(function(){
   reader.onload = function(){
     $("#imageUploadPreview").attr("src", reader.result);
   }
+  $("#imageUploadStatus").html('<div class="text-warning"><i class="fas fa-exclamation mr-1"></i>Foto sin guardar</div>')
 });

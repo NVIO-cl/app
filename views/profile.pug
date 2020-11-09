@@ -131,8 +131,8 @@ head
                         li.nav-item.dropdown.no-arrow
                             .nav-item.dropdown.no-arrow
                                 a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                    span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
-                                    img.border.rounded-circle.img-profile(src='dogs/image3.jpeg')
+                                    span.d-none.d-lg-inline.mr-2.text-gray-600.small #{companyData.companyName.S}
+                                    img.border.rounded-circle.img-profile(src=logo)
                                 .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
                                     a.dropdown-item(href='#')
                                         i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
@@ -153,13 +153,15 @@ head
                     .col-lg-4
                         .card.mb-3
                             .card-body.text-center.shadow
-                                img.rounded-circle.mb-3.mt-4#imageUploadPreview(src='dogs/image3.jpeg' width='160' height='160')
+                                img.mb-3.mt-4.img-fluid#imageUploadPreview(src=logo style='max-width:200px;max-height:200px;')
                                 .mb-3
                                   form#imageUploadForm(enctype='multipart/form-data')
                                       label.btn.btn-primary.btn-sm(for="imageUpload" style="margin-bottom:0;") Cambiar Foto
                                       input#imageUpload(type="file", name="imageUpload" hidden accept="image/jpeg, image/png")
                                       //-button.btn.btn-primary.btn-sm(type='button' style='margin-right: 5px;') Cambiar Foto
                                       button.btn.btn-danger.btn-sm#imageUploadButon(type='submit' style='margin-left: 5px;') Guardar
+                                .mb-1
+                                  #imageUploadStatus
                         .card.shadow.mb-4
                             .card-header.py-3
                                 h6.text-primary.font-weight-bold.m-0 Status Pedidos

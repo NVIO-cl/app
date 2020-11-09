@@ -5,6 +5,7 @@ const validator = require('validator');
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
+var Jimp = require('jimp');
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -20,8 +21,7 @@ aws.config.update({
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async (req, res, next) => {
   const name = "Profile";
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
-  var logo = await s3.getSignedUrl('getObject', {Key: req.user.user+".png", Expires: 60});
-  console.log(logo);
+  var logo = await s3.getSignedUrl('getObject', {Key: "logos/"+req.user.user+".png", Expires: 60});
   params = {
     "TableName": "app",
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
@@ -30,7 +30,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     "ExpressionAttributeValues": {":cd420": {"S": req.user.user},":cd421": {"S": req.user.user.replace("COMPANY", "PROFILE")}}
   }
   profileResult = await db.query(params);
-  res.render('profile', {title: name, companyData: profileResult.Items[0]});
+  res.render('profile', {title: name, companyData: profileResult.Items[0], logo: logo});
 });
 
 router.post('/saveName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -61,7 +61,6 @@ router.post('/saveName',passport.authenticate('jwt', {session: false, failureRed
 })
 
 router.post('/saveContact',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req.body);
   var params = {
     "TableName": "app",
     "Key": {
@@ -86,14 +85,6 @@ router.post('/saveContact',passport.authenticate('jwt', {session: false, failure
 })
 
 router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req.body);
-  /*
-  paymentDataRut:paymentDataRut,
-  paymentDataBank:paymentDataBank,
-  paymentDataAccType:paymentDataAccType,
-  paymentDataAccNum:paymentDataAccNum,
-  paymentDataEmail:paymentDataEmail
-  */
   var params = {
     "TableName": "app",
     "Key": {
@@ -131,11 +122,30 @@ router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failur
 })
 
 router.post('/saveImage', upload.single('imageUpload'),passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("SAVE IMAGE");
-  console.log(req.file);
-  return res.json("ok");
+  try {
+    var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+  } catch (e) {
+    console.log("IMAGE NOT OK:");
+    console.log(e);
+    return res.status(500).send("Image error")
+  }
+  var scaled = await file.scaleToFit(1000,500);
+  var buffer = await scaled.getBufferAsync(Jimp.AUTO);
+  var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
+  var params = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: "logos/"+req.user.user+".png",
+    ACL: 'public-read',
+    Body: buffer
+  }
+  s3up = await s3.putObject(params, function (err, data) {
+    if (err) {
+      s3res = err;
+    } else {
+      s3res = "ok"
+    }
+  }).promise();
+  return res.status(200).json(s3res)
 })
-
-
 
 module.exports = router;
