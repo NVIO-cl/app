@@ -225,14 +225,14 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     console.log("NO IMAGE");
     res.redirect(req.headers.referer);
   }
-  //Save the order order data
+  //Save the order data
   var params = {
     "TableName": "app",
     "Key": {
       "PK":companyID,
       "SK": orderID
     },
-    "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
+    "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
     "ExpressionAttributeNames": {
       "#clientData":"clientData",
       "#firstName":"firstName",
@@ -242,7 +242,10 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       "#comment":"comment",
       "#status":"status",
       "#order":"order",
-      "#updatedAt":"updatedAt"
+      "#updatedAt":"updatedAt",
+      "#address":"address",
+      "#street":"street",
+      "#apart":"apart"
     },
     "ExpressionAttributeValues": {
       ":firstName": req.body.nombre,
@@ -251,7 +254,9 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       ":contactNumber": parseInt(req.body.telefono),
       ":comment": req.body.comentario,
       ":order": 1,
-      ":updatedAt": Date.now()
+      ":updatedAt": Date.now(),
+      ":street": req.body.direccion,
+      ":apart": req.body.apart
     },
     "ReturnValues": "ALL_NEW"
   }
