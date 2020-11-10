@@ -172,126 +172,131 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
   var companyID = "COMPANY#" + fullID.substring(0, 6);
   var profileID = "PROFILE#" + fullID.substring(0, 6);
   var orderID = "ORDER#" + fullID.substring(6, 12);
-
+  var valid = true;
   //Check Terms
   if (req.body.tyc != 'on') {
     console.log("Terms and conditions NOT OK");
     res.redirect(req.headers.referer);
+    valid = false;
   }
 
   //Check fields
-  if (await !validator.isAlpha(req.body.nombre,'es-ES')) {
+  if (await !validator.isAlpha(req.body.nombre.trim().replace(" ", ""),'es-ES')) {
     console.log("Nombre NOT OK");
     res.redirect(req.headers.referer);
+    valid = false;
   }
 
-  if (await !validator.isAlpha(req.body.apellido,'es-ES')) {
+  if (await !validator.isAlpha(req.body.apellido.trim().replace(" ", ""),'es-ES')) {
     console.log("Apellido NOT OK");
     res.redirect(req.headers.referer);
+    valid = false;
   }
 
   if (await validator.isEmpty(req.body.telefono)) {
     console.log("Telefono NOT OK");
     res.redirect(req.headers.referer);
+    valid = false;
   }
 
   if (await !validator.isEmail(req.body.email)) {
     console.log("Correo NOT OK");
     res.redirect(req.headers.referer);
+    valid = false;
   }
+  if (valid == true) {
+    //Check image uploading and save the image
+    var s3up;
+    if (req.file) {
+      if (await !req.file.mimetype.startsWith("image")) {
+        console.log("INVALID image");
+        res.redirect(req.headers.referer);
+      }
+      else {
 
-  //Check image uploading and save the image
-  var s3up;
-  if (req.file) {
-    if (await !req.file.mimetype.startsWith("image")) {
-      console.log("INVALID image");
-      res.redirect(req.headers.referer);
+        var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+        var scaled = await file.scaleToFit(500, 1000);
+        var buffer = await scaled.getBufferAsync(Jimp.AUTO);
+        var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
+        var params = {
+          Bucket: process.env.AWS_S3_BUCKET,
+          Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
+          ACL: 'private',
+          Body: buffer
+        }
+        s3up = await s3.putObject(params, function (err, data) {
+          if (err) {
+            console.log("Error: ", err);
+          } else {
+            console.log("Image uploaded OK");
+          }
+        }).promise();
+
+      }
     }
     else {
+      console.log("NO IMAGE");
+      res.redirect(req.headers.referer);
+    }
+    //Save the order data
+    var params = {
+      "TableName": "app",
+      "Key": {
+        "PK":companyID,
+        "SK": orderID
+      },
+      "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
+      "ExpressionAttributeNames": {
+        "#clientData":"clientData",
+        "#firstName":"firstName",
+        "#lastName":"lastName",
+        "#email":"email",
+        "#contactNumber":"contactNumber",
+        "#comment":"comment",
+        "#status":"status",
+        "#order":"order",
+        "#updatedAt":"updatedAt",
+        "#address":"address",
+        "#street":"street",
+        "#apart":"apart"
+      },
+      "ExpressionAttributeValues": {
+        ":firstName": req.body.nombre,
+        ":lastName": req.body.apellido,
+        ":email": req.body.email,
+        ":contactNumber": parseInt(req.body.telefono),
+        ":comment": req.body.comentario,
+        ":order": 1,
+        ":updatedAt": Date.now(),
+        ":street": req.body.direccion,
+        ":apart": req.body.apart
+      },
+      "ReturnValues": "ALL_NEW"
+    }
+    updateResult = await db.update(params);
 
-      var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
-      var scaled = await file.scaleToFit(500, 1000);
-      var buffer = await scaled.getBufferAsync(Jimp.AUTO);
-      var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
-      var params = {
-        Bucket: process.env.AWS_S3_BUCKET,
-        Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
-        ACL: 'private',
-        Body: buffer
+    //Add commentary
+    params = {
+      "TableName": "app",
+      "Key": {
+        "PK": companyID,
+        "SK": orderID
+      },
+      "UpdateExpression": "set #status.#comments = list_append(#status.#comments,:comment)",
+      "ExpressionAttributeNames": {
+        "#status": "status",
+        "#comments": "comments"
+      },
+      "ExpressionAttributeValues": {
+        ":comment": [{
+          "comment": "Datos de cliente ingresados.",
+          "timestamp": Date.now()
+        }]
       }
-      s3up = await s3.putObject(params, function (err, data) {
-        if (err) {
-          console.log("Error: ", err);
-        } else {
-          console.log("Image uploaded OK");
-        }
-      }).promise();
-
     }
+    commentResult = await db.update(params);
+    res.redirect('/order/finished')
   }
-  else {
-    console.log("NO IMAGE");
-    res.redirect(req.headers.referer);
-  }
-  //Save the order data
-  var params = {
-    "TableName": "app",
-    "Key": {
-      "PK":companyID,
-      "SK": orderID
-    },
-    "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
-    "ExpressionAttributeNames": {
-      "#clientData":"clientData",
-      "#firstName":"firstName",
-      "#lastName":"lastName",
-      "#email":"email",
-      "#contactNumber":"contactNumber",
-      "#comment":"comment",
-      "#status":"status",
-      "#order":"order",
-      "#updatedAt":"updatedAt",
-      "#address":"address",
-      "#street":"street",
-      "#apart":"apart"
-    },
-    "ExpressionAttributeValues": {
-      ":firstName": req.body.nombre,
-      ":lastName": req.body.apellido,
-      ":email": req.body.email,
-      ":contactNumber": parseInt(req.body.telefono),
-      ":comment": req.body.comentario,
-      ":order": 1,
-      ":updatedAt": Date.now(),
-      ":street": req.body.direccion,
-      ":apart": req.body.apart
-    },
-    "ReturnValues": "ALL_NEW"
-  }
-  updateResult = await db.update(params);
-
-  //Add commentary
-  params = {
-    "TableName": "app",
-    "Key": {
-      "PK": companyID,
-      "SK": orderID
-    },
-    "UpdateExpression": "set #status.#comments = list_append(#status.#comments,:comment)",
-    "ExpressionAttributeNames": {
-      "#status": "status",
-      "#comments": "comments"
-    },
-    "ExpressionAttributeValues": {
-      ":comment": [{
-        "comment": "Datos de cliente ingresados.",
-        "timestamp": Date.now()
-      }]
-    }
-  }
-  commentResult = await db.update(params);
-  res.redirect('/order/finished')
-
 });
 
 module.exports = router;
