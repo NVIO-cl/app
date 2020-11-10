@@ -33,6 +33,7 @@ main.page.payment-page
                                     .form-group
                                         label(for='direccion') Dirección (calle y número)
                                         input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
+                                        small Si vas a retirar no necesitas dar tu dirección
                                 .col-sm-4
                                     .form-group
                                         label(for='apart') Casa/depto.
@@ -40,7 +41,7 @@ main.page.payment-page
                                 .col-sm-8
                                     .form-group
                                         label(for='comuna') Comuna
-                                        p #{orderData.clientData.M.address.M.locality.S}
+                                        p#comuna #{orderData.clientData.M.address.M.locality.S}
                                 .col-sm-8
                                     .form-group
                                         label(for='telefono') Teléfono de contacto
@@ -58,7 +59,7 @@ main.page.payment-page
                                         input#comentario.form-control(type='text' name='comentario')
                                 .col-sm-8
                                     .form-group
-                                        label(for='card-number') Comprobante de pago
+                                        label(for='comprobante') Comprobante de pago
                                         .form-row
                                             .col
                                                 //-button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;')   Adjuntar archivo
