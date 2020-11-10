@@ -341,7 +341,8 @@ head
                                         tbody
                                         each ORD, index in order[0].status.M.comments.L
                                             tr
-                                                td #{ORD.M.comment.S}
+                                                td(class="text-break")
+                                                    | #{ORD.M.comment.S}
                                                 td #{parsed_comments_date[index]}
                                 hr
                                 .input-group
