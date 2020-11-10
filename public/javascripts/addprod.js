@@ -7,7 +7,6 @@ $(document).ready(function(){
   });
   var count = 1;
   $('#clickAdd').click(function(e){
-    console.log("Add clicked");
     var last = count-1
     var row = '<tr id="items['+count+']"><td><input class="form-control" id="items['+count+'][product]" name="items['+count+'][product]" type="text"></td><td><input class="form-control" id="items['+count+'][price]" name="items['+count+'][price]" type="number" style="width: 100px;"></td><td><input class="form-control" id="items['+count+'][quantity]" name="items['+count+'][quantity]" type="number" style="width: 100px;"></td><td><div id="items['+count+'][subtotal]">$ 0</div></td></tr>'
     $('#items\\['+last+'\\]').after(row)
@@ -25,7 +24,6 @@ $(document).ready(function(){
 
   function recalc(){
     var total = 0;
-    console.log("Recalculating");
     $("[id$=\\[price\\]]").each(function(index){
       var price = $(this).val()
       var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val()
@@ -42,7 +40,6 @@ $(document).ready(function(){
   }
 
   $('#shippingCost').change(function(){
-    console.log("SHIPPING CHANGE!");
     if ($('#shippingCost').val() == "") {
       $('#shippingCost').val(0);
     }
