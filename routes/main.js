@@ -38,10 +38,6 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
   res.render('index', { title: 'NVIO' });
 });
 
-router.get('/profile',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('profile', { title: 'NVIO' });
-});
-
 router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   params = {
     "TableName": "app",
