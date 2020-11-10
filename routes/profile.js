@@ -34,6 +34,24 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 });
 
 router.post('/saveName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var valid = true;
+  var invalidItems = []
+  //Validate data
+  if (validator.isEmpty(req.body.companyName)) {
+    invalidItems.push(["#companyName","El nombre de empresa no puede estar vacío"])
+    var valid = false;
+  }
+  if (validator.isEmpty(req.body.firstName)) {
+    invalidItems.push(["#firstName", "El nombre no puede estar vacío"])
+    var valid = false;
+  }
+  if (validator.isEmpty(req.body.lastName)) {
+    invalidItems.push(["#lastName", "El apellido no puede estar vacío"])
+    var valid = false;
+  }
+  if (valid == false) {
+    return res.json(invalidItems);
+  }
 
   var params = {
     "TableName": "app",
@@ -57,10 +75,30 @@ router.post('/saveName',passport.authenticate('jwt', {session: false, failureRed
   }
   updateResult = await db.update(params);
 
-  return res.json(updateResult);
+  return res.json("ok");
 })
 
 router.post('/saveContact',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var valid = true;
+  var invalidItems = []
+  //Validate data
+  if (validator.isEmpty(req.body.contactNumber)) {
+    invalidItems.push(["#contactNumber","El teléfono no puede estar vacío"])
+    var valid = false;
+  }
+  if (validator.isEmpty(req.body.email)) {
+    invalidItems.push(["#email", "El correo no puede estar vacío"])
+    var valid = false;
+  }
+  else {
+    if (!validator.isEmail(req.body.email)) {
+      invalidItems.push(["#email", "Debe ser un correo válido"])
+      valid = false;
+    }
+  }
+  if (valid == false) {
+    return res.json(invalidItems);
+  }
   var params = {
     "TableName": "app",
     "Key": {
@@ -81,10 +119,47 @@ router.post('/saveContact',passport.authenticate('jwt', {session: false, failure
   }
   updateResult = await db.update(params);
 
-  return res.json(updateResult);
+  return res.json("ok");
 })
 
 router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  //Validate data
+  var valid = true;
+  var invalidItems = []
+  if (validator.isEmpty(req.body.paymentDataName)) {
+    invalidItems.push(["#paymentDataName", "El nombre no puede estar vacío"])
+    valid = false;
+  }
+  if (validator.isEmpty(req.body.paymentDataRut)) {
+    invalidItems.push(["#paymentDataRut", "El RUT no puede estar vacío"])
+    valid = false;
+  }
+  if (validator.isEmpty(req.body.paymentDataBank)) {
+    invalidItems.push(["#paymentDataBank", "El banco no puede estar vacío"])
+    valid = false;
+  }
+  if (validator.isEmpty(req.body.paymentDataAccType)) {
+    invalidItems.push(["#paymentDataAccType", "El tipo de cuenta no puede estar vacío"])
+    valid = false;
+  }
+  if (validator.isEmpty(req.body.paymentDataAccNum)) {
+    invalidItems.push(["#paymentDataAccNum", "El número de cuenta no puede estar vacío"])
+    valid = false;
+  }
+  if (validator.isEmpty(req.body.paymentDataEmail)) {
+    invalidItems.push(["#paymentDataEmail", "El correo no puede estar vacío"])
+    valid = false;
+  }
+  else {
+    if (!validator.isEmail(req.body.paymentDataEmail)) {
+      invalidItems.push(["#paymentDataEmail", "Debe ser un correo válido"])
+      valid = false;
+    }
+  }
+  if (valid == false) {
+    return res.json(invalidItems);
+  }
+
   var params = {
     "TableName": "app",
     "Key": {
@@ -118,7 +193,7 @@ router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failur
   }
   updateResult = await db.update(params);
 
-  return res.json(updateResult);
+  return res.json("ok");
 })
 
 router.post('/saveImage', upload.single('imageUpload'),passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
