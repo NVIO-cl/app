@@ -44,7 +44,10 @@ main.page.payment-page
                                 .col-sm-8
                                     .form-group
                                         label(for='telefono') Teléfono de contacto
-                                        input#telefono.form-control(type='text' placeholder='+569 9999 9999' name='telefono')
+                                        .input-group
+                                            .input-group-prepend
+                                                span.input-group-text +56
+                                            input#telefono.form-control(type='text' placeholder='9 1234 5678' name='telefono')
                                 .col-sm-8
                                     .form-group
                                         label(for='email') Email de contacto

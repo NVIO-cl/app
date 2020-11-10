@@ -182,7 +182,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     res.redirect(req.headers.referer);
   }
 
-  if (await !validator.isMobilePhone(req.body.telefono, 'es-CL')) {
+  if (await validator.isEmpty(req.body.telefono)) {
     console.log("Telefono NOT OK");
     res.redirect(req.headers.referer);
   }
@@ -248,7 +248,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       ":firstName": req.body.nombre,
       ":lastName": req.body.apellido,
       ":email": req.body.email,
-      ":contactNumber": req.body.telefono,
+      ":contactNumber": parseInt(req.body.telefono),
       ":comment": req.body.comentario,
       ":order": 1,
       ":updatedAt": Date.now()
