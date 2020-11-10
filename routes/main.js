@@ -11,6 +11,7 @@ aws.config.update({
   accessKeyId: process.env.AKID,
   secretAccessKey: process.env.SECRET
 });
+var s3Endpoint = new aws.Endpoint(process.env.AWS_S3_ENDPOINT);
 
 const xl = require('excel4node');
 const wb = new xl.Workbook();
@@ -24,6 +25,35 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
 router.get('/profile',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   res.render('profile', { title: 'NVIO' });
+});
+
+router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  params = {
+    "TableName": "app",
+    "Key": {
+      "PK": req.user.user,
+      "SK": "ORDER#" + req.body.orderid
+    },
+    "UpdateExpression": "set #status.#comments = list_append(#status.#comments,:comment)",
+    "ExpressionAttributeNames": {
+      "#status": "status",
+      "#comments": "comments"
+    },
+    "ExpressionAttributeValues": {
+      ":comment": [{
+        "comment": req.body.comentario,
+        "timestamp": Date.now()
+      }]
+    }
+  }
+  commentResult = await db.update(params);
+  res.json("Ok")
+});
+
+router.get('/detail/comprobante/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
+  var logo = await s3.getSignedUrl('getObject', {Key: "comprobantes/" + req.user.user.replace("COMPANY#","") + "/" + req.params.id + ".png", Expires: 10});
+  res.status(200).json(logo)
 });
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -59,7 +89,11 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
       var parsed_date = date_parser.parse_date(db_date);
       comentarios.push(parsed_date);
   }
-  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#","")});
+
+  var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
+  var logo = await s3.getSignedUrl('getObject', {Key: "comprobantes/" + req.user.user.replace("COMPANY#","") + "/" + req.params.id + ".png", Expires: 10});
+
+  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#","")});
 });
 
 /* GET historial. */
