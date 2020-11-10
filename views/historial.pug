@@ -2,7 +2,7 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Dashboard - NVIO
+    title Table - NVIO
     script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
     script.
       window.dataLayer = window.dataLayer || [];
@@ -14,6 +14,7 @@ head
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    link(rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css')
 #wrapper
     nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
         .container-fluid.d-flex.flex-column.p-0
@@ -22,7 +23,7 @@ head
             hr.sidebar-divider.my-0
             ul#accordionSidebar.nav.navbar-nav.text-light
                 li.nav-item
-                    a.nav-link.active(href='/')
+                    a.nav-link(href='/')
                         i.fas.fa-tachometer-alt
                         span Dashboard
                 li.nav-item
@@ -30,15 +31,15 @@ head
                         i.fas.fa-user
                         span Perfil
                 li.nav-item
-                    a.nav-link(href='/historial')
+                    a.nav-link.active(href='/historial')
                         i.fas.fa-table
                         span Historial de Ventas
                 li.nav-item
                     a.nav-link(href='/order/create')
                         i.fas.fa-plus-square
                         span Crear Nueva Orden
-                li.nav-item      
-                  a.nav-link(href='/logout')
+                li.nav-item
+                    a.nav-link(href='/logout')
                         i.far.fa-user-circle
                         span Cerrar Sesión
                 li.nav-item
@@ -107,7 +108,7 @@ head
                                             h6.dropdown-header alerts center
                                             a.d-flex.align-items-center.dropdown-item(href='#')
                                                 .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar4.jpeg')
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar4.jpeg')
                                                     .bg-success.status-indicator
                                                 .font-weight-bold
                                                     .text-truncate
@@ -115,7 +116,7 @@ head
                                                     p.small.text-gray-500.mb-0 Emily Fowler - 58m
                                             a.d-flex.align-items-center.dropdown-item(href='#')
                                                 .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar2.jpeg')
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar2.jpeg')
                                                     .status-indicator
                                                 .font-weight-bold
                                                     .text-truncate
@@ -123,7 +124,7 @@ head
                                                     p.small.text-gray-500.mb-0 Jae Chun - 1d
                                             a.d-flex.align-items-center.dropdown-item(href='#')
                                                 .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar3.jpeg')
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar3.jpeg')
                                                     .bg-warning.status-indicator
                                                 .font-weight-bold
                                                     .text-truncate
@@ -132,7 +133,7 @@ head
                                                     p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
                                             a.d-flex.align-items-center.dropdown-item(href='#')
                                                 .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar5.jpeg')
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar5.jpeg')
                                                     .bg-success.status-indicator
                                                 .font-weight-bold
                                                     .text-truncate
@@ -146,7 +147,7 @@ head
                                     .nav-item.dropdown.no-arrow
                                         a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
                                             span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
-                                            img.border.rounded-circle.img-profile(src='/images/dogs/image3.jpeg' style='width: 50px; height: 50px;')
+                                            img.border.rounded-circle.img-profile(src='https://nvio.s3.amazonaws.com/assets/img/dogs/image3.jpeg')
                                         .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
                                             a.dropdown-item(href='#')
                                                 i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
@@ -162,126 +163,139 @@ head
                                                 i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                                 | &nbsp;Logout
             .container-fluid
-                .d-sm-flex.justify-content-between.align-items-center.mb-4
-                    h3.text-dark.mb-0 Dashboard
-                    a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='#' style='background: #6e3c8e;')
-                        i.fas.fa-download.fa-sm.text-white-50
-                        | &nbsp;Descargar Plantilla
-                .row
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-primary.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                            span Ventas Semanal
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span $178,000
-                                    .col-auto
-                                        i.fas.fa-calendar.fa-2x.text-gray-300
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-success.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-success.font-weight-bold.text-xs.mb-1
-                                            span Ventas Mensual
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span $615,000
-                                    .col-auto
-                                        i.fas.fa-dollar-sign.fa-2x.text-gray-300
-                    .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-warning.py-2
-                            .card-body
-                                .row.align-items-center.no-gutters
-                                    .col.mr-2
-                                        .text-uppercase.text-warning.font-weight-bold.text-xs.mb-1
-                                            span Consultas
-                                        .text-dark.font-weight-bold.h5.mb-0
-                                            span 18
-                                    .col-auto
-                                        i.fas.fa-comments.fa-2x.text-gray-300
-                .row
-                    .col-lg-7.col-xl-8
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Visualizaci&oacute;n Anual
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                .chart-area
-                                    canvas(data-bs-chart='{"type":"line","data":{"labels":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],"datasets":[{"label":"Earnings","fill":true,"data":["0","10000","5000","15000","10000","20000","15000","25000"],"backgroundColor":"rgba(78, 115, 223, 0.05)","borderColor":"rgba(78, 115, 223, 1)"}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{},"scales":{"xAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"],"drawOnChartArea":false},"ticks":{"fontColor":"#858796","padding":20}}],"yAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"]},"ticks":{"fontColor":"#858796","padding":20}}]}}}')
-                    .col-lg-5.col-xl-4
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Canales de Venta
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                .chart-area
-                                    canvas(data-bs-chart='{"type":"doughnut","data":{"labels":["Direct","Social","Referral"],"datasets":[{"label":"","backgroundColor":["#4e73df","#1cc88a","#36b9cc"],"borderColor":["#ffffff","#ffffff","#ffffff"],"data":["50","30","15"]}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{}}}')
-                                .text-center.small.mt-4
-                                    span.mr-2
-                                        i.fas.fa-circle.text-primary
-                                        | &nbsp;Instagram
-                                    span.mr-2
-                                        i.fas.fa-circle.text-success
-                                        | &nbsp;Tienda Web
-                                    span.mr-2
-                                        i.fas.fa-circle.text-info
-                                        | &nbsp;Otro
-                .row
-                    .col
-                        .card.shadow.mb-4
-                            .card-header.py-3
-                                h6.text-primary.font-weight-bold.m-0 &Uacute;ltimos Pedidos
-                            ul.list-group.list-group-flush
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Camiseta Roja XL
-                                            span.text-xs Jos&eacute; Luis Fernandez - 10:30 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Pantal&oacute;n Beige Talla 36
-                                            span.text-xs Ana Jer&eacute;z - 9:30 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-                                li.list-group-item
-                                    .row.align-items-center.no-gutters
-                                        .col.mr-2
-                                            h6.mb-0
-                                                strong Poler&oacute;n Negro L
-                                            span.text-xs Crist&oacute;bal Matute - 8:00 AM
-                                        .col-auto
-                                            button.btn.btn-info(type='button' style='font-size: 80%;text-align: center;') Ver
-        footer.bg-white.sticky-footer
-            .container.my-auto
-                .text-center.my-auto.copyright
-                    span Copyright &copy; NVIO 2020
-    a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-        i.fas.fa-angle-up
+                h3.text-dark.mb-4 Historial de Ventas
+                .card.shadow
+                    .card-header.py-3
+                        p.text-primary.m-0.font-weight-bold Vista Resumida
+                            a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='excel/' style='background: #6e3c8e; float: right;')
+                                i.fas.fa-download.fa-sm.text-white-50
+                                | &nbsp;Descargar Plantilla
+                    .card-body
+                        .container-fluid(style="overflow-x:auto;")
+                            table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
+                                table#dataTable.table.my-0
+                                    thead
+                                        tr(style='font-size: 14px;text-align: center;')
+                                            th Número Pedido
+                                            th Fecha
+                                            th Cliente
+                                            th Monto
+                                            th Pago
+                                            th Preparación
+                                            th Items
+                                            th Método Entrega
+                                            th Notas y Comentarios
+                                            th Vista Detallada
+                                    tbody
+                                        each ORD, index in orders
+                                            tr.text-center
+                                                td #{ORD.SK.S.replace("ORDER#","")}
+                                                td
+                                                    if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
+                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                    else
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                    if    new Date(parseInt(ORD.createdAt.N)).getMonth() + 1 < 10
+                                                        | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                    else
+                                                        | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+                                                    else
+                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+
+                                                // Make it prettier pls
+                                                -
+                                                    try {
+                                                        a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
+                                                    } catch (err) {
+                                                        a = ""
+                                                    }
+
+                                                td #{a}
+                                                td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
+                                                td #{ORD.status.M.payment.N}
+                                                td #{ORD.status.M.order.N}
+
+                                                td
+                                                    if (a = parseInt(ORD.items.L.length)) > 2
+                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S + ", y " + parseInt(ORD.items.L.length - 2) + " más"}
+                                                    else if (a = parseInt(ORD.items.L.length)) === 2
+                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S}
+                                                    else
+                                                        | #{ORD.items.L[0].M.product.S}
+
+                                                td #{ORD.shippingMethod.S}
+
+                                                 -
+                                                     try {
+                                                         b = ORD.status.M.comments.L.length
+                                                         c = ORD.status.M.comments.L[0].M.timestamp.N
+
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate() < 10)
+                                                             z = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+                                                         else
+                                                             z = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1 < 10)
+                                                             y = "/0" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                         else
+                                                             y = "/" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                         x = "/" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getFullYear() + " " + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getHours() + ":"
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes() > 10)
+                                                             w = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+                                                         else
+                                                             w = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+
+                                                         var date_string = z+y+x+w;
+
+                                                         if (parseInt(b) > 1)
+                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S + ", y " + parseInt(ORD.status.M.comments.L.length - 1) + " más"
+                                                         else if (parseInt(b) == 1)
+                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S
+                                                         else
+                                                            b = ""
+                                                     } catch (err) {
+                                                         b = "Error"
+                                                     }
+
+                                                td #{b}
+                                                td
+                                                    a.btn.btn-info(type='button' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
+
+                                        tfoot
+                                            tr(style='font-size: 14px;text-align: center;')
+                                                td
+                                                    strong Número Pedido
+                                                td
+                                                    strong Fecha
+                                                td
+                                                    strong Cliente
+                                                td
+                                                    strong Monto
+                                                td
+                                                    strong Pago
+                                                td
+                                                    strong Preparación
+                                                td
+                                                    strong Items
+                                                td
+                                                    strong Método Entrega
+                                                td
+                                                    strong Notas y Comentarios
+                                                td
+                                                    strong Vista Detallada
+            footer.bg-white.sticky-footer
+                .container.my-auto
+                    .text-center.my-auto.copyright
+                        span Copyright &copy; NVIO 2020
+        a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+            i.fas.fa-angle-up
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
+script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+script(src='javascripts/historytable.js')

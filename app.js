@@ -1,11 +1,15 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/main');
+var authRouter = require('./routes/auth');
+var orderRouter = require('./routes/order');
+var profileRouter = require('./routes/profile');
 
 var app = express();
 
@@ -13,14 +17,34 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+//Prevents to check previous page after logout
+app.use(function (req, res, next) {
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.header('Expires', '-1');
+  res.header('Pragma', 'no-cache');
+  next()
+});
+
+//app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true, limit:'50mb', parameterLimit: 1000000 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', authRouter);
+app.use('/order',orderRouter);
+app.use('/profile',profileRouter);
+
+
+//Use cookieParser
+app.use(cookieParser());
+
+//Require Passport
+require('./passport');
+
+//Use JSON parser
+app.use(bodyParser.json({limit:'50mb'}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

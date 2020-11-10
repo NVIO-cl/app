@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 
+require('dotenv').config();
 var app = require('../app');
 var debug = require('debug')('app:server');
 var http = require('http');
@@ -11,6 +12,13 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
+console.log("====NVIO====");
+if (!process.env.PORT){
+  console.log("ENV port is undefined. Using default port 3000");
+}
+else {
+  console.log("ENV port is " + process.env.PORT);
+}
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
