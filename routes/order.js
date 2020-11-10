@@ -6,6 +6,7 @@ const validator = require('validator');
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
+var Jimp = require('jimp');
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -181,7 +182,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     res.redirect(req.headers.referer);
   }
 
-  if (await !validator.isMobilePhone(req.body.telefono, 'es-CL')) {
+  if (await validator.isEmpty(req.body.telefono)) {
     console.log("Telefono NOT OK");
     res.redirect(req.headers.referer);
   }
@@ -199,13 +200,16 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       res.redirect(req.headers.referer);
     }
     else {
+
+      var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+      var scaled = await file.scaleToFit(500, 1000);
+      var buffer = await scaled.getBufferAsync(Jimp.AUTO);
       var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
-      var mimetype = req.file.mimetype.split("/");
       var params = {
         Bucket: process.env.AWS_S3_BUCKET,
-        Key: 'COMPROBANTE#'+req.headers.referer.substr(req.headers.referer.length - 12)+"."+mimetype[mimetype.length - 1],
-        ACL: 'public-read',
-        Body: req.file.buffer
+        Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
+        ACL: 'private',
+        Body: buffer
       }
       s3up = await s3.putObject(params, function (err, data) {
         if (err) {
@@ -214,20 +218,21 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
           console.log("Image uploaded OK");
         }
       }).promise();
+
     }
   }
   else {
     console.log("NO IMAGE");
     res.redirect(req.headers.referer);
   }
-  //Save the order order data
+  //Save the order data
   var params = {
     "TableName": "app",
     "Key": {
       "PK":companyID,
       "SK": orderID
     },
-    "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
+    "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
     "ExpressionAttributeNames": {
       "#clientData":"clientData",
       "#firstName":"firstName",
@@ -237,16 +242,21 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       "#comment":"comment",
       "#status":"status",
       "#order":"order",
-      "#updatedAt":"updatedAt"
+      "#updatedAt":"updatedAt",
+      "#address":"address",
+      "#street":"street",
+      "#apart":"apart"
     },
     "ExpressionAttributeValues": {
       ":firstName": req.body.nombre,
       ":lastName": req.body.apellido,
       ":email": req.body.email,
-      ":contactNumber": req.body.telefono,
+      ":contactNumber": parseInt(req.body.telefono),
       ":comment": req.body.comentario,
       ":order": 1,
-      ":updatedAt": Date.now()
+      ":updatedAt": Date.now(),
+      ":street": req.body.direccion,
+      ":apart": req.body.apart
     },
     "ReturnValues": "ALL_NEW"
   }
