@@ -30,11 +30,11 @@ main.page.payment-page
                                 .col-sm-8(style='max-width: 186px;')
                                     .form-group
                                         label(for='nombre') Nombre
-                                        input#nombre.form-control(type='text' placeholder='Nombre' name='nombre')
+                                        input#nombre.form-control(type='text' placeholder='Nombre' name='nombre' required)
                                 .col-sm-4
                                     .form-group
                                         label(for='apellido') Apellido
-                                        input#apellido.form-control(type='text' placeholder='Apellido' style='width: 100%;' name='apellido')
+                                        input#apellido.form-control(type='text' placeholder='Apellido' style='width: 100%;' name='apellido' required)
                                 .col-sm-8
                                     .form-group
                                         label(for='direccion') Dirección (calle y número)
@@ -54,11 +54,11 @@ main.page.payment-page
                                         .input-group
                                             .input-group-prepend
                                                 span.input-group-text +56
-                                            input#telefono.form-control(type='text' placeholder='9 1234 5678' name='telefono')
+                                            input#telefono.form-control(type='text' placeholder='9 1234 5678' name='telefono' required)
                                 .col-sm-8
                                     .form-group
                                         label(for='email') Email de contacto
-                                        input#email.form-control(type='text' placeholder='hola@email.com' name='email')
+                                        input#email.form-control(type='email' placeholder='hola@email.com' name='email' required)
                                 .col-sm-8
                                     .form-group
                                         label(for='comentario') Comentarios adicionales
@@ -69,12 +69,12 @@ main.page.payment-page
                                         .form-row
                                             .col
                                                 //-button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;')   Adjuntar archivo
-                                                input#comprobante(type='file' accept="image/png, image/jpeg" name='comprobante')
+                                                input#comprobante(type='file' accept="image/png, image/jpeg" name='comprobante' required)
                                                   
                                 .col-sm-8
                                     .form-group
                                         .form-check(style='margin-bottom: -7px;')
-                                            input#tyc.form-check-input(type='checkbox' name='tyc')
+                                            input#tyc.form-check-input(type='checkbox' name='tyc' required)
                                             label.form-check-label(for='tyc') Acepto los términos y condiciones
                                 .col-sm-12(style='margin-top: -22px;')
                                     .form-group
