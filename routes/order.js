@@ -21,7 +21,7 @@ aws.config.update({
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/create', { title: 'NVIO' });
+  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -105,7 +105,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
 });
 
 router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/edit', { title: 'NVIO' });
+  res.render('order/edit', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
