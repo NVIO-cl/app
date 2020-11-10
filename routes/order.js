@@ -33,6 +33,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   //Items
   var itemList = [];
   var cost = 0;
+  console.log(req.body);
   req.body.items.forEach((item, i) => {
     if (!validator.isInt(item.quantity)) {
       console.log("INVALID QUANTITY");

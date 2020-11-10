@@ -174,28 +174,34 @@ head
                           tbody#tableBody
                             tr(id='items[0]')
                               td
-                                input(id='items[0][product]').form-control(type='text')
+                                input.form-control(type='text' id='items[0][product]' name='items[0][product]')
                               td
-                                input(id='items[0][price]').form-control(type='number' style='width: 100px;')
+                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]')
                               td
-                                input(id='items[0][quantity]').form-control(type='number' style='width: 100px;')
+                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]')
                               td
+                                .subtot(id='items[0][subtotal]')
+                                  | $ 0
                           tr
                             td
                               button#clickAdd.btn.btn-primary.btn-sm Agregar producto
                           tr
                             td
                               .col
-                                p Total Productos
+                                p Productos
                               .col
                                 p Despacho
+                              .col
+                                p Total
                             td
                             td
                             td
                               .col
-                                p#totalProd $ Precio
+                                p#totalProd $ 0
                               .col
-                                p#totalShip $ Precio
+                                p#totalShip $ 0
+                              .col
+                                p#totalFin $ 0
                       .form-row
                         .col
                           hr
@@ -204,14 +210,14 @@ head
                               .form-row
                                 .col
                                   p.font-weight-bold.m-0 Comuna del Destinatario
-                                  input.form-control(type='text')
+                                  input.form-control#locality(type='text' name='locality')
                                   small
                                     | Debes ingresar la comuna a la cual se enviará el pedido
                                     br
                                     | En caso de que no aplique, ingresar "Retiro"
                                 .col
                                   p.font-weight-bold.m-0 Método de Despacho
-                                  input.form-control(type='text')
+                                  input.form-control#shippingMethod(type='text' name='shippingMethod')
                                   small
                                     | Debes especificar si el producto será retirado en local o si será despachado por alguien (Courier, Pyme, etc).
                                     br
@@ -222,7 +228,7 @@ head
                                     | - Starken
                                 .col
                                   p.font-weight-bold.m-0 Precio del Despacho
-                                  input.form-control(type='number')
+                                  input.form-control#shippingCost(type='number' name='shippingCost' value=0)
                                   small
                                     | Debes ingresar el valor asociado al método de despacho escogido
                                     br
@@ -232,7 +238,7 @@ head
                                     br
                                     | - Starken --> El valor correspondiente hacia la comuna del cliente
                   .form-group(style="text-align: center;")
-                    a.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
+                    button.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
