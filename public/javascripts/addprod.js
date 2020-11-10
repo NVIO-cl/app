@@ -8,7 +8,7 @@ $(document).ready(function(){
   var count = 1;
   $('#clickAdd').click(function(e){
     var last = count-1
-    var row = '<tr id="items['+count+']"><td><input class="form-control" id="items['+count+'][product]" name="items['+count+'][product]" type="text"></td><td><input class="form-control" id="items['+count+'][price]" name="items['+count+'][price]" type="number" style="width: 100px;"></td><td><input class="form-control" id="items['+count+'][quantity]" name="items['+count+'][quantity]" type="number" style="width: 100px;"></td><td><div id="items['+count+'][subtotal]">$ 0</div></td></tr>'
+    var row = '<tr id="items['+count+']"><td><input class="form-control" id="items['+count+'][product]" name="items['+count+'][product]" type="text" required></td><td><input class="form-control" id="items['+count+'][price]" name="items['+count+'][price]" type="number" style="width: 100px;" required></td><td><input class="form-control" id="items['+count+'][quantity]" name="items['+count+'][quantity]" type="number" style="width: 100px;" required></td><td><div id="items['+count+'][subtotal]" class="d-inline">$ 0 </div><i class="fas fa-trash d-inline float-right text-danger" id="delete['+count+']" role="button"></td></tr>'
     $('#items\\['+last+'\\]').after(row)
     count++;
     e.preventDefault();
@@ -25,9 +25,25 @@ $(document).ready(function(){
   function recalc(){
     var total = 0;
     $("[id$=\\[price\\]]").each(function(index){
+      var item = parseInt($(this).attr('id').replace("items[", "").replace("][price]", ""));
+      if (item != index) {
+        $('#items\\['+item+'\\]\\[product\\]').attr('name', 'items['+index+'][product]')
+        $('#items\\['+item+'\\]\\[price\\]').attr('name', 'items['+index+'][price]')
+        $('#items\\['+item+'\\]\\[quantity\\]').attr('name', 'items['+index+'][quantity]')
+
+        $('#items\\['+item+'\\]').attr('id', 'items['+index+']')
+        $('#items\\['+item+'\\]\\[product\\]').attr('id', 'items['+index+'][product]')
+        $('#items\\['+item+'\\]\\[price\\]').attr('id', 'items['+index+'][price]')
+        $('#items\\['+item+'\\]\\[quantity\\]').attr('id', 'items['+index+'][quantity]')
+
+
+
+        $('#items\\['+item+'\\]\\[subtotal\\]').attr('id', 'items['+index+'][subtotal]')
+        $('#delete\\['+item+'\\]').attr('id', 'delete['+index+']')
+
+      }
       var price = $(this).val()
       var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val()
-
       var subtotal = price * quantity;
       $('#items\\['+index+'\\]\\[subtotal\\]').html("$ " + subtotal)
       total = total + subtotal
@@ -47,4 +63,20 @@ $(document).ready(function(){
     $('#totalShip').html('$ ' + $('#shippingCost').val())
     recalc();
   })
+
+  $('body').on('click', "[id^=delete]", function(){
+    if ($(this).attr('id') == 'delete[0]') {
+      alert("No puedes eliminar el primer producto")
+    }
+    else {
+      id = parseInt($(this).attr('id').replace("delete[", "").replace("]", ""))
+      $('#items\\['+id+'\\]').fadeOut("fast",function(){
+        $('#items\\['+id+'\\]').remove();
+        recalc();
+        count--;
+      });
+    }
+  })
+
+
 });
