@@ -2,7 +2,7 @@ doctype html
 head
   meta(charset='utf-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-  title Table - NVIO
+  title Crear Orden - NVIO
   link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
   link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
@@ -171,45 +171,31 @@ head
                               th Precio Unitario
                               th Cantidad
                               th Subtotal
-                          tbody
-                            tr
+                          tbody#tableBody
+                            tr(id='items[0]')
                               td
-                                a.fa.fa-trash
-                                | &nbsp;&nbsp;Producto 1
+                                input(id='items[0][product]').form-control(type='text')
                               td
-                                input.form-control(type='number', style='width: 100px;')
+                                input(id='items[0][price]').form-control(type='number' style='width: 100px;')
                               td
-                                input.form-control(type='number', style='width: 100px;')
-                                .btn-toolbar
-                                  .btn-group(role='group')
-                              td $$$*Cantidad
-                            tr
+                                input(id='items[0][quantity]').form-control(type='number' style='width: 100px;')
                               td
-                                input.form-control(type='text')
-                              td
-                                input.form-control(type='number', style='width: 100px;')
-                              td
-                                input.form-control(type='number', style='width: 100px;')
-                              td ----
-                            tr
-                              td
-                              td
-                              td
-                              td
-                                  a.btn.btn-primary.btn-sm(type='submit' value='Submit') Agregar otro producto
-                            tr
-                              td
-                                .col
-                                  p Total Productos
-                                .col
-                                  p Despacho
-                              td
-                              td
-                              td
-                                .col
-                                  p $ Precio
-                                .col
-                                  p $ Precio
+                          tr
+                            td
+                              button#clickAdd.btn.btn-primary.btn-sm Agregar producto
+                          tr
+                            td
+                              .col
+                                p Total Productos
+                              .col
+                                p Despacho
+                            td
+                            td
+                            td
+                              .col
+                                p#totalProd $ Precio
+                              .col
+                                p#totalShip $ Precio
                       .form-row
                         .col
                           hr
@@ -253,3 +239,5 @@ head
           span Copyright &copy; NVIO 2020
   a.border.rounded.d-inline.scroll-to-top(href='#page-top')
     i.fas.fa-angle-up
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+  script(src='/javascripts/addprod.js')
