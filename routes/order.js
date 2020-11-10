@@ -27,6 +27,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Parse and validate the data
   //Shipping Cost
+  var orderID;
   if (!validator.isInt(req.body.shippingCost)) {
     res.redirect('/create');
   }
@@ -93,6 +94,8 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
         }
       };
       putItem = await db.put(params);
+      //Redirect back to order detail
+      res.redirect('/detail/' + orderID);
     }
     else {
       //If colission, repeat process
@@ -100,8 +103,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       colcheck();
     }
   }
-  //Redirect back to ??
-  res.redirect('/');
 });
 
 router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
