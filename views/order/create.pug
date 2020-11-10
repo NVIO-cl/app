@@ -2,7 +2,7 @@ doctype html
 head
   meta(charset='utf-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-  title Table - NVIO
+  title Crear Orden - NVIO
   link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
   link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
@@ -171,45 +171,37 @@ head
                               th Precio Unitario
                               th Cantidad
                               th Subtotal
-                          tbody
-                            tr
+                          tbody#tableBody
+                            tr(id='items[0]')
                               td
-                                a.fa.fa-trash
-                                | &nbsp;&nbsp;Producto 1
+                                input.form-control(type='text' id='items[0][product]' name='items[0][product]')
                               td
-                                input.form-control(type='number', style='width: 100px;')
+                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]')
                               td
-                                input.form-control(type='number', style='width: 100px;')
-                                .btn-toolbar
-                                  .btn-group(role='group')
-                              td $$$*Cantidad
-                            tr
+                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]')
                               td
-                                input.form-control(type='text')
-                              td
-                                input.form-control(type='number', style='width: 100px;')
-                              td
-                                input.form-control(type='number', style='width: 100px;')
-                              td ----
-                            tr
-                              td
-                              td
-                              td
-                              td
-                                  a.btn.btn-primary.btn-sm(type='submit' value='Submit') Agregar otro producto
-                            tr
-                              td
-                                .col
-                                  p Total Productos
-                                .col
-                                  p Despacho
-                              td
-                              td
-                              td
-                                .col
-                                  p $ Precio
-                                .col
-                                  p $ Precio
+                                .subtot(id='items[0][subtotal]')
+                                  | $ 0
+                          tr
+                            td
+                              button#clickAdd.btn.btn-primary.btn-sm Agregar producto
+                          tr
+                            td
+                              .col
+                                p Productos
+                              .col
+                                p Despacho
+                              .col
+                                p Total
+                            td
+                            td
+                            td
+                              .col
+                                p#totalProd $ 0
+                              .col
+                                p#totalShip $ 0
+                              .col
+                                p#totalFin $ 0
                       .form-row
                         .col
                           hr
@@ -218,14 +210,14 @@ head
                               .form-row
                                 .col
                                   p.font-weight-bold.m-0 Comuna del Destinatario
-                                  input.form-control(type='text')
+                                  input.form-control#locality(type='text' name='locality')
                                   small
                                     | Debes ingresar la comuna a la cual se enviará el pedido
                                     br
                                     | En caso de que no aplique, ingresar "Retiro"
                                 .col
                                   p.font-weight-bold.m-0 Método de Despacho
-                                  input.form-control(type='text')
+                                  input.form-control#shippingMethod(type='text' name='shippingMethod')
                                   small
                                     | Debes especificar si el producto será retirado en local o si será despachado por alguien (Courier, Pyme, etc).
                                     br
@@ -236,7 +228,7 @@ head
                                     | - Starken
                                 .col
                                   p.font-weight-bold.m-0 Precio del Despacho
-                                  input.form-control(type='number')
+                                  input.form-control#shippingCost(type='number' name='shippingCost' value=0)
                                   small
                                     | Debes ingresar el valor asociado al método de despacho escogido
                                     br
@@ -246,10 +238,12 @@ head
                                     br
                                     | - Starken --> El valor correspondiente hacia la comuna del cliente
                   .form-group(style="text-align: center;")
-                    a.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
+                    button.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
           span Copyright &copy; NVIO 2020
   a.border.rounded.d-inline.scroll-to-top(href='#page-top')
     i.fas.fa-angle-up
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+  script(src='/javascripts/addprod.js')

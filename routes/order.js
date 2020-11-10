@@ -8,8 +8,10 @@ var multer  = require('multer');
 var upload = multer();
 var Jimp = require('jimp');
 
+
 //AWS Settings
 var aws = require("aws-sdk");
+var s3Endpoint = new aws.Endpoint(process.env.AWS_S3_ENDPOINT);
 var db = require("../db");
 aws.config.update({
   region: process.env.DBREGION,
@@ -23,11 +25,9 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Order creation request");
   //Parse and validate the data
   //Shipping Cost
   if (!validator.isInt(req.body.shippingCost)) {
-    console.log("INVALID SHIPPING COST");
     res.redirect('/create');
   }
   //Items
@@ -35,11 +35,9 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var cost = 0;
   req.body.items.forEach((item, i) => {
     if (!validator.isInt(item.quantity)) {
-      console.log("INVALID QUANTITY");
       res.redirect('/create');
     }
     if (!validator.isInt(item.price)) {
-      console.log("INVALID PRICE");
       res.redirect('/create');
     }
     itemList[i] = {}
@@ -52,8 +50,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   colcheck();
 
   async function colcheck(){
-    console.log("BODY:");
-    console.log(req.body);
 
     //Generate ID
     orderID = nanoid(6);
@@ -96,9 +92,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           "shippingMethod": req.body.shippingMethod
         }
       };
-      console.log(params);
       putItem = await db.put(params);
-      console.log(putItem);
     }
     else {
       //If colission, repeat process
@@ -130,6 +124,9 @@ router.get('/:id',  async(req, res) => {
   var profileID = "PROFILE#" + req.params.id.substring(0, 6);
   var orderID = "ORDER#" + req.params.id.substring(6, 12);
 
+  var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
+  var logo = await s3.getSignedUrl('getObject', {Key: "logos/"+companyID+".png", Expires: 60});
+
   var params = {
     "TableName": "app",
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
@@ -156,7 +153,7 @@ router.get('/:id',  async(req, res) => {
 
   getCompany = await db.query(params);
 
-  res.render('order/client', { title: 'NVIO', orderData: getOrder.Items[0], orderID: req.params.id, companyData: getCompany.Items[0]});
+  res.render('order/client', { title: 'NVIO', logo: logo, orderData: getOrder.Items[0], orderID: req.params.id, companyData: getCompany.Items[0]});
 });
 
 router.post('/fill', upload.single('comprobante'), async(req,res)=> {
