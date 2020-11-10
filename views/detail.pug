@@ -170,6 +170,9 @@ head
                                         a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
                                 p(style='width: 100%;')
+                                    | Link del cliente:&nbsp
+                                    a(class='button' target="_blank" href='//app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
+                                    br
                                     | Fecha de Creación #{parsed_created_at}
                                     br
                                     | Estado: #{order[0].status.M.order.N}
