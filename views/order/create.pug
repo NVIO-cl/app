@@ -184,9 +184,9 @@ head
                               td
                                 input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
                               td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' required)
+                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
                               td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' required)
+                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required)
                               td
                                 .d-inline(id='items[0][subtotal]')
                                   | $ 0
