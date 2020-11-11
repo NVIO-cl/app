@@ -24,6 +24,10 @@ $(document).ready(function () {
                 "sortAscending":  ": activar para organizar columna de forma ascendiente",
                 "sortDescending": ": activar para organizar columna de forma descendiente"
             }
-        }
+        },
+        "columnDefs": [
+            { "type": "date", "targets": 1 }
+        ],
+        "order": [[ 1, "desc" ]]
     });
 });

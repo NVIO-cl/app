@@ -1,6 +1,21 @@
 const express = require('express');
-const passport = require('passport');
 const router = express.Router();
+const passport = require('passport');
+const validator = require('validator');
+const {Client, Status} = require("@googlemaps/google-maps-services-js");
+var multer  = require('multer');
+var upload = multer();
+
+//AWS Settings
+var aws = require("aws-sdk");
+var db = require("../db");
+var s3Endpoint = new aws.Endpoint(process.env.AWS_S3_ENDPOINT);
+aws.config.update({
+  region: process.env.DBREGION,
+  endpoint: process.env.ENDPOINT,
+  accessKeyId: process.env.AKID,
+  secretAccessKey: process.env.SECRET
+});
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -20,11 +35,7 @@ var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('index', { title: 'NVIO' });
-});
-
-router.get('/profile',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('profile', { title: 'NVIO' });
+  res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
 });
 
 router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -93,7 +104,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
   var logo = await s3.getSignedUrl('getObject', {Key: "comprobantes/" + req.user.user.replace("COMPANY#","") + "/" + req.params.id + ".png", Expires: 10});
 
-  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#","")});
+  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", "")});
 });
 
 /* GET historial. */
@@ -119,7 +130,7 @@ router.get('/historial',passport.authenticate('jwt', {session: false, failureRed
     }
   };
   historialQuery = await db.query(params);
-  res.render('historial', {title: name, orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#","")});
+  res.render('historial', {title: name, orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", "")});
 });
 
 router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -350,12 +361,6 @@ router.get('/login', (req, res) => {
   res.render('login', {title: name, error: errormsg});
 });
 
-router.get('/profile', (req, res) => {
-  const name = "Profile";
-  var errormsg;
-  var date = new Date();
-  var year = date.getFullYear();
-  res.render('profile', {title: name, error: errormsg});
-});
+
 
 module.exports = router;
