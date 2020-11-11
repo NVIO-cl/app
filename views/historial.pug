@@ -3,9 +3,18 @@ head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
     title Table - NVIO
+    script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SJETCMY2EN', {
+        'user_id': '#{userID}'
+      });
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    link(rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css')
 #wrapper
     nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
         .container-fluid.d-flex.flex-column.p-0
@@ -26,283 +35,267 @@ head
                         i.fas.fa-table
                         span Historial de Ventas
                 li.nav-item
-                    a.nav-link(href='/login')
+                    a.nav-link(href='/order/create')
+                        i.fas.fa-plus-square
+                        span Crear Nueva Orden
+                li.nav-item
+                    a.nav-link(href='/logout')
                         i.far.fa-user-circle
-                        span Cerrar Sesi&oacute;n
+                        span Cerrar Sesión
                 li.nav-item
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column
         #content
             nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
-                .container-fluid
-                    button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
-                        i.fas.fa-bars
-                    form.form-inline.d-none.d-sm-inline-block.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search
-                        .input-group
-                            input.bg-light.form-control.border-0.small(type='text' placeholder='Buscar...')
-                            .input-group-append
-                                button.btn.btn-primary.py-0(type='button' style='background: #6e3c8e;')
-                                    i.fas.fa-search
-                    ul.nav.navbar-nav.flex-nowrap.ml-auto
-                        li.nav-item.dropdown.d-sm-none.no-arrow
-                            a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                i.fas.fa-search
-                            .dropdown-menu.dropdown-menu-right.p-3.animated--grow-in(aria-labelledby='searchDropdown')
-                                form.form-inline.mr-auto.navbar-search.w-100
-                                    .input-group
-                                        input.bg-light.form-control.border-0.small(type='text' placeholder='Search for ...')
-                                        .input-group-append
-                                            button.btn.btn-primary.py-0(type='button')
-                                                i.fas.fa-search
-                        li.nav-item.dropdown.no-arrow.mx-1
-                            .nav-item.dropdown.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                    span.badge.badge-danger.badge-counter 3+
-                                    i.fas.fa-bell.fa-fw
-                                .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
-                                    h6.dropdown-header alerts center
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .mr-3
-                                            .bg-primary.icon-circle
-                                                i.fas.fa-file-alt.text-white
-                                        div
-                                            span.small.text-gray-500 December 12, 2019
-                                            p A new monthly report is ready to download!
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .mr-3
-                                            .bg-success.icon-circle
-                                                i.fas.fa-donate.text-white
-                                        div
-                                            span.small.text-gray-500 December 7, 2019
-                                            p $290.29 has been deposited into your account!
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .mr-3
-                                            .bg-warning.icon-circle
-                                                i.fas.fa-exclamation-triangle.text-white
-                                        div
-                                            span.small.text-gray-500 December 2, 2019
-                                            p Spending Alert: We&apos;ve noticed unusually high spending for your account.
-                                    a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
-                        li.nav-item.dropdown.no-arrow.mx-1
-                            .nav-item.dropdown.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                    i.fas.fa-envelope.fa-fw
-                                    span.badge.badge-danger.badge-counter 7
-                                .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
-                                    h6.dropdown-header alerts center
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar4.jpeg')
-                                            .bg-success.status-indicator
-                                        .font-weight-bold
-                                            .text-truncate
-                                                span Hi there! I am wondering if you can help me with a problem I&apos;ve been having.
-                                            p.small.text-gray-500.mb-0 Emily Fowler - 58m
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar2.jpeg')
-                                            .status-indicator
-                                        .font-weight-bold
-                                            .text-truncate
-                                                span I have the photos that you ordered last month!
-                                            p.small.text-gray-500.mb-0 Jae Chun - 1d
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar3.jpeg')
-                                            .bg-warning.status-indicator
-                                        .font-weight-bold
-                                            .text-truncate
-                                                span
-                                                    | Last month&apos;s report looks great, I am very happy with the progress so far, keep up the good work!
-                                            p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
-                                    a.d-flex.align-items-center.dropdown-item(href='#')
-                                        .dropdown-list-image.mr-3
-                                            img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar5.jpeg')
-                                            .bg-success.status-indicator
-                                        .font-weight-bold
-                                            .text-truncate
-                                                span
-                                                    | Am I a good boy? The reason I ask is because someone told me that people say this to all dogs, even if they aren&apos;t good...
-                                            p.small.text-gray-500.mb-0 Chicken the Dog &middot; 2w
-                                    a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
-                            .shadow.dropdown-list.dropdown-menu.dropdown-menu-right(aria-labelledby='alertsDropdown')
-                        .d-none.d-sm-block.topbar-divider
-                        li.nav-item.dropdown.no-arrow
-                            .nav-item.dropdown.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                    span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
-                                    img.border.rounded-circle.img-profile(src='https://nvio.s3.amazonaws.com/assets/img/dogs/image3.jpeg')
-                                .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
-                                    a.dropdown-item(href='#')
-                                        i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
-                                        | &nbsp;Profile
-                                    a.dropdown-item(href='#')
-                                        i.fas.fa-cogs.fa-sm.fa-fw.mr-2.text-gray-400
-                                        | &nbsp;Settings
-                                    a.dropdown-item(href='#')
-                                        i.fas.fa-list.fa-sm.fa-fw.mr-2.text-gray-400
-                                        | &nbsp;Activity log
-                                    .dropdown-divider
-                                    a.dropdown-item(href='#')
-                                        i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
-                                        | &nbsp;Logout
+                //-
+                    .container-fluid
+                        button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
+                            i.fas.fa-bars
+                        form.form-inline.d-none.d-sm-inline-block.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search
+                            .input-group
+                                input.bg-light.form-control.border-0.small(type='text' placeholder='Buscar...')
+                                .input-group-append
+                                    button.btn.btn-primary.py-0(type='button' style='background: #6e3c8e;')
+                                        i.fas.fa-search
+                        //-
+                            ul.nav.navbar-nav.flex-nowrap.ml-auto
+                                li.nav-item.dropdown.d-sm-none.no-arrow
+                                    a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
+                                        i.fas.fa-search
+                                    .dropdown-menu.dropdown-menu-right.p-3.animated--grow-in(aria-labelledby='searchDropdown')
+                                        form.form-inline.mr-auto.navbar-search.w-100
+                                            .input-group
+                                                input.bg-light.form-control.border-0.small(type='text' placeholder='Search for ...')
+                                                .input-group-append
+                                                    button.btn.btn-primary.py-0(type='button')
+                                                        i.fas.fa-search
+                                li.nav-item.dropdown.no-arrow.mx-1
+                                    .nav-item.dropdown.no-arrow
+                                        a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
+                                            span.badge.badge-danger.badge-counter 3+
+                                            i.fas.fa-bell.fa-fw
+                                        .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
+                                            h6.dropdown-header alerts center
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .mr-3
+                                                    .bg-primary.icon-circle
+                                                        i.fas.fa-file-alt.text-white
+                                                div
+                                                    span.small.text-gray-500 December 12, 2019
+                                                    p A new monthly report is ready to download!
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .mr-3
+                                                    .bg-success.icon-circle
+                                                        i.fas.fa-donate.text-white
+                                                div
+                                                    span.small.text-gray-500 December 7, 2019
+                                                    p $290.29 has been deposited into your account!
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .mr-3
+                                                    .bg-warning.icon-circle
+                                                        i.fas.fa-exclamation-triangle.text-white
+                                                div
+                                                    span.small.text-gray-500 December 2, 2019
+                                                    p Spending Alert: We&apos;ve noticed unusually high spending for your account.
+                                            a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
+                                li.nav-item.dropdown.no-arrow.mx-1
+                                    .nav-item.dropdown.no-arrow
+                                        a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
+                                            i.fas.fa-envelope.fa-fw
+                                            span.badge.badge-danger.badge-counter 7
+                                        .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
+                                            h6.dropdown-header alerts center
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .dropdown-list-image.mr-3
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar4.jpeg')
+                                                    .bg-success.status-indicator
+                                                .font-weight-bold
+                                                    .text-truncate
+                                                        span Hi there! I am wondering if you can help me with a problem I&apos;ve been having.
+                                                    p.small.text-gray-500.mb-0 Emily Fowler - 58m
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .dropdown-list-image.mr-3
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar2.jpeg')
+                                                    .status-indicator
+                                                .font-weight-bold
+                                                    .text-truncate
+                                                        span I have the photos that you ordered last month!
+                                                    p.small.text-gray-500.mb-0 Jae Chun - 1d
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .dropdown-list-image.mr-3
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar3.jpeg')
+                                                    .bg-warning.status-indicator
+                                                .font-weight-bold
+                                                    .text-truncate
+                                                        span
+                                                            | Last month&apos;s report looks great, I am very happy with the progress so far, keep up the good work!
+                                                    p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
+                                            a.d-flex.align-items-center.dropdown-item(href='#')
+                                                .dropdown-list-image.mr-3
+                                                    img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar5.jpeg')
+                                                    .bg-success.status-indicator
+                                                .font-weight-bold
+                                                    .text-truncate
+                                                        span
+                                                            | Am I a good boy? The reason I ask is because someone told me that people say this to all dogs, even if they aren&apos;t good...
+                                                    p.small.text-gray-500.mb-0 Chicken the Dog &middot; 2w
+                                            a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
+                                    .shadow.dropdown-list.dropdown-menu.dropdown-menu-right(aria-labelledby='alertsDropdown')
+                                .d-none.d-sm-block.topbar-divider
+                                li.nav-item.dropdown.no-arrow
+                                    .nav-item.dropdown.no-arrow
+                                        a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
+                                            span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
+                                            img.border.rounded-circle.img-profile(src='https://nvio.s3.amazonaws.com/assets/img/dogs/image3.jpeg')
+                                        .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
+                                            a.dropdown-item(href='#')
+                                                i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
+                                                | &nbsp;Profile
+                                            a.dropdown-item(href='#')
+                                                i.fas.fa-cogs.fa-sm.fa-fw.mr-2.text-gray-400
+                                                | &nbsp;Settings
+                                            a.dropdown-item(href='#')
+                                                i.fas.fa-list.fa-sm.fa-fw.mr-2.text-gray-400
+                                                | &nbsp;Activity log
+                                            .dropdown-divider
+                                            a.dropdown-item(href='#')
+                                                i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
+                                                | &nbsp;Logout
             .container-fluid
                 h3.text-dark.mb-4 Historial de Ventas
                 .card.shadow
                     .card-header.py-3
-                        p.text-primary.m-0.font-weight-bold Employee Info
+                        p.text-primary.m-0.font-weight-bold Vista Resumida
+                            a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='excel/' style='background: #6e3c8e; float: right;')
+                                i.fas.fa-download.fa-sm.text-white-50
+                                | &nbsp;Descargar Plantilla
                     .card-body
-                        .row
-                            .col-md-6.text-nowrap
-                                #dataTable_length.dataTables_length(aria-controls='dataTable')
-                                    label
-                                        | Show&nbsp;
-                                        select.form-control.form-control-sm.custom-select.custom-select-sm
-                                            option(value='10' selected='') 10
-                                            option(value='25') 25
-                                            option(value='50') 50
-                                            option(value='100') 100
-                            .col-md-6
-                                #dataTable_filter.text-md-right.dataTables_filter
-                                    label
-                                        input.form-control.form-control-sm(type='search' aria-controls='dataTable' placeholder='Search')
-                        .table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
-                            table#dataTable.table.my-0
-                                thead
-                                    tr(style='font-size: 14px;text-align: center;')
-                                        th N&uacute;mero Pedido
-                                        th Fecha
-                                        th Cliente
-                                        th Monto
-                                        th Pago
-                                        th Preparaci&oacute;n
-                                        th Items
-                                        th M&eacute;todo Entrega
-                                        th Notas y Comentarios
-                                        th Vista Detallada
-                                tbody
-                                    tr.text-center
-                                        td 123456789
-                                        td 22/2/2022
-                                        td Juanes
-                                        td 123
-                                        td Pendiente
-                                        td Pendiente
-                                        td Item
-                                        td Por Retirar
-                                        td Comentario sobre juanita
-                                        td
-                                            button.btn.btn-info(type='button') Detalle
-                                    tr.text-center
-                                        td
-                                            | 123456789
-                                            br
-                                        td
-                                            | 22/2/2022
-                                            br
-                                        td Juanes
-                                        td 123
-                                        td Pendiente
-                                        td Pendiente
-                                        td Item
-                                        td Por Retirar
-                                        td Comentario sobre juanita
-                                        td
-                                            button.btn.btn-info(type='button') Detalle
-                                    tr.text-center
-                                        td
-                                            | 123456789
-                                            br
-                                        td
-                                            | 22/2/2022
-                                            br
-                                            br
-                                        td Juanes
-                                        td 123
-                                        td Pendiente
-                                        td Pendiente
-                                        td Item
-                                        td Por Retirar
-                                        td Comentario sobre juanita
-                                        td
-                                            button.btn.btn-info(type='button') Detalle
-                                    tr.text-center
-                                        td 123456789
-                                        td
-                                            | 22/2/2022
-                                            br
-                                        td Juanes
-                                        td 123
-                                        td Pendiente
-                                        td Pendiente
-                                        td Item
-                                        td Por Retirar
-                                        td Comentario sobre juanita
-                                        td
-                                            button.btn.btn-info(type='button') Detalle
-                                    tr.text-center
-                                        td 123456789
-                                        td
-                                            | 22/2/2022
-                                            br
-                                        td Juanes
-                                        td 123
-                                        td Pendiente
-                                        td Pendiente
-                                        td Item
-                                        td Por Retirar
-                                        td Comentario sobre juanita
-                                        td
-                                            button.btn.btn-info(type='button') Detalle
-                                tfoot
-                                    tr(style='font-size: 14px;text-align: center;')
-                                        td
-                                            strong N&uacute;mero Pedido
-                                        td
-                                            strong Fecha
-                                        td
-                                            strong Cliente
-                                        td
-                                            strong Monto
-                                        td
-                                            strong Pago
-                                        td
-                                            strong Preparaci&oacute;n
-                                        td
-                                            strong Items
-                                        td
-                                            strong M&eacute;todo Entrega
-                                        td
-                                            strong Notas y Comentarios
-                                        td
-                                            strong Vista Detallada
-                        .row
-                            .col-md-6.align-self-center
-                                p#dataTable_info.dataTables_info(role='status' aria-live='polite') Mostrando del 1 al 5 de un total de 27
-                            .col-md-6
-                                nav.d-lg-flex.justify-content-lg-end.dataTables_paginate.paging_simple_numbers
-                                    ul.pagination
-                                        li.page-item.disabled
-                                            a.page-link(href='#' aria-label='Previous')
-                                                span(aria-hidden='true') &laquo;
-                                        li.page-item.active(style='background: radial-gradient(black, white);')
-                                            a.page-link(href='#') 1
-                                        li.page-item
-                                            a.page-link(href='#') 2
-                                        li.page-item
-                                            a.page-link(href='#') 3
-                                        li.page-item
-                                            a.page-link(href='#' aria-label='Next')
-                                                span(aria-hidden='true') &raquo;
-        footer.bg-white.sticky-footer
-            .container.my-auto
-                .text-center.my-auto.copyright
-                    span Copyright &copy; NVIO 2020
-    a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-        i.fas.fa-angle-up
+                        .container-fluid(style="overflow-x:auto;")
+                            table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
+                                table#dataTable.table.my-0
+                                    thead
+                                        tr(style='font-size: 14px;text-align: center;')
+                                            th Número Pedido
+                                            th Fecha
+                                            th Cliente
+                                            th Monto
+                                            th Pago
+                                            th Preparación
+                                            th Items
+                                            th Método Entrega
+                                            th Notas y Comentarios
+                                            th Vista Detallada
+                                    tbody
+                                        each ORD, index in orders
+                                            tr.text-center
+                                                td #{ORD.SK.S.replace("ORDER#","")}
+                                                td
+                                                    if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
+                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                    else
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                    if    new Date(parseInt(ORD.createdAt.N)).getMonth() + 1 < 10
+                                                        | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                    else
+                                                        | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+                                                    else
+                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+
+                                                // Make it prettier pls
+                                                -
+                                                    try {
+                                                        a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
+                                                    } catch (err) {
+                                                        a = ""
+                                                    }
+
+                                                td #{a}
+                                                td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
+                                                td #{ORD.status.M.payment.N}
+                                                td #{ORD.status.M.order.N}
+
+                                                td
+                                                    if (a = parseInt(ORD.items.L.length)) > 2
+                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S + ", y " + parseInt(ORD.items.L.length - 2) + " más"}
+                                                    else if (a = parseInt(ORD.items.L.length)) === 2
+                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S}
+                                                    else
+                                                        | #{ORD.items.L[0].M.product.S}
+
+                                                td #{ORD.shippingMethod.S}
+
+                                                 -
+                                                     try {
+                                                         b = ORD.status.M.comments.L.length
+                                                         c = ORD.status.M.comments.L[0].M.timestamp.N
+
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate() < 10)
+                                                             z = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+                                                         else
+                                                             z = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1 < 10)
+                                                             y = "/0" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                         else
+                                                             y = "/" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                         x = "/" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getFullYear() + " " + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getHours() + ":"
+                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes() > 10)
+                                                             w = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+                                                         else
+                                                             w = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+
+                                                         var date_string = z+y+x+w;
+
+                                                         if (parseInt(b) > 1)
+                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S + ", y " + parseInt(ORD.status.M.comments.L.length - 1) + " más"
+                                                         else if (parseInt(b) == 1)
+                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S
+                                                         else
+                                                            b = ""
+                                                     } catch (err) {
+                                                         b = "Error"
+                                                     }
+
+                                                td #{b}
+                                                td
+                                                    a.btn.btn-info(type='button' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
+
+                                        tfoot
+                                            tr(style='font-size: 14px;text-align: center;')
+                                                td
+                                                    strong Número Pedido
+                                                td
+                                                    strong Fecha
+                                                td
+                                                    strong Cliente
+                                                td
+                                                    strong Monto
+                                                td
+                                                    strong Pago
+                                                td
+                                                    strong Preparación
+                                                td
+                                                    strong Items
+                                                td
+                                                    strong Método Entrega
+                                                td
+                                                    strong Notas y Comentarios
+                                                td
+                                                    strong Vista Detallada
+            footer.bg-white.sticky-footer
+                .container.my-auto
+                    .text-center.my-auto.copyright
+                        span Copyright &copy; NVIO 2020
+        a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+            i.fas.fa-angle-up
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
+script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+script(src='javascripts/historytable.js')

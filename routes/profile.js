@@ -30,7 +30,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     "ExpressionAttributeValues": {":cd420": {"S": req.user.user},":cd421": {"S": req.user.user.replace("COMPANY", "PROFILE")}}
   }
   profileResult = await db.query(params);
-  res.render('profile', {title: name, companyData: profileResult.Items[0], logo: logo});
+  res.render('profile', {title: name, companyData: profileResult.Items[0], logo: logo, userID: req.user.user.replace("COMPANY#", "")});
 });
 
 router.post('/saveName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
