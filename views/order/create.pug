@@ -3,6 +3,14 @@ head
   meta(charset='utf-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
   title Crear Orden - NVIO
+  script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+  script.
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SJETCMY2EN', {
+      'user_id': '#{userID}'
+    });
   link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
   link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
@@ -174,14 +182,15 @@ head
                           tbody#tableBody
                             tr(id='items[0]')
                               td
-                                input.form-control(type='text' id='items[0][product]' name='items[0][product]')
+                                input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
                               td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]')
+                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
                               td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]')
+                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required)
                               td
-                                .subtot(id='items[0][subtotal]')
+                                .d-inline(id='items[0][subtotal]')
                                   | $ 0
+                                i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
                           tr
                             td
                               button#clickAdd.btn.btn-primary.btn-sm Agregar producto
@@ -210,14 +219,14 @@ head
                               .form-row
                                 .col
                                   p.font-weight-bold.m-0 Comuna del Destinatario
-                                  input.form-control#locality(type='text' name='locality')
+                                  input.form-control#locality(type='text' name='locality' required)
                                   small
                                     | Debes ingresar la comuna a la cual se enviará el pedido
                                     br
                                     | En caso de que no aplique, ingresar "Retiro"
                                 .col
                                   p.font-weight-bold.m-0 Método de Despacho
-                                  input.form-control#shippingMethod(type='text' name='shippingMethod')
+                                  input.form-control#shippingMethod(type='text' name='shippingMethod' required)
                                   small
                                     | Debes especificar si el producto será retirado en local o si será despachado por alguien (Courier, Pyme, etc).
                                     br
@@ -228,7 +237,7 @@ head
                                     | - Starken
                                 .col
                                   p.font-weight-bold.m-0 Precio del Despacho
-                                  input.form-control#shippingCost(type='number' name='shippingCost' value=0)
+                                  input.form-control#shippingCost(type='number' name='shippingCost' value=0 min="0" required)
                                   small
                                     | Debes ingresar el valor asociado al método de despacho escogido
                                     br

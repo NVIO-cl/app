@@ -2,7 +2,15 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Dashboard - NVIO
+    title Profile - NVIO
+    script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SJETCMY2EN', {
+        'user_id': '#{userID}'
+      });
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
@@ -30,9 +38,9 @@ head
                         i.fas.fa-plus-square
                         span Crear Nueva Orden
                 li.nav-item
-                    a.nav-link(href='/login')
+                    a.nav-link(href='/logout')
                         i.far.fa-user-circle
-                        span Cerrar Sesi&oacute;n
+                        span Cerrar Sesión
                 li.nav-item
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
@@ -159,10 +167,15 @@ head
                     .col-lg-4
                         .card.mb-3
                             .card-body.text-center.shadow
-                                img.rounded-circle.mb-3.mt-4(src='dogs/image3.jpeg' width='160' height='160')
+                                img.mb-3.mt-4.img-fluid#imageUploadPreview(src=logo style='max-width:200px;max-height:200px;')
                                 .mb-3
-                                    button.btn.btn-primary.btn-sm(type='button' style='margin-right: 5px;') Cambiar Foto
-                                    button.btn.btn-danger.btn-sm(type='button' style='margin-left: 5px;') Remover Foto
+                                  form#imageUploadForm(enctype='multipart/form-data')
+                                      label.btn.btn-primary.btn-sm(for="imageUpload" style="margin-bottom:0;") Cambiar Foto
+                                      input#imageUpload(type="file", name="imageUpload" hidden accept="image/jpeg, image/png")
+                                      //-button.btn.btn-primary.btn-sm(type='button' style='margin-right: 5px;') Cambiar Foto
+                                      button.btn.btn-danger.btn-sm#imageUploadButon(type='submit' style='margin-left: 5px;') Guardar
+                                .mb-1
+                                  #imageUploadStatus
                         .card.shadow.mb-4
                             .card-header.py-3
                                 h6.text-primary.font-weight-bold.m-0 Status Pedidos
@@ -218,122 +231,119 @@ head
                                 .card.shadow.mb-3
                                     .card-header.py-3
                                         p.text-primary.m-0.font-weight-bold Configuraci&oacute;n de Empresa
+                                        
                                     .card-body
-                                        form
+                                        form#nameForm
                                             .form-row
                                                 .col
                                                     .form-group
                                                         label(for='companyName')
                                                             strong Nombre de Empresa
                                                             br
-                                                        input.form-control(type='text' placeholder='Nombre Empresa' name='companyName' id='companyName' required oninvalid='this.setCustomValidity("El nombre no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#companyName(type='text' placeholder='Nombre Empresa' name='companyName' value=companyData.companyName.S)
                                                 .col
                                                     .form-group
-                                                        label(for='repName')
+                                                        label(for='firstName')
                                                             strong Nombre Representante
-                                                        input.form-control(type='text' placeholder='Nombre Representante' name='repName' id='repName' required oninvalid='this.setCustomValidity("El nombre no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#firstName(type='text' placeholder='Nombre Representante' name='firstName' value=companyData.firstName.S)
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='repLastname1')
-                                                            strong Apellido Paterno Representante
+                                                        label(for='lastName')
+                                                            strong Apellidos Representante
                                                             br
-                                                        input.form-control(type='text' placeholder='Apellido Paterno' name='repLastname1' id='repLastname1' required oninvalid='this.setCustomValidity("El apellido no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
-                                                .col
-                                                    .form-group
-                                                        label(for='repLastname2')
-                                                            strong Apellido Materno Representante
-                                                        input.form-control(type='text' placeholder='Apellido Materno' name='repLastname2' id='repLastname2' required oninvalid='this.setCustomValidity("El apellido no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#lastName(type='text' placeholder='Apellidos' name='lastName' value=companyData.lastName.S)
                                             .form-group
-                                                button.btn.btn-primary.btn-sm(type='submit') Guardar
+                                                button.btn.btn-primary.btn-sm#nameFormButton(type='submit') Guardar
+                                                
+                                                
                                 .card.shadow.mb-3
                                     .card-header.py-3
                                         p.text-primary.m-0.font-weight-bold Configuraci&oacute;n de Contacto
                                     .card-body
-                                        form
+                                        form#contactForm
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='phone')
+                                                        label(for='contactNumber')
                                                             strong Tel&eacute;fono del Representante
-                                                        .input-group
-                                                            .input-group-prepend
-                                                                span.input-group-text +56 9
-                                                            input.form-control(type='tel' placeholder='0000 0000' name='phone' id='phone' pattern="[0-9]{8}" required oninvalid='this.setCustomValidity("Ingrese exactamente 8 dígitos")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+" + companyData.contactNumber.N)
                                                 .col
                                                     .form-group
-                                                        label(for='repEmail')
-                                                            strong Correo del Representante
-                                                        input.form-control(type='email' name='repEmail' id='repEmail' placeholder='ejemplo@correo.com' required oninvalid='this.setCustomValidity("Por favor ingresa un formato de correo válido")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        label(for='email')
+                                                            strong Correo del Representante (este NO es tu correo para inicar sesión)
+                                                        input.form-control#email(type='text' placeholder='ejemplo@email.com' name='email' value=companyData.email.S)
                                             .form-group
-                                                button.btn.btn-primary.btn-sm(type='submit') Guardar
+                                                button.btn.btn-primary.btn-sm#contactFormButton(type='submit') Guardar
                                 .card.shadow.mb-3
                                     .card-header.py-3
                                         p.text-primary.m-0.font-weight-bold Datos para Factura y Transferencia
                                     .card-body
-                                        p.text-primary.m-0.font-weight-bold Factura
-                                        form
+                                            
+                                        form#transferForm
+                                          p.text-primary.m-0.font-weight-bold Factura
+                                            .form-row
+                                              .col
+                                                  .form-group
+                                                      label(for='companyTurn')
+                                                          strong Giro
+                                                      input.form-control#companyTurn(type='text' placeholder='Giro SII' name='companyTurn' value=companyData.companyTurn.S)
+                                              .col
+                                                  .form-group
+                                                      label(for='companyRut')
+                                                          strong RUT Empresa
+                                                      input.form-control#companyRut(type='text' placeholder='1.234.567-8' name='companyRut' value=companyData.companyRut.S)
+                                      
+                                          p.text-primary.m-0.font-weight-bold Transferencia
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='giro')
-                                                            strong Giro
-                                                        input.form-control(type='text' placeholder='Giro SII' name='giro' id='giro' required oninvalid='this.setCustomValidity("El giro no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
-                                                .col
-                                                    .form-group
-                                                        label(for='companyRut')
-                                                            strong RUT Empresa
-                                                        input.form-control(type='text' placeholder='RUT' name='companyRut' id='companyRut' pattern='^0*(\\d{1,3}(\\.?\\d{3})*)\\-?([\\dkK])$' required oninvalid='this.setCustomValidity("Por favor ingresa un formato de rut válido")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
-                                            hr
-                                            p.text-primary.m-0.font-weight-bold Transferencia
-                                            .form-row
-                                                .col
-                                                    .form-group
-                                                        label(for='accountName')
+                                                        label(for='paymentDataName')
                                                             strong Nombre Asociado a Cuenta
-                                                        input.form-control(type='text' placeholder='Nombre' name='accountName' id='accountName' required oninvalid='this.setCustomValidity("El nombre no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#paymentDataName(type='text' placeholder='Nombre' name='paymentDataName' value=companyData.paymentData.M.name.S)
                                                 .col
                                                     .form-group
-                                                        label(for='rut')
+                                                        label(for='paymentDataRut')
                                                             strong RUT
-                                                        input.form-control(type='text' placeholder='RUT' name='rut' id='rut' pattern='^0*(\\d{1,3}(\\.?\\d{3})*)\\-?([\\dkK])$' required oninvalid='this.setCustomValidity("Por favor ingresa un formato de rut válido")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#paymentDataRut(type='text' placeholder='RUT' name='paymentDataRut' value=companyData.paymentData.M.rut.S)
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='bank')
+                                                        label(for='paymentDataBank')
                                                             strong Banco
                                                             br
-                                                        input.form-control(type='text' placeholder='Banco' name='bank' id='bank' required oninvalid='this.setCustomValidity("El nombre del banco no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#paymentDataBank(type='text' placeholder='Banco' name='paymentDataBank' value=companyData.paymentData.M.bank.S)
                                                 .col
                                                     .form-group
-                                                        label(for='accountType')
+                                                        label(for='paymentDataAccType')
                                                             strong Tipo de Cuenta
                                                             br
-                                                        input.form-control(type='text' placeholder='Tipo Cuenta' name='accountType' id='accountType' required oninvalid='this.setCustomValidity("El tipo de cuenta no puede estar vacío")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#paymentDataAccType(type='text' placeholder='Tipo Cuenta' name='paymentDataAccType' value=companyData.paymentData.M.accType.S)
                                             .form-row
                                                 .col
                                                     .form-group
-                                                        label(for='accountNumber')
-                                                            strong N&uacute;mero de Cuenta
+                                                        label(for='paymentDataAccNum')
+                                                            strong Número de Cuenta
                                                             br
-                                                        input.form-control(type='number' min='0' placeholder='Número Cuenta' name='accountNumber' id='accountNumber' required oninvalid='this.setCustomValidity("El número de cuenta debe contener únicamente números")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#paymentDataAccNum(type='text' placeholder='Número Cuenta' name='paymentDataAccNum' value=companyData.paymentData.M.accNum.S)
                                                 .col
                                                     .form-group
-                                                        label(for='accountEmail')
+                                                        label(for='paymentDataEmail')
                                                             strong Correo Electr&oacute;nico Cuenta
                                                             br
-                                                        input.form-control(type='email' placeholder='Correo' name='accountEmail' id='accountEmail' required oninvalid='this.setCustomValidity("Por favor ingresa un formato de correo válido")' onchange='try{setCustomValidity("")}catch(e){}' oninput='setCustomValidity("")')
+                                                        input.form-control#paymentDataEmail(type='text' placeholder='Correo' name='paymentDataEmail' value=companyData.paymentData.M.email.S)
                                             .form-group
-                                                button.btn.btn-primary.btn-sm(type='submit') Guardar
+                                              button.btn.btn-primary.btn-sm#transferFormButton(type='submit') Guardar
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
                     span Copyright &copy; NVIO 2020
     a.border.rounded.d-inline.scroll-to-top(href='#page-top')
         i.fas.fa-angle-up
-script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js' integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj' crossorigin='anonymous')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js' integrity='sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==' crossorigin='anonymous')
 script(src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx' crossorigin='anonymous')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
-script(src='/javascripts/bs-init.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='/javascripts/theme.js')
+script(src='/javascripts/profile-saver.js')
+script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
