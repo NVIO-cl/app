@@ -29,8 +29,6 @@ aws.config.update({
 var s3Endpoint = new aws.Endpoint(process.env.AWS_S3_ENDPOINT);
 
 const xl = require('excel4node');
-const wb = new xl.Workbook();
-const ws = wb.addWorksheet('Pedidos');
 var date_parser = require("../date_parser");
 
 /* GET home page. */
@@ -134,6 +132,9 @@ router.get('/historial',passport.authenticate('jwt', {session: false, failureRed
 });
 
 router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+
+  const wb = new xl.Workbook();
+  const ws = wb.addWorksheet('Pedidos');
 
   var params={
     "TableName": "app",
