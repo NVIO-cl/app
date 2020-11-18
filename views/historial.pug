@@ -16,35 +16,7 @@ head
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css')
 #wrapper
-    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
-        .container-fluid.d-flex.flex-column.p-0
-            a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_blanco.png' style='width: 90%;')
-            hr.sidebar-divider.my-0
-            ul#accordionSidebar.nav.navbar-nav.text-light
-                li.nav-item
-                    a.nav-link(href='/')
-                        i.fas.fa-tachometer-alt
-                        span Dashboard
-                li.nav-item
-                    a.nav-link(href='/profile')
-                        i.fas.fa-user
-                        span Perfil
-                li.nav-item
-                    a.nav-link.active(href='/historial')
-                        i.fas.fa-table
-                        span Historial de Ventas
-                li.nav-item
-                    a.nav-link(href='/order/create')
-                        i.fas.fa-plus-square
-                        span Crear Nueva Orden
-                li.nav-item
-                    a.nav-link(href='/logout')
-                        i.far.fa-user-circle
-                        span Cerrar Sesión
-                li.nav-item
-            .text-center.d-none.d-md-inline
-                button#sidebarToggle.btn.rounded-circle.border-0(type='button')
+    include includes/sidebar
     #content-wrapper.d-flex.flex-column
         #content
             nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
@@ -292,10 +264,13 @@ head
                         span Copyright &copy; NVIO 2020
         a.border.rounded.d-inline.scroll-to-top(href='#page-top')
             i.fas.fa-angle-up
-script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
-script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
-script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
-script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
-script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
-script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
-script(src='javascripts/historytable.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
+    script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
+    script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+    script(src='javascripts/historytable.js')
+    script.
+        var active = document.getElementById("linkHistorial");
+        active.className = "nav-link active";
