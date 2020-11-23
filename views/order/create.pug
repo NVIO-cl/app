@@ -221,10 +221,10 @@ head
                                 form
                                   .form-group
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkWire' checked)
+                                      input.form-check-input(type='radio' name='shipping' id='checkWire' checked value='transferencia')
                                       label.form-check-label(for='checkWire') Transferencia
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkCash')
+                                      input.form-check-input(type='radio' name='shipping' id='checkCash' value='efectivo')
                                       label.form-check-label(for='checkCash') Efectivo
                       .form-row
                         .col
@@ -236,10 +236,10 @@ head
                                 form#shippingRadios(onchange='valueChanged()')
                                   .form-group
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' onclick='valueChanged()' checked)
+                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' onclick='valueChanged()' checked value='domicilio')
                                       label.form-check-label(for='checkShipping') Despacho a Domicilio
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' onclick='valueChanged()')
+                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' onclick='valueChanged()' value='local')
                                       label.form-check-label(for='checkInStore') Retiro en Local
                               .form-row(id='shippingInfo')
                                 .col
@@ -273,7 +273,7 @@ head
                                     | - Starken --> El valor correspondiente hacia la comuna del cliente
                                 .col
                                   p.font-weight-bold.m-0 Fecha de Entrega (Opcional)
-                                    input.form-control#shippingDate(type='date' name='shippingCost' value=0 min="0" required)
+                                    input.form-control#shippingDate(type='date' name='shippingDate' required)
                                     small
                                       | Puedes ingresar una fecha de entrega estimada si deseas
                   .form-group(style="text-align: center;")
