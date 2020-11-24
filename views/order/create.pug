@@ -218,7 +218,6 @@ head
                             .col.text-left.align-self-center
                               p.font-weight-bold.m-0 Método de Pago
                               .form-row
-                                form
                                   .form-group
                                     .form-check
                                       input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
@@ -233,13 +232,13 @@ head
                             .col.text-left.align-self-center
                               p.font-weight-bold.m-0 Método de Despacho
                               .form-row
-                                form#shippingRadios(onchange='valueChanged()')
+                                #shippingRadios(onchange='valueChanged()')
                                   .form-group
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' onclick='valueChanged()' checked value='domicilio')
+                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' checked value='domicilio')
                                       label.form-check-label(for='checkShipping') Despacho a Domicilio
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' onclick='valueChanged()' value='local')
+                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
                                       label.form-check-label(for='checkInStore') Retiro en Local
                               .form-row(id='shippingInfo')
                                 .col

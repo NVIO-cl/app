@@ -35,19 +35,21 @@ main.page.payment-page
                                     .form-group
                                         label(for='apellido') Apellido
                                         input#apellido.form-control(type='text' placeholder='Apellido' style='width: 100%;' name='apellido' required)
-                                .col-sm-8
-                                    .form-group
-                                        label(for='direccion') Dirección (calle y número)
-                                        input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
-                                        small Si vas a retirar no necesitas dar tu dirección
-                                .col-sm-4
-                                    .form-group
-                                        label(for='apart') Casa/depto.
-                                        input#apart.form-control(type='text' placeholder='Apartado' name='apart')
-                                .col-sm-8
-                                    .form-group
-                                        label(for='comuna') Comuna
-                                        p#comuna #{orderData.clientData.M.address.M.locality.S}
+                                if (orderData.clientData.M.address.M.locality.S != "Retiro en tienda")
+                                  .col-sm-8
+                                      .form-group
+                                          label(for='direccion') Dirección (calle y número)
+                                          input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
+                                          small Si vas a retirar no necesitas dar tu dirección
+                                  .col-sm-4
+                                      .form-group
+                                          label(for='apart') Casa/depto.
+                                          input#apart.form-control(type='text' placeholder='Apartado' name='apart')
+                                  .col-sm-8
+                                      .form-group
+                                          label(for='comuna') Comuna
+                                          p#comuna #{orderData.clientData.M.address.M.locality.S}
+                                  
                                 .col-sm-8
                                     .form-group
                                         label(for='telefono') Teléfono de contacto
@@ -63,14 +65,15 @@ main.page.payment-page
                                     .form-group
                                         label(for='comentario') Comentarios adicionales
                                         input#comentario.form-control(type='text' name='comentario')
-                                .col-sm-8
-                                    .form-group
-                                        label(for='comprobante') Comprobante de pago
-                                        .form-row
-                                            .col
-                                                //-button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;')   Adjuntar archivo
-                                                input#comprobante(type='file' accept="image/png, image/jpeg" name='comprobante' required)
-                                                  
+                                if (orderData.status.M.payment.N != 3)
+                                  .col-sm-8
+                                      .form-group
+                                          label(for='comprobante') Comprobante de pago
+                                          .form-row
+                                              .col
+                                                  //-button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;')   Adjuntar archivo
+                                                  input#comprobante(type='file' accept="image/png, image/jpeg" name='comprobante' required)
+                                                    
                                 .col-sm-8
                                     .form-group
                                         .form-check(style='margin-bottom: -7px;')
@@ -100,29 +103,39 @@ main.page.payment-page
                         .item(style='padding-top: 12px;')
                             span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.order.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
                             p.item-name(style='margin-right: 19px;') Total productos
-                        .item(style='padding-top: 12px;')
-                            span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
-                            p.item-name(style='margin-right: 19px;') Entrega
-                            p.item-description(style='margin-right: 19px;') #{orderData.shippingMethod.S} / #{orderData.clientData.M.address.M.locality.S}
+                        if (orderData.status.M.payment.N != 3)
+                          .item(style='padding-top: 12px;')
+                              span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                              p.item-name(style='margin-right: 19px;') Entrega
+                              p.item-description(style='margin-right: 19px;') #{orderData.shippingMethod.S} / #{orderData.clientData.M.address.M.locality.S}
+                        else
+                          .item(style='padding-top: 12px;')
+                              span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                              p.item-name(style='margin-right: 19px;') Entrega
+                              p.item-description(style='margin-right: 19px;') Retiro en tienda
                         .total(style='margin-right: 19px;')
                             span(style='margin-right: 19px;') Total
                             span.price(style='margin-right: 0px;') #{(parseInt(orderData.cost.M.order.N) + parseInt(orderData.cost.M.shipping.N)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
                         div(style='height: 6%;')
-                        h3.title Datos de transferencia
-                        .item
-                            p.item-name Nombre: #{companyData.paymentData.M.name.S}
-                        .item
-                            p.item-name RUT: #{companyData.paymentData.M.rut.S}
-                        .item
-                            p.item-name Banco: #{companyData.paymentData.M.bank.S}
-                        .item
-                            p.item-name Cuenta: #{companyData.paymentData.M.accType.S}
-                        .item
-                            p.item-name Nº Cuenta: #{companyData.paymentData.M.accNum.S}
-                        .item
-                            p.item-name Correo: #{companyData.paymentData.M.email.S}
-                        .item(style='text-align: center;')
-                            p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID}"!
+                        if (orderData.status.M.payment.N != 3)
+                          h3.title Datos de transferencia
+                          .item
+                              p.item-name Nombre: #{companyData.paymentData.M.name.S}
+                          .item
+                              p.item-name RUT: #{companyData.paymentData.M.rut.S}
+                          .item
+                              p.item-name Banco: #{companyData.paymentData.M.bank.S}
+                          .item
+                              p.item-name Cuenta: #{companyData.paymentData.M.accType.S}
+                          .item
+                              p.item-name Nº Cuenta: #{companyData.paymentData.M.accNum.S}
+                          .item
+                              p.item-name Correo: #{companyData.paymentData.M.email.S}
+                          .item(style='text-align: center;')
+                              p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID}"!
+                        else
+                          .item(style='text-align: center;')
+                              p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda que debes pagar en efectivo al momento de recibir tu pedido!
 footer.page-footer.dark
     .container
         .row

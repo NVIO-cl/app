@@ -3,13 +3,18 @@ window.onload = (e) => {
 };
 
 function valueChanged(){
-    if($('#checkShipping').is(':checked'))
-        $('#shippingInfo').show();
-    else
+    if($('#checkShipping').is(':checked')){
+      console.log("Shipping is mandatory");
+      $('#shippingInfo').show();
+      $('#locality').attr('required', true)
+      $('#shippingMethod').attr('required', true)
+      $('#shippingCost').attr('required', true)
+    }
+    if($('#checkInStore').is(':checked')){
+        console.log("Shipping is NOT mandatory");
         $('#shippingInfo').hide();
-
-    if($('#checkInStore').is(':checked'))
-        $('#shippingInfo').hide();
-    else
-        $('#shippingInfo').show();
+        $('#locality').attr('required', false)
+        $('#shippingMethod').attr('required', false)
+        $('#shippingCost').attr('required', false)
+    }
 }
