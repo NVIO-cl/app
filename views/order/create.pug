@@ -168,7 +168,7 @@ head
               .card-header.py-3
                 p.text-primary.m-0.font-weight-bold Crear Nueva Orden
               .card-body
-                form(action='/order/create' method='POST')
+                form#newOrder(action='/order/create' method='POST')
                   .form-row.align-items-center
                     .col
                       .table-responsive
@@ -262,7 +262,7 @@ head
                                     small
                                       | Puedes ingresar una fecha de entrega estimada si deseas
                   .form-group(style="text-align: center;")
-                    button.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
+                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright

@@ -18,3 +18,8 @@ function valueChanged(){
         $('#shippingCost').attr('required', false)
     }
 }
+
+$("#newOrder").submit(function (e) {
+  console.log("New order submitted!");
+  $("#submit").attr("disabled", true);
+})
