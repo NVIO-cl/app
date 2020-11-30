@@ -168,7 +168,7 @@ head
               .card-header.py-3
                 p.text-primary.m-0.font-weight-bold Crear Nueva Orden
               .card-body
-                form(action='/order/create' method='POST')
+                form#newOrder(action='/order/create' method='POST')
                   .form-row.align-items-center
                     .col
                       .table-responsive
@@ -216,43 +216,57 @@ head
                           hr
                           .form-row.text-right.mb-3
                             .col.text-left.align-self-center
+                              p.font-weight-bold.m-0 Método de Pago
                               .form-row
+                                  .form-group
+                                    .form-check
+                                      input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
+                                      label.form-check-label(for='checkWire') Transferencia
+                                    .form-check
+                                      input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
+                                      label.form-check-label(for='checkCash') Efectivo
+                      .form-row
+                        .col
+                          hr
+                          .form-row.text-right.mb-3
+                            .col.text-left.align-self-center
+                              p.font-weight-bold.m-0 Método de Despacho
+                              .form-row
+                                #shippingRadios(onchange='valueChanged()')
+                                  .form-group
+                                    .form-check
+                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' checked value='domicilio')
+                                      label.form-check-label(for='checkShipping') Despacho a Domicilio
+                                    .form-check
+                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
+                                      label.form-check-label(for='checkInStore') Retiro en Local
+                              .form-row(id='shippingInfo')
                                 .col
                                   p.font-weight-bold.m-0 Comuna del Destinatario
                                   input.form-control#locality(type='text' name='locality' required)
                                   small
                                     | Debes ingresar la comuna a la cual se enviará el pedido
-                                    br
-                                    | En caso de que no aplique, ingresar "Retiro"
                                 .col
                                   p.font-weight-bold.m-0 Método de Despacho
                                   input.form-control#shippingMethod(type='text' name='shippingMethod' required)
                                   small
-                                    | Debes especificar si el producto será retirado en local o si será despachado por alguien (Courier, Pyme, etc).
-                                    br
-                                    | Ejemplos:
-                                    br
-                                    | - Retiro en local
-                                    br
-                                    | - Starken
+                                    | Debes especificar el nombre de la compañía o servicio que se utilizará para el envío
                                 .col
                                   p.font-weight-bold.m-0 Precio del Despacho
                                   input.form-control#shippingCost(type='number' name='shippingCost' value=0 min="0" required)
                                   small
                                     | Debes ingresar el valor asociado al método de despacho escogido
-                                    br
-                                    | Ejemplos:
-                                    br
-                                    | - Retiro en local --> 0
-                                    br
-                                    | - Starken --> El valor correspondiente hacia la comuna del cliente
+                                .col
+                                  p.font-weight-bold.m-0 Fecha de Entrega (Opcional)
+                                    input.form-control#shippingDate(type='date' name='shippingDate')
+                                    small
+                                      | Puedes ingresar una fecha de entrega estimada si deseas
                   .form-group(style="text-align: center;")
-                    button.btn.btn-primary.btn-sm(type='submit' value='Submit') Crear Venta
+                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
           span Copyright &copy; NVIO 2020
-  a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-    i.fas.fa-angle-up
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+  script(src='/javascripts/show-hide-shipping.js')
   script(src='/javascripts/addprod.js')
