@@ -212,12 +212,10 @@ head
                                     else if (order[0].status.M.payment.N == 3)
                                       | Pago en efectivo
                                     br
-                                    | Método Entrega: 
-                                    if (order[0].clientData.M.address.M.locality.S == 'Retiro en tienda')
-                                      | Retiro en tienda
-                                    else
-                                      #{order[0].shippingMethod.S}
+                                    | Método Entrega: #{order[0].shippingMethod.S}
                                     br
+                                    if (order[0].status.M.shippingDate.S != '')
+                                      | Fecha estimada de entrega: #{order[0].status.M.shippingDate.S}
                                 strong Listado de Artículos
                                 .table-responsive(style='text-align: center;')
                                     table.table

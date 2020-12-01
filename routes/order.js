@@ -25,6 +25,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.body);
   //Parse and validate the data
   var payment = 0;
 
@@ -105,6 +106,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           "status": {
             "payment": payment,
             "order": 0,
+            "shippingDate": req.body.shippingDate,
             "comments": [
               {
                 "timestamp": Date.now(),
@@ -166,6 +168,10 @@ router.get('/:id',  async(req, res) => {
     res.redirect('/order/finished');
   }
 
+  if (getOrder.Items[0].status.M.shippingDate.S != "") {
+    var parsed_deliveryDate = getOrder.Items[0].status.M.shippingDate.S.split("-");
+    getOrder.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+  }
   params = {
     "TableName": "app",
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
