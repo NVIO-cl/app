@@ -35,6 +35,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
 
   if (req.body.shipping == 'local') {
     req.body.locality = 'Retiro en tienda'
+    req.body.shippingMethod = 'Retiro en tienda'
   }
 
   //Shipping Cost
