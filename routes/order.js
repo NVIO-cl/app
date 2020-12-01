@@ -269,6 +269,10 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     else {
       paymentStatus = 3;
     }
+    if (getOrder.Items[0].shippingMethod == "Retiro en tienda") {
+      req.body.apart = "";
+      req.body.direccion= "";
+    }
     //Save the order data
     var params = {
       "TableName": "app",
