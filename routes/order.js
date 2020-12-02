@@ -167,10 +167,11 @@ router.get('/:id',  async(req, res) => {
   if (getOrder.Items[0].status.M.order.N > 0) {
     res.redirect('/order/finished');
   }
-
-  if (getOrder.Items[0].status.M.shippingDate.S != "") {
-    var parsed_deliveryDate = getOrder.Items[0].status.M.shippingDate.S.split("-");
-    getOrder.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+  if (getOrder.Items[0].status.M.shippingDate) {
+    if (getOrder.Items[0].status.M.shippingDate.S != "") {
+      var parsed_deliveryDate = getOrder.Items[0].status.M.shippingDate.S.split("-");
+      getOrder.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+    }
   }
   params = {
     "TableName": "app",

@@ -214,8 +214,9 @@ head
                                     br
                                     | Método Entrega: #{order[0].shippingMethod.S}
                                     br
-                                    if (order[0].status.M.shippingDate.S != '')
-                                      | Fecha estimada de entrega: #{order[0].status.M.shippingDate.S}
+                                    if (order[0].status.M.shippingDate)
+                                      if (order[0].status.M.shippingDate.S != '')
+                                        | Fecha estimada de entrega: #{order[0].status.M.shippingDate.S}
                                 strong Listado de Artículos
                                 .table-responsive(style='text-align: center;')
                                     table.table
