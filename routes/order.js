@@ -25,7 +25,20 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.body);
   //Parse and validate the data
+  var payment = 0;
+
+  console.log(req.body);
+  if (req.body.payment == 'efectivo') {
+    payment = 3;
+  }
+
+  if (req.body.shipping == 'local') {
+    req.body.locality = 'Retiro en tienda'
+    req.body.shippingMethod = 'Retiro en tienda'
+  }
+
   //Shipping Cost
   var orderID;
   if (!validator.isInt(req.body.shippingCost)) {
@@ -91,8 +104,9 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           },
           "items": itemList,
           "status": {
-            "payment": 0,
+            "payment": payment,
             "order": 0,
+            "shippingDate": req.body.shippingDate,
             "comments": [
               {
                 "timestamp": Date.now(),
@@ -153,7 +167,12 @@ router.get('/:id',  async(req, res) => {
   if (getOrder.Items[0].status.M.order.N > 0) {
     res.redirect('/order/finished');
   }
-
+  if (getOrder.Items[0].status.M.shippingDate) {
+    if (getOrder.Items[0].status.M.shippingDate.S != "") {
+      var parsed_deliveryDate = getOrder.Items[0].status.M.shippingDate.S.split("-");
+      getOrder.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+    }
+  }
   params = {
     "TableName": "app",
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
@@ -173,6 +192,18 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
   var profileID = "PROFILE#" + fullID.substring(0, 6);
   var orderID = "ORDER#" + fullID.substring(6, 12);
   var valid = true;
+  var orderStatus;
+  var paymentStatus;
+
+  var params = {
+    "TableName": "app",
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+
+  getOrder = await db.queryv2(params);
+
   //Check Terms
   if (req.body.tyc != 'on') {
     console.log("Terms and conditions NOT OK");
@@ -205,38 +236,49 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     valid = false;
   }
   if (valid == true) {
-    //Check image uploading and save the image
-    var s3up;
-    if (req.file) {
-      if (await !req.file.mimetype.startsWith("image")) {
-        console.log("INVALID image");
-        res.redirect(req.headers.referer);
+    //Check if payment is cash or card
+    if (getOrder.Items[0].status.payment != 3) {
+      //Check image uploading and save the image
+      var s3up;
+      if (req.file) {
+        if (await !req.file.mimetype.startsWith("image")) {
+          console.log("INVALID image");
+          res.redirect(req.headers.referer);
+        }
+        else {
+
+          var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+          var scaled = await file.scaleToFit(500, 1000);
+          var buffer = await scaled.getBufferAsync(Jimp.AUTO);
+          var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
+          var params = {
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
+            ACL: 'private',
+            Body: buffer
+          }
+          s3up = await s3.putObject(params, function (err, data) {
+            if (err) {
+              console.log("Error: ", err);
+            } else {
+              console.log("Image uploaded OK");
+              paymentStatus = 1;
+            }
+          }).promise();
+
+        }
       }
       else {
-
-        var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
-        var scaled = await file.scaleToFit(500, 1000);
-        var buffer = await scaled.getBufferAsync(Jimp.AUTO);
-        var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
-        var params = {
-          Bucket: process.env.AWS_S3_BUCKET,
-          Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
-          ACL: 'private',
-          Body: buffer
-        }
-        s3up = await s3.putObject(params, function (err, data) {
-          if (err) {
-            console.log("Error: ", err);
-          } else {
-            console.log("Image uploaded OK");
-          }
-        }).promise();
-
+        console.log("NO IMAGE");
+        res.redirect(req.headers.referer);
       }
     }
     else {
-      console.log("NO IMAGE");
-      res.redirect(req.headers.referer);
+      paymentStatus = 3;
+    }
+    if (getOrder.Items[0].shippingMethod == "Retiro en tienda") {
+      req.body.apart = "";
+      req.body.direccion= "";
     }
     //Save the order data
     var params = {
@@ -245,7 +287,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
         "PK":companyID,
         "SK": orderID
       },
-      "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
+      "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #status.#payment = :payment, #updatedAt = :updatedAt ",
       "ExpressionAttributeNames": {
         "#clientData":"clientData",
         "#firstName":"firstName",
@@ -255,6 +297,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
         "#comment":"comment",
         "#status":"status",
         "#order":"order",
+        "#payment":"payment",
         "#updatedAt":"updatedAt",
         "#address":"address",
         "#street":"street",
@@ -267,6 +310,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
         ":contactNumber": parseInt(req.body.telefono),
         ":comment": req.body.comentario,
         ":order": 1,
+        ":payment": paymentStatus,
         ":updatedAt": Date.now(),
         ":street": req.body.direccion,
         ":apart": req.body.apart

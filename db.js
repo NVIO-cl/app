@@ -55,5 +55,16 @@ module.exports = {
       console.log(err);
       return err;
     }
-  }
+  },
+
+  queryv2: async function (params) {
+    try {
+      var docClient = new aws.DynamoDB.DocumentClient();
+      const queryOutput = await docClient.query(params).promise();
+      return queryOutput;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  },
 }

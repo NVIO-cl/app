@@ -91,7 +91,12 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
   var created_at = detailQuery.Items[0].createdAt.N;
   var parsed_created_at = date_parser.parse_date(created_at);
-
+  if (detailQuery.Items[0].status.M.shippingDate) {
+    if (detailQuery.Items[0].status.M.shippingDate.S != "") {
+      var parsed_deliveryDate = detailQuery.Items[0].status.M.shippingDate.S.split("-");
+      detailQuery.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+    }
+  }
   let comentarios = []
   for (var i = 0; i < detailQuery.Items[0].status.M.comments.L.length; i++){
       var db_date = detailQuery.Items[0].status.M.comments.L[i].M.timestamp.N

@@ -188,10 +188,35 @@ head
                                     br
                                     | Fecha de Creación #{parsed_created_at}
                                     br
-                                    | Estado: #{order[0].status.M.order.N}
+                                    | Estado pedido: 
+                                    if (order[0].status.M.order.N == 0)
+                                      | Sin información de cliente
+                                    else if (order[0].status.M.order.N == 1)
+                                      | Datos de cliente rellenados
+                                    else if (order[0].status.M.order.N == 2)
+                                      | En proceso de preparación
+                                    else if (order[0].status.M.order.N == 3)
+                                      | Listo para retirar
+                                    else if (order[0].status.M.order.N == 4)
+                                      | En proceso de despacho
+                                    else if (order[0].status.M.order.N == 5)
+                                      | Pedido finalizado
+                                    br
+                                    | Estado pago: 
+                                    if (order[0].status.M.payment.N == 0)
+                                      | Sin información de cliente
+                                    else if (order[0].status.M.payment.N == 1)
+                                      | Comprobante subido, pago sin verificar
+                                    else if (order[0].status.M.payment.N == 2)
+                                      | Pago verificado
+                                    else if (order[0].status.M.payment.N == 3)
+                                      | Pago en efectivo
                                     br
                                     | Método Entrega: #{order[0].shippingMethod.S}
                                     br
+                                    if (order[0].status.M.shippingDate)
+                                      if (order[0].status.M.shippingDate.S != '')
+                                        | Fecha estimada de entrega: #{order[0].status.M.shippingDate.S}
                                 strong Listado de Artículos
                                 .table-responsive(style='text-align: center;')
                                     table.table
@@ -210,7 +235,6 @@ head
                                                 td
                                                     - var subtotal = parseInt(ORD.M.price.N) * parseInt(ORD.M.quantity.N)
                                                         | #{subtotal}
-
                                 .row
                                     .col
                                         strong Total Productos
@@ -229,24 +253,28 @@ head
                                         p(style='text-align: center;') $
                                             - var subtotal = parseInt(order[0].cost.M.order.N) + parseInt(order[0].cost.M.shipping.N)
                                                 | #{subtotal}
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Estado de Pago
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                strong Comprobante de Pago
-                                p
-                                .text-center.small.mt-4
-                                    img(src=logo style='margin-bottom: 5px; max-height: 250px;')
-                                button#comprobante.btn.btn-primary(type='button' style='background: #6e3c8e;') Descargar Comprobante
+                        if (order[0].status.M.payment.N != 3)
+                          .card.shadow.mb-4
+                              .card-header.d-flex.justify-content-between.align-items-center
+                                  h6.text-primary.font-weight-bold.m-0 Estado de Pago
+                                  .dropdown.no-arrow
+                                      button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                          i.fas.fa-ellipsis-v.text-gray-400
+                                      .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                          p.text-center.dropdown-header dropdown header:
+                                          a.dropdown-item(href='#') &nbsp;Action
+                                          a.dropdown-item(href='#') &nbsp;Another action
+                                          .dropdown-divider
+                                          a.dropdown-item(href='#') &nbsp;Something else here
+                              .card-body
+                                  strong Comprobante de Pago
+                                  br
+                                  small Haz click en la imagen para ver el tamaño completo
+                                  p
+                                  .text-center.small.mt-4(style='margin: auto;width: 99%;')
+                                      a(data-toggle='modal' data-target='#modal-comprobante')
+                                          img(src=logo style='display: block;margin-bottom: 5px;margin-left: auto;margin-right: auto;max-height: 250px; max-width: 300px;width: auto;height: auto;')
+                                  button#comprobante.btn.btn-primary(type='button' style='display: block;background: #6e3c8e;margin: auto;width: 50%;') Descargar Comprobante
                     .col
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
@@ -268,7 +296,6 @@ head
                                         var nota = "Aún no hay notas del cliente para esta orden"
                                     }
                                 p #{nota}
-
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Detalles Cliente
@@ -315,25 +342,27 @@ head
                                     | #{email}
                                     br
                                     | #{telefono}
-                                hr
-                                .row
-                                    .col
-                                        p(style='width: 80%;') Direcci&oacute;n de Despacho
-                                    .col.col-3(style='text-align: right;')
-                                        a(href='#')
-                                            i.fa.fa-pencil
-                                -
-                                    try {
-                                        var direccion = order[0].clientData.M.address.M.street.S + " " + order[0].clientData.M.address.M.apart.S
-                                    } catch (err) {
-                                        var direccion = "El cliente no ha registrado sus datos"
-                                    }
+                                
+                                if (order[0].clientData.M.address.M.locality.S != 'Retiro en tienda')
+                                  hr
+                                  .row
+                                      .col
+                                          p(style='width: 80%;') Direcci&oacute;n de Despacho
+                                      .col.col-3(style='text-align: right;')
+                                          a(href='#')
+                                              i.fa.fa-pencil
+                                  -
+                                      try {
+                                          var direccion = order[0].clientData.M.address.M.street.S + " " + order[0].clientData.M.address.M.apart.S
+                                      } catch (err) {
+                                          var direccion = "El cliente no ha registrado sus datos"
+                                      }
 
-                                p
-                                    | #{direccion}
-                                    br
-                                    | #{order[0].clientData.M.address.M.locality.S}
-                                    br
+                                  p
+                                      | #{direccion}
+                                      br
+                                      | #{order[0].clientData.M.address.M.locality.S}
+                                      br
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Comentarios
@@ -361,12 +390,19 @@ head
                                     input#comentario.form-control(type='text')
                                     .input-group-append
                                         button#comentar.btn.btn-primary(type='button' style='background: #6e3c8e;') Comentar
+                .modal.fade#modal-comprobante(role='dialog' tabindex='-1')
+                    .modal-dialog.modal-lg.modal-dialog-centered(role='document')
+                        .modal-content
+                            .modal-header
+                                h5.modal-title Comprobante de orden #{order[0].SK.S.replace("ORDER#","")}
+                                button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
+                                    span(aria-hidden='true') &times;
+                            .modal-body
+                                img.img-responsive(src=logo style='height: 100%; width: 100%;')
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
                     span Copyright &copy; NVIO 2020
-    a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-        i.fas.fa-angle-up
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
