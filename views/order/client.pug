@@ -40,7 +40,6 @@ main.page.payment-page
                                       .form-group
                                           label(for='direccion') Dirección (calle y número)
                                           input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
-                                          small Si vas a retirar no necesitas dar tu dirección
                                   .col-sm-4
                                       .form-group
                                           label(for='apart') Casa/depto.
@@ -85,6 +84,14 @@ main.page.payment-page
                 .col-md-auto.offset-md-0.m-auto(style='height: 865.359px;')
                     .products(style='border-bottom-width: 1px;padding-right: 0px;max-height: 100%;height: 865.359px;')
                         h3.title ID de pedido: #{orderID}
+                        if (orderData.status.M.shippingDate)
+                          if (orderData.status.M.shippingDate.S != '')
+                            .item(style='padding-top: 12px;')
+                              if (orderData.clientData.M.address.M.locality.S != "Retiro en tienda")
+                                p.item-name(style='margin-right: 19px;') Fecha estimada de retiro: #{orderData.status.M.shippingDate.S}
+                              else
+                                p.item-name(style='margin-right: 19px;') Fecha estimada de entrega: #{orderData.status.M.shippingDate.S}
+
                         .table-responsive
                             table.table
                                 thead
@@ -116,6 +123,7 @@ main.page.payment-page
                         .total(style='margin-right: 19px;')
                             span(style='margin-right: 19px;') Total
                             span.price(style='margin-right: 0px;') #{(parseInt(orderData.cost.M.order.N) + parseInt(orderData.cost.M.shipping.N)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                        
                         div(style='height: 6%;')
                         if (orderData.status.M.payment.N != 3)
                           h3.title Datos de transferencia
