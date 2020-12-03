@@ -67,4 +67,14 @@ module.exports = {
       return err;
     }
   },
+
+  delete: async function (params) {
+    try {
+      var docClient = new aws.DynamoDB.DocumentClient();
+      const deleteOutput = await docClient.delete(params).promise();
+      return deleteOutput;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
