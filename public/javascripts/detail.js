@@ -7,7 +7,7 @@ $(document).ready(function(){
         posting.done(function (data){
             window.location.href = data;
         })
-    })
+    });
 
     $("#comentar").click(function (e){
         $("#comentario").removeClass('is-invalid').next("div.invalid-feedback").remove()
@@ -22,5 +22,6 @@ $(document).ready(function(){
                 location.reload()
             })
         }
-    })
+    });
 });
+

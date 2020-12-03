@@ -134,6 +134,18 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var valid = true;
+  var invalidItems = []
+  //Validate data
+  if (validator.isEmpty(req.body.companyName)) {
+    invalidItems.push(["#companyName","El nombre de empresa no puede estar vacío"])
+    var valid = false;
+  }
+
+
+});
+
+router.post('/delete',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
 
 });
 
