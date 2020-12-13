@@ -22,12 +22,7 @@ head
                     .p-5
                         .text-center(style='padding: 10px;')
                             img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_fondo.png' style='width: 100%;')
-                        form.user
-                            .form-group.row
-                                .col-sm-6.mb-3.mb-sm-0
-                                    input#exampleFirstName.form-control.form-control-user(type='text' placeholder='Nombre' name='first_name')
-                                .col-sm-6
-                                    input#exampleFirstName.form-control.form-control-user(type='text' placeholder='Apellido' name='last_name')
+                        form.user(action='/register' method='POST' enctype='multipart/form-data')
                             .form-group
                                 input#exampleInputEmail.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email')
                             .form-group.row
@@ -36,18 +31,19 @@ head
                                 .col-sm-6
                                     input#exampleRepeatPasswordInput.form-control.form-control-user(type='password' placeholder='Confirmar Contraseña' name='password_repeat')
                             button.btn.btn-primary.btn-block.text-white.btn-user(type='submit' style='background: #058791;') Registrarme
-                            hr
-                            a.btn.btn-primary.btn-block.text-white.btn-google.btn-user(role='button')
-                                i.fab.fa-google
-                                | &nbsp; Registrarme con Google
-                            a.btn.btn-primary.btn-block.text-white.btn-facebook.btn-user(role='button')
-                                i.fab.fa-facebook-f
-                                | &nbsp; Registrarme con Facebook
+                            //hr
+                            //a.btn.btn-primary.btn-block.text-white.btn-google.btn-user(role='button')
+                            //    i.fab.fa-google
+                            //    | &nbsp; Registrarme con Google
+                            //a.btn.btn-primary.btn-block.text-white.btn-facebook.btn-user(role='button')
+                            //    i.fab.fa-facebook-f
+                            //    | &nbsp; Registrarme con Facebook
                             hr
                         .text-center
-                            a.small(href='forgot-password.html') &iquest;Olvidaste tu contrase&ntilde;a?
+                            a.small(href='forgot-password.html') ¿Olvidaste tu contraseña?
                         .text-center
-                            a.small(href='/login.html') &iquest;Ya tienes cuenta? Ingresa aqu&iacute;
+                            a.small(href='/login') ¿Ya tienes cuenta? Ingresa aquí
+
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
