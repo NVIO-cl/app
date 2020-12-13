@@ -29,12 +29,14 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var payment = 0;
 
   console.log(req.body);
+
   if (req.body.payment == 'efectivo') {
     payment = 3;
   }
 
   if (req.body.shipping == 'local') {
     req.body.locality = 'Retiro en tienda'
+    req.body.shippingMethod = req.body.pickupAddress
   }
 
   //Shipping Cost

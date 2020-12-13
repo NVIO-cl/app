@@ -40,7 +40,6 @@ main.page.payment-page
                                       .form-group
                                           label(for='direccion') Dirección (calle y número)
                                           input#direccion.form-control(type='text' placeholder='Dirección' name='direccion')
-                                          small Si vas a retirar no necesitas dar tu dirección
                                   .col-sm-4
                                       .form-group
                                           label(for='apart') Casa/depto.
@@ -103,16 +102,12 @@ main.page.payment-page
                         .item(style='padding-top: 12px;')
                             span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.order.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
                             p.item-name(style='margin-right: 19px;') Total productos
-                        if (orderData.status.M.payment.N != 3)
-                          .item(style='padding-top: 12px;')
-                              span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
-                              p.item-name(style='margin-right: 19px;') Entrega
-                              p.item-description(style='margin-right: 19px;') #{orderData.shippingMethod.S} / #{orderData.clientData.M.address.M.locality.S}
-                        else
-                          .item(style='padding-top: 12px;')
-                              span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
-                              p.item-name(style='margin-right: 19px;') Entrega
-                              p.item-description(style='margin-right: 19px;') Retiro en tienda
+
+                        .item(style='padding-top: 12px;')
+                            span.price(style='margin-right: 19px;') #{parseInt(orderData.cost.M.shipping.N).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
+                            p.item-name(style='margin-right: 19px;') Entrega
+                            p.item-description(style='margin-right: 19px;') #{orderData.shippingMethod.S} / #{orderData.clientData.M.address.M.locality.S}
+
                         .total(style='margin-right: 19px;')
                             span(style='margin-right: 19px;') Total
                             span.price(style='margin-right: 0px;') #{(parseInt(orderData.cost.M.order.N) + parseInt(orderData.cost.M.shipping.N)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }).replace('CLP', '$').replace(',','.')}
