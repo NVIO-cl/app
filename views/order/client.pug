@@ -22,7 +22,7 @@ main.page.payment-page
                 .col(style='text-align: center;')
                     img(src=logo style='max-width: 171px;')
             .row.row-cols-sm-1.row-cols-md-1.row-cols-lg-1.row-cols-xl-2(style='min-height: auto;')
-                .col.align-self-center
+                .col
                     form(action='/order/fill' method='POST' enctype="multipart/form-data")
                         .card-details(style='max-height: 100%;')
                             h3.title Informaci&oacute;n del Cliente
@@ -132,44 +132,6 @@ main.page.payment-page
                           .item(style='text-align: center;')
                               p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda que debes pagar en efectivo al momento de recibir tu pedido!
 footer.page-footer.dark
-    .container
-        .row
-            .col-sm-3
-                h5 Get started
-                ul
-                    li
-                        a(href='#') Home
-                    li
-                        a(href='#') Sign up
-                    li
-                        a(href='#') Downloads
-            .col-sm-3
-                h5 About us
-                ul
-                    li
-                        a(href='#') Company Information
-                    li
-                        a(href='#') Contact us
-                    li
-                        a(href='#') Reviews
-            .col-sm-3
-                h5 Support
-                ul
-                    li
-                        a(href='#') FAQ
-                    li
-                        a(href='#') Help desk
-                    li
-                        a(href='#') Forums
-            .col-sm-3
-                h5 Legal
-                ul
-                    li
-                        a(href='#') Terms of Service
-                    li
-                        a(href='#') Terms of Use
-                    li
-                        a(href='#') Privacy Policy
     .footer-copyright
         p &copy; 2020 NVIO
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')

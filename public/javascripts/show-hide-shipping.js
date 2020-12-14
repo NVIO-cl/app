@@ -23,7 +23,12 @@ function valueChanged(){
     }
 }
 
-$("#newOrder").submit(function (e) {
-  console.log("New order submitted!");
-  $("#submit").attr("disabled", true);
-})
+/*
+$("#newOrder").submit(function (e) { // This works but doesn't give the user any feedback
+  if($('#checkCash').is(':checked') && $('#checkShipping').is(':checked')){ // No cash AND shipping
+        e.preventDefault();
+  } else {
+      $("#submit").attr("disabled", true);
+  }
+});
+*/
