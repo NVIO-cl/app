@@ -4,6 +4,8 @@ var multer  = require('multer');
 var upload = multer();
 var validator = require('validator');
 var db = require("../db");
+const bcrypt = require('bcrypt');
+const { nanoid } = require("nanoid");
 
 const jwt = require('jsonwebtoken');
 const passport = require("passport");
@@ -82,12 +84,10 @@ router.post('/register', upload.none(), async(req, res) => {
   var date = new Date();
   var year = date.getFullYear();
   const saltRounds = 10;
-
   var email = req.body.email;
-
   var password = req.body.password;
   var password_repeat = req.body.password_repeat;
-
+  // Check if email is already taken
   var params_check_email = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
@@ -102,63 +102,86 @@ router.post('/register', upload.none(), async(req, res) => {
       "#cd421": "SK"
     }
   };
-
   check_email = await db.queryv2(params_check_email);
-
   if(check_email.Count == 1){
-    console.log("Ya existe una cuenta con ese email")
-    res.render('register', {title: name, error: errormsg});
-  }else{
-
+    res.cookie('error', 'Ya existe una cuenta con ese email');
+    return res.redirect('/register');
+    //res.redirect('register', {title: name, error: errormsg});
+  }
+  else{
+    // CHeck if password is double ok
     if(password == password_repeat){
-
       var hashed_pw = bcrypt.hashSync(password, saltRounds);
+      //Run colcheck
+      colcheck();
 
-      // Generate ID
-      userID = nanoid(6);
-
-      var params_profile={
-        TableName: process.env.AWS_DYNAMODB_TABLE,
-        Item: {
-          "PK": "COMPANY#" + userID,
-          "SK": "PROFILE#" + userID,
-          "companyName": " ",
-          "firstName": " ",
-          "lastName": " ",
-          "email": " ",
-          "contactNumber": 912345678,
-          "password": hashed_pw,
-          "companyTurn": " ",
-          "companyRut": " ",
-          "paymentData": {
-            "name": " ",
-            "rut": " ",
-            "bank": " ",
-            "accType": " ",
-            "accNum": " ",
-            "email": " "
+      async function colcheck(){
+        // Generate ID
+        userID = nanoid(6);
+        // Check if colission
+        var params_check_id = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "ScanIndexForward": false,
+          "ConsistentRead": false,
+          "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+          "ExpressionAttributeValues": {
+            ":cd420": "COMPANY#" + userID,
+            ":cd421": "PROFILE#" + userID
           },
-          "resetToken": "Null",
-          "tokenExp": "Null",
-          "createdAt": Date.now()
+          "ExpressionAttributeNames": {
+            "#cd420": "PK",
+            "#cd421": "SK"
+          }
+        };
+        check_id = await db.queryv2(params_check_email);
+        if(check_id.Count >= 1){
+          colcheck();
         }
-      };
+        else {
+          var params_profile={
+            TableName: process.env.AWS_DYNAMODB_TABLE,
+            Item: {
+              "PK": "COMPANY#" + userID,
+              "SK": "PROFILE#" + userID,
+              "companyName": " ",
+              "firstName": " ",
+              "lastName": " ",
+              "email": " ",
+              "contactNumber": 912345678,
+              "password": hashed_pw,
+              "companyTurn": " ",
+              "companyRut": " ",
+              "paymentData": {
+                "name": " ",
+                "rut": " ",
+                "bank": " ",
+                "accType": " ",
+                "accNum": " ",
+                "email": " "
+              },
+              "resetToken": "Null",
+              "tokenExp": "Null",
+              "createdAt": Date.now()
+            }
+          };
 
-      var params_email={
-        TableName: process.env.AWS_DYNAMODB_TABLE,
-        Item: {
-          "PK": "EMAIL",
-          "SK": "EMAIL#" + email,
-          "userID": "COMPANY#" + userID
+          var params_email={
+            TableName: process.env.AWS_DYNAMODB_TABLE,
+            Item: {
+              "PK": "EMAIL",
+              "SK": "EMAIL#" + email,
+              "userID": "COMPANY#" + userID
+            }
+          };
+
+          profilePut = await db.put(params_profile);
+          emailPut = await db.put(params_email);
+          return res.redirect('login', {title: "Login", error: errormsg});
         }
-      };
-
-      profilePut = await db.put(params_profile);
-      emailPut = await db.put(params_email);
-      res.render('login', {title: "Login", error: errormsg});
+      }
     }else{
       console.log("Contraseñas no son idénticas")
-      res.render('register', {title: name, error: errormsg});
+      return res.redirect('register', {title: name, error: errormsg});
     }
   }
 });

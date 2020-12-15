@@ -5,7 +5,6 @@ const validator = require('validator');
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
-const bcrypt = require('bcrypt');
 const { nanoid } = require("nanoid");
 
 //AWS Settings
