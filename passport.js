@@ -29,7 +29,7 @@ async (email, password, cb) => {
   var hashedPassword;
 
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": {"S":"EMAIL"},":cd421": {"S":"EMAIL#" + email}}
@@ -53,7 +53,7 @@ async (email, password, cb) => {
   }
 
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": {"S": userID},":cd421": {"S": profileID}}

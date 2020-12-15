@@ -25,7 +25,9 @@ app.use(function (req, res, next) {
   next()
 });
 
-//app.use(logger('dev'));
+if(process.env.NODE_ENV == 'develop'){
+  app.use(logger('dev'));
+}
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true, limit:'50mb', parameterLimit: 1000000 }));
 app.use(cookieParser());
