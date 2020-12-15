@@ -40,7 +40,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
 router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "Key": {
       "PK": req.user.user,
       "SK": "ORDER#" + req.body.orderid
@@ -71,7 +71,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   console.log("Detail requested")
   const name = "Detail" + req.params.id;
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -117,7 +117,7 @@ router.get('/historial',passport.authenticate('jwt', {session: false, failureRed
   console.log("Historial requested")
   const name = "Historial";
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -144,7 +144,7 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
   const ws = wb.addWorksheet('Pedidos');
 
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",

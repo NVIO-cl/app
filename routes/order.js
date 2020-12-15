@@ -78,7 +78,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     //Generate ID
     orderID = nanoid(6);
     params = {
-      "TableName": "app",
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
       "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
       "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
       "ExpressionAttributeValues": {":cd420": {"S": req.user.user},":cd421": {"S": "ORDER#"+orderID}}
@@ -153,7 +153,7 @@ router.get('/:id',  async(req, res) => {
   var logo = await s3.getSignedUrl('getObject', {Key: "logos/"+companyID+".png", Expires: 60});
 
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": {"S":companyID},":cd421": {"S":orderID}}
@@ -174,7 +174,7 @@ router.get('/:id',  async(req, res) => {
     }
   }
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ProjectionExpression": "companyName, paymentData",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
@@ -196,7 +196,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
   var paymentStatus;
 
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
@@ -282,7 +282,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     }
     //Save the order data
     var params = {
-      "TableName": "app",
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
       "Key": {
         "PK":companyID,
         "SK": orderID
@@ -321,7 +321,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
 
     //Add commentary
     params = {
-      "TableName": "app",
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
       "Key": {
         "PK": companyID,
         "SK": orderID

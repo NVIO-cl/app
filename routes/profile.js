@@ -23,7 +23,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
   var logo = await s3.getSignedUrl('getObject', {Key: "logos/"+req.user.user+".png", Expires: 60});
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ProjectionExpression": "companyName, companyRut, companyTurn, contactNumber, firstName, lastName, paymentData, email",
@@ -52,9 +52,8 @@ router.post('/saveName',passport.authenticate('jwt', {session: false, failureRed
   if (valid == false) {
     return res.json(invalidItems);
   }
-
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "Key": {
       "PK":req.user.user,
       "SK": req.user.user.replace("COMPANY", "PROFILE")
@@ -100,7 +99,7 @@ router.post('/saveContact',passport.authenticate('jwt', {session: false, failure
     return res.json(invalidItems);
   }
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "Key": {
       "PK":req.user.user,
       "SK": req.user.user.replace("COMPANY", "PROFILE")
@@ -161,7 +160,7 @@ router.post('/saveTransfer',passport.authenticate('jwt', {session: false, failur
   }
 
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "Key": {
       "PK":req.user.user,
       "SK": req.user.user.replace("COMPANY", "PROFILE")
