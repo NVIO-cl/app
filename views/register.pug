@@ -24,12 +24,17 @@ head
                             img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_fondo.png' style='width: 100%;')
                         form.user(action='/register' method='POST' enctype='multipart/form-data')
                             .form-group
-                                input#email.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email')
+                                input#email.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email' required)
                             .form-group.row
                                 .col-sm-6.mb-3.mb-sm-0
-                                    input#password.form-control.form-control-user(type='password' placeholder='Contraseña' name='password')
+                                    input#password.form-control.form-control-user(type='password' placeholder='Contraseña' name='password' required)
                                 .col-sm-6
-                                    input#repeatPassword.form-control.form-control-user(type='password' placeholder='Confirmar Contraseña' name='password_repeat')
+                                    input#repeatPassword.form-control.form-control-user(type='password' placeholder='Confirmar Contraseña' name='password_repeat' required)
+                            .form-group
+                              .col-md-12
+                                input#terms.form-check-input(type='checkbox' value='terms' required)
+                                label.form-check-label(for='terms')
+                                  | Acepto los <a href="https://nvio.cl/terminos-y-condiciones/" target="_blank">términos y condiciones</a> y la <a href="https://nvio.cl/politicas-de-privacidad/" target="_blank">política de privacidad</a>
                             button.btn.btn-primary.btn-block.text-white.btn-user(type='submit' style='background: #058791;') Registrarme
                             //hr
                             //a.btn.btn-primary.btn-block.text-white.btn-google.btn-user(role='button')
@@ -40,7 +45,7 @@ head
                             //    | &nbsp; Registrarme con Facebook
                             hr
                         .text-center
-                            a.small(href='forgot-password.html') ¿Olvidaste tu contraseña?
+                            // a.small(href='forgot-password.html') ¿Olvidaste tu contraseña?
                         .text-center
                             a.small(href='/login') ¿Ya tienes cuenta? Ingresa aquí
 

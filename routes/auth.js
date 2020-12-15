@@ -176,12 +176,12 @@ router.post('/register', upload.none(), async(req, res) => {
 
           profilePut = await db.put(params_profile);
           emailPut = await db.put(params_email);
-          return res.redirect('login', {title: "Login", error: errormsg});
+          return res.redirect('/login');
         }
       }
     }else{
       console.log("Contraseñas no son idénticas")
-      return res.redirect('register', {title: name, error: errormsg});
+      return res.redirect('/register');
     }
   }
 });
