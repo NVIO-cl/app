@@ -267,6 +267,11 @@ head
                                     input.form-control#pickupAddress(type='text' name='pickupAddress' required)
                                     small
                                       | Ingresa la dirección donde debe retirarse el pedido
+                                .col-lg-4
+                                  p.font-weight-bold.m-0 Fecha de Retiro (Opcional)
+                                    input.form-control#pickupDate(type='date' name='pickupDate')
+                                    small
+                                      | Puedes ingresar una fecha de retiro estimada si deseas
                   .form-group(style="text-align: center;")
                     button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer

@@ -68,7 +68,6 @@ router.get('/detail/comprobante/:id',passport.authenticate('jwt', {session: fals
 });
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Detail requested")
   const name = "Detail" + req.params.id;
   var params={
     "TableName": "app",
@@ -109,7 +108,6 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
 /* GET historial. */
 router.get('/historial',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Historial requested")
   const name = "Historial";
   var params={
     "TableName": "app",

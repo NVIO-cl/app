@@ -84,6 +84,17 @@ main.page.payment-page
                 .col-md-auto.offset-md-0.m-auto(style='height: 865.359px;')
                     .products(style='border-bottom-width: 1px;padding-right: 0px;max-height: 100%;height: 865.359px;')
                         h3.title ID de pedido: #{orderID}
+                        if (orderData.clientData.M.address.M.locality.S == 'Retiro en tienda')
+                          if (orderData.pickupAddress)
+                            h3.title Dirección de retiro: #{orderData.pickupAddress.S}
+                          else 
+                            h3.title Retiro en tienda
+                        if (typeof orderData.pickupDate != "undefined")
+                          if (orderData.pickupDate.S != "")
+                            h3.title Fecha de retiro: #{orderData.pickupDate.S.split("-")[2]}/#{orderData.pickupDate.S.split("-")[1]}/#{orderData.pickupDate.S.split("-")[0]}
+                        if (typeof orderData.shippingDate != "undefined")
+                          if (orderData.shippingDate.S != "")
+                            h3.title Fecha de despacho: #{orderData.shippingDate.S.split("-")[2]}/#{orderData.shippingDate.S.split("-")[1]}/#{orderData.shippingDate.S.split("-")[0]}
                         .table-responsive
                             table.table
                                 thead

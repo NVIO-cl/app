@@ -212,11 +212,19 @@ head
                                     else if (order[0].status.M.payment.N == 3)
                                       | Pago en efectivo
                                     br
-                                    | Método Entrega: 
                                     if (order[0].clientData.M.address.M.locality.S == 'Retiro en tienda')
-                                      | Retiro en tienda
-                                    else
-                                      #{order[0].shippingMethod.S}
+                                      | Método Entrega: Retiro en tienda
+                                      if (order[0].pickupDate)
+                                        if (order[0].pickupDate.S != "")
+                                          br
+                                          | Fecha de retiro: #{order[0].pickupDate.S.split("-")[2]}/#{order[0].pickupDate.S.split("-")[1]}/#{order[0].pickupDate.S.split("-")[0]}
+                                    else 
+                                      | Método Entrega: #{order[0].shippingMethod.S}
+                                      if (order[0].shippingDate)
+                                        if (order[0].shippingDate.S != "")
+                                          br
+                                          | Fecha de retiro: #{order[0].shippingDate.S.split("-")[2]}/#{order[0].shippingDate.S.split("-")[1]}/#{order[0].shippingDate.S.split("-")[0]}
+                                      
                                     br
                                 strong Listado de Artículos
                                 .table-responsive(style='text-align: center;')
