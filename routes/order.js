@@ -25,7 +25,6 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req.body);
   //Parse and validate the data
   var payment = 0;
 
@@ -87,7 +86,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     if (orderQuery.Count == 0) {
       //If no colission, create order
       params = {
-        TableName:'app',
+        TableName:process.env.AWS_DYNAMODB_TABLE,
         Item:{
           "PK": req.user.user,
           "SK": "ORDER#"+orderID,
