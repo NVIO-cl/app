@@ -79,6 +79,11 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', upload.none(), async(req, res) => {
+
+  if (!validator.isEmail(req.body.email)){
+    return res.redirect('/register');
+  }
+
   const name = "Register";
   var errormsg;
   var date = new Date();
