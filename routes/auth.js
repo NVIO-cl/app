@@ -6,6 +6,15 @@ var validator = require('validator');
 var db = require("../db");
 const bcrypt = require('bcrypt');
 const { nanoid } = require("nanoid");
+const AmazonCognitoIdentity = require('amazon-cognito-identity-js')
+
+const poolData = {
+  UserPoolId: process.env.AWS_COGNITO_USERPOOLID,
+  ClientId: process.env.AWS_COGNITO_CLIENTID
+
+}
+
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData)
 
 const jwt = require('jsonwebtoken');
 const passport = require("passport");
@@ -81,6 +90,27 @@ router.get('/register', (req, res) => {
 router.post('/register', upload.none(), async(req, res) => {
   const name = "Register";
   var errormsg;
+  console.log("BODY:");
+  console.log(req.body);
+
+  var emailData = {
+    Name: 'email',
+    Value: req.body.email
+  }
+  console.log("EMAIL DATA:");
+  console.log(emailData);
+
+  var emailAttribute = AmazonCognitoIdentity.CognitoUserAttribute(emailData);
+
+  userPool.signUp(req.body.email, req.body.password, [emailAttribute], null, (err, data)=>{
+    if (err) {
+      console.log(err);
+      return res.redirect('/register');
+    }
+    console.log(data);
+  })
+  /*
+
   var date = new Date();
   var year = date.getFullYear();
   const saltRounds = 10;
@@ -184,6 +214,10 @@ router.post('/register', upload.none(), async(req, res) => {
       return res.redirect('/register');
     }
   }
+  */
+
+  console.log("Cognito register!");
+
 });
 
 module.exports = router;

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.1.13",
+    "amazon-cognito-identity-js": "^4.5.5",
     "aws-sdk": "^2.776.0",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
