@@ -29,14 +29,13 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   //Parse and validate the data
   var payment = 0;
 
-  console.log(req.body);
   if (req.body.payment == 'efectivo') {
     payment = 3;
   }
 
   if (req.body.shipping == 'local') {
     req.body.locality = 'Retiro en tienda'
-    req.body.shippingMethod = 'Retiro en tienda'
+    req.body.shippingMethod = req.body.pickupAddress
   }
 
   //Shipping Cost
@@ -114,7 +113,10 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
               }
             ]
           },
-          "shippingMethod": req.body.shippingMethod
+          "shippingMethod": req.body.shippingMethod,
+          "shippingDate": req.body.shippingDate,
+          "pickupAddress": req.body.pickupAddress,
+          "pickupDate": req.body.pickupDate
         }
       };
       putItem = await db.put(params);
@@ -123,7 +125,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     }
     else {
       //If colission, repeat process
-      console.log("COLISSION. Starting over.");
       colcheck();
     }
   }
@@ -206,32 +207,27 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
 
   //Check Terms
   if (req.body.tyc != 'on') {
-    console.log("Terms and conditions NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   //Check fields
   if (await !validator.isAlpha(req.body.nombre.trim().replace(" ", ""),'es-ES')) {
-    console.log("Nombre NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await !validator.isAlpha(req.body.apellido.trim().replace(" ", ""),'es-ES')) {
-    console.log("Apellido NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await validator.isEmpty(req.body.telefono)) {
-    console.log("Telefono NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await !validator.isEmail(req.body.email)) {
-    console.log("Correo NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
@@ -242,7 +238,6 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       var s3up;
       if (req.file) {
         if (await !req.file.mimetype.startsWith("image")) {
-          console.log("INVALID image");
           res.redirect(req.headers.referer);
         }
         else {
@@ -261,7 +256,6 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
             if (err) {
               console.log("Error: ", err);
             } else {
-              console.log("Image uploaded OK");
               paymentStatus = 1;
             }
           }).promise();
@@ -269,7 +263,6 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
         }
       }
       else {
-        console.log("NO IMAGE");
         res.redirect(req.headers.referer);
       }
     }
