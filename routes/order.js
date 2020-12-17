@@ -42,6 +42,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Parse and validate the data
+  console.log(req.body);
   var payment = 0;
 
   if (req.body.payment == 'efectivo') {
@@ -49,8 +50,12 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   }
 
   if (req.body.shipping == 'local') {
+    req.body.shippingDate = ''
     req.body.locality = 'Retiro en tienda'
     req.body.shippingMethod = req.body.pickupAddress
+  }
+  else if(req.body.shipping == 'domicilio') {
+    req.body.pickupDate = '';
   }
 
   //Shipping Cost
@@ -61,6 +66,8 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   if (req.body.shippingCost < 0) {
     res.redirect('/create');
   }
+  console.log("=====POSTPROCESS=====");
+  console.log(req.body);
 
   //Items
   var itemList = [];
