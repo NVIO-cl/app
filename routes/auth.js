@@ -238,13 +238,9 @@ router.get('/verify', (req, res) => {
     Username: req.query.u
   }
   var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-
   cognitoUser.confirmRegistration(req.query.c, true, function(err, result) {
     if (err) {
-        console.log(err.message || JSON.stringify(err));
-        if (err.code=="ExpiredCodeException") {
-          res.cookie('message', {type:'danger', content:'El código de verificación es inválido'});
-        }
+        res.cookie('message', {type:'danger', content:'El código de verificación es inválido'});
         return res.redirect('/login');
     }
     else {
