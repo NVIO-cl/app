@@ -32,9 +32,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
   }
 
   userData = await db.queryv2(params);
-  console.log(userData.Items[0].paymentData);
   paymentData = userData.Items[0].paymentData
-  console.log(paymentData);
   if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
     noTransfer = true;
   }
