@@ -20,6 +20,12 @@ head
                     .flex-grow-1.bg-register-image(style='background-image: url("https://nvio.s3.amazonaws.com/assets/img/dogs/image2.jpeg");')
                 .col-lg-7
                     .p-5
+                        if (message)
+                          .alert.alert-dismissable.fade.show(role='alert', class='alert-'+message.type)
+                            | #{message.content}
+                            button.close(type='button' data-dismiss='alert' aria-label='Close')
+                              span(aria-hidden='true')
+                                |  &times;
                         .text-center(style='padding: 10px;')
                             img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_fondo.png' style='width: 100%;')
                         form.user(action='/register' method='POST' enctype='multipart/form-data')

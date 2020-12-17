@@ -68,25 +68,30 @@ router.get('/logout', (req, res, next) => {
 //Login route
 router.get('/login', (req, res) => {
   const name = "Login";
-  var errormsg;
+  var message;
   var date = new Date();
   var year = date.getFullYear();
-  if (req.cookies.error == true) {
-    errormsg = "Correo o contraseña incorrectos";
+  if (req.cookies.message != '') {
+    message = req.cookies.message
   }
-  res.clearCookie('error');
-  res.render('login', {title: name, error: errormsg});
+  res.clearCookie('message');
+  res.render('login', {title: name, message: message});
 });
 
 //Register route
 router.get('/register', (req, res) => {
   const name = "Register";
-  var errormsg;
+  var message;
+  if (req.cookies.message != '') {
+    message = req.cookies.message
+    res.clearCookie('message');
+  }
   var date = new Date();
   var year = date.getFullYear();
-  res.render('register', {title: name, error: errormsg});
+  res.render('register', {title: name, message: message});
 });
 
+// Register POST route
 router.post('/register', upload.none(), async(req, res) => {
   const name = "Register";
   var errormsg;
@@ -105,9 +110,15 @@ router.post('/register', upload.none(), async(req, res) => {
   userPool.signUp(req.body.email, req.body.password, [emailAttribute], null, (err, data)=>{
     if (err) {
       console.log(err);
+      res.cookie('message', {type:'danger', content:err.message});
       return res.redirect('/register');
     }
-    console.log(data);
+    else {
+      console.log(data);
+      //Do something with the data!
+      res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico'});
+      return res.redirect('/login');
+    }
   })
   /*
 
@@ -219,5 +230,29 @@ router.post('/register', upload.none(), async(req, res) => {
   console.log("Cognito register!");
 
 });
+
+// Account verification route
+router.get('/verify', (req, res) => {
+  var userData = {
+    Pool: userPool,
+    Username: req.query.u
+  }
+  var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+  cognitoUser.confirmRegistration(req.query.c, true, function(err, result) {
+    if (err) {
+        console.log(err.message || JSON.stringify(err));
+        if (err.code=="ExpiredCodeException") {
+          res.cookie('message', {type:'danger', content:'El código de verificación es inválido'});
+        }
+        return res.redirect('/login');
+    }
+    else {
+      res.cookie('message', {type:'success', content:'Correo verificado. Ahora puedes iniciar sesión'});
+      return res.redirect('/login');
+    }
+  });
+})
+
 
 module.exports = router;
