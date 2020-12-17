@@ -21,7 +21,25 @@ aws.config.update({
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  //Get user data
+  var noTransfer = false;
+  console.log(req.user.user);
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
+  }
+
+  userData = await db.queryv2(params);
+  console.log(userData.Items[0].paymentData);
+  paymentData = userData.Items[0].paymentData
+  console.log(paymentData);
+  if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
+    noTransfer = true;
+  }
+
+  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer });
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

@@ -219,12 +219,19 @@ head
                               p.font-weight-bold.m-0 Método de Pago
                               .form-row(style='padding-left: 10px;')
                                   .form-group
-                                    .form-check
-                                      input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
-                                      label.form-check-label(for='checkWire') Transferencia
-                                    .form-check
-                                      input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
-                                      label.form-check-label(for='checkCash') Efectivo
+                                    if (noTransfer == false)
+                                      .form-check
+                                        input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
+                                        label.form-check-label(for='checkWire') Transferencia
+                                      .form-check
+                                        input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
+                                        label.form-check-label(for='checkCash') Efectivo
+                                    else
+                                      .form-check
+                                        input.form-check-input(type='radio' name='payment' id='checkCash' checked value='efectivo')
+                                        label.form-check-label(for='checkCash') Efectivo
+                                      p
+                                        b Si quieres activar el pago por transferencia, rellena los datos en <a href="/profile">tu perfil</a>.
                       .form-row
                         .col
                           hr
