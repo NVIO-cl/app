@@ -26,8 +26,10 @@ $(document).ready(function () {
             }
         },
         "columnDefs": [
-            { "type": "date", "targets": 1 }
+            { "type": "datetime-moment", "targets": 1 }
         ],
         "order": [[ 1, "desc" ]]
     });
 });
+
+$.fn.dataTable.moment( 'dd/mm/yyyy hh:mm', 'es' );

@@ -217,21 +217,28 @@ head
                           .form-row.text-right.mb-3
                             .col.text-left.align-self-center
                               p.font-weight-bold.m-0 Método de Pago
-                              .form-row
+                              .form-row(style='padding-left: 10px;')
                                   .form-group
-                                    .form-check
-                                      input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
-                                      label.form-check-label(for='checkWire') Transferencia
-                                    .form-check
-                                      input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
-                                      label.form-check-label(for='checkCash') Efectivo
+                                    if (noTransfer == false)
+                                      .form-check
+                                        input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
+                                        label.form-check-label(for='checkWire') Transferencia
+                                      .form-check
+                                        input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
+                                        label.form-check-label(for='checkCash') Efectivo
+                                    else
+                                      .form-check
+                                        input.form-check-input(type='radio' name='payment' id='checkCash' checked value='efectivo')
+                                        label.form-check-label(for='checkCash') Efectivo
+                                      p
+                                        b Si quieres activar el pago por transferencia, rellena los datos en <a href="/profile">tu perfil</a>.
                       .form-row
                         .col
                           hr
                           .form-row.text-right.mb-3
                             .col.text-left.align-self-center
                               p.font-weight-bold.m-0 Método de Despacho
-                              .form-row
+                              .form-row(style='padding-left: 10px;')
                                 #shippingRadios(onchange='valueChanged()')
                                   .form-group
                                     .form-check
@@ -240,27 +247,38 @@ head
                                     .form-check
                                       input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
                                       label.form-check-label(for='checkInStore') Retiro en Local
-                              .form-row(id='shippingInfo')
-                                .col
-                                  p.font-weight-bold.m-0 Comuna del Destinatario
+                              .form-row#shippingInfo
+                                .col-lg
+                                  p.font-weight-bold.m-0 Comuna de Destino
                                   input.form-control#locality(type='text' name='locality' required)
                                   small
                                     | Debes ingresar la comuna a la cual se enviará el pedido
-                                .col
+                                .col-lg
                                   p.font-weight-bold.m-0 Método de Despacho
                                   input.form-control#shippingMethod(type='text' name='shippingMethod' required)
                                   small
                                     | Debes especificar el nombre de la compañía o servicio que se utilizará para el envío
-                                .col
+                                .col-lg
                                   p.font-weight-bold.m-0 Precio del Despacho
                                   input.form-control#shippingCost(type='number' name='shippingCost' value=0 min="0" required)
                                   small
                                     | Debes ingresar el valor asociado al método de despacho escogido
-                                .col
+                                .col-lg
                                   p.font-weight-bold.m-0 Fecha de Entrega (Opcional)
                                     input.form-control#shippingDate(type='date' name='shippingDate')
                                     small
                                       | Puedes ingresar una fecha de entrega estimada si deseas
+                              .form-row#pickupInfo
+                                .col-lg-4
+                                  p.font-weight-bold.m-0 Dirección de Retiro
+                                    input.form-control#pickupAddress(type='text' name='pickupAddress' required)
+                                    small
+                                      | Ingresa la dirección donde debe retirarse el pedido
+                                .col-lg-4
+                                  p.font-weight-bold.m-0 Fecha de Retiro (Opcional)
+                                    input.form-control#pickupDate(type='date' name='pickupDate')
+                                    small
+                                      | Puedes ingresar una fecha de retiro estimada si deseas
                   .form-group(style="text-align: center;")
                     button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Crear Venta
     footer.bg-white.sticky-footer
@@ -268,5 +286,4 @@ head
         .text-center.my-auto.copyright
           span Copyright &copy; NVIO 2020
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-  script(src='/javascripts/show-hide-shipping.js')
-  script(src='/javascripts/addprod.js')
+  script(src='/javascripts/order-create.js')

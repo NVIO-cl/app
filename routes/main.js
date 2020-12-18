@@ -5,6 +5,7 @@ const validator = require('validator');
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
+const { nanoid } = require("nanoid");
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -38,7 +39,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
 router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "Key": {
       "PK": req.user.user,
       "SK": "ORDER#" + req.body.orderid
@@ -66,10 +67,9 @@ router.get('/detail/comprobante/:id',passport.authenticate('jwt', {session: fals
 });
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Detail requested")
   const name = "Detail" + req.params.id;
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -88,6 +88,8 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   };
 
   detailQuery = await db.query(params);
+
+  console.log(detailQuery.Items[0]);
 
   var created_at = detailQuery.Items[0].createdAt.N;
   var parsed_created_at = date_parser.parse_date(created_at);
@@ -112,10 +114,9 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
 /* GET historial. */
 router.get('/historial',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Historial requested")
   const name = "Historial";
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -142,7 +143,7 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
   const ws = wb.addWorksheet('Pedidos');
 
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -353,20 +354,5 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
 
   wb.write('Pedidos.xlsx', res);
 });
-
-//Login route
-router.get('/login', (req, res) => {
-  const name = "Login";
-  var errormsg;
-  var date = new Date();
-  var year = date.getFullYear();
-  if (req.cookies.error == true) {
-    errormsg = "Correo o contraseña incorrectos";
-  }
-  res.clearCookie('error');
-  res.render('login', {title: name, error: errormsg});
-});
-
-
 
 module.exports = router;
