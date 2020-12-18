@@ -200,11 +200,11 @@ head
                                                     else
                                                         | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
                                                     | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()}
-                                                    if new Date(parseInt(ORD.createdAt.N)).getHours() > 10
+                                                    if new Date(parseInt(ORD.createdAt.N)).getHours() >= 10
                                                         |  #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
                                                     else
                                                         |  0#{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() >= 10
                                                         | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
                                                     else
                                                         | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
