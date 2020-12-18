@@ -24,7 +24,7 @@ head
                             img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_fondo.png' style='width: 100%;')
                         form.user(action='/register' method='POST' enctype='multipart/form-data')
                             .form-group
-                                input#email.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email' required)
+                                input#email.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email' pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" required)
                             .form-group.row
                                 .col-sm-6.mb-3.mb-sm-0
                                     input#password.form-control.form-control-user(type='password' placeholder='Contraseña' name='password' required)

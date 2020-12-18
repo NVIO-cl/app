@@ -89,6 +89,8 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
   detailQuery = await db.query(params);
 
+  console.log(detailQuery.Items[0]);
+
   var created_at = detailQuery.Items[0].createdAt.N;
   var parsed_created_at = date_parser.parse_date(created_at);
   if (detailQuery.Items[0].status.M.shippingDate) {

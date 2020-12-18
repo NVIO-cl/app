@@ -223,12 +223,8 @@ head
                                       if (order[0].shippingDate)
                                         if (order[0].shippingDate.S != "")
                                           br
-                                          | Fecha de retiro: #{order[0].shippingDate.S.split("-")[2]}/#{order[0].shippingDate.S.split("-")[1]}/#{order[0].shippingDate.S.split("-")[0]}
+                                          | Fecha de entrega: #{order[0].shippingDate.S.split("-")[2]}/#{order[0].shippingDate.S.split("-")[1]}/#{order[0].shippingDate.S.split("-")[0]}
                                       
-                                    br
-                                    if (order[0].status.M.shippingDate)
-                                      if (order[0].status.M.shippingDate.S != '')
-                                        | Fecha estimada de entrega: #{order[0].status.M.shippingDate.S}
                                 strong Listado de Artículos
                                 .table-responsive(style='text-align: center;')
                                     table.table

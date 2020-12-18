@@ -21,12 +21,28 @@ aws.config.update({
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  //Get user data
+  var noTransfer = false;
+  console.log(req.user.user);
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
+  }
+
+  userData = await db.queryv2(params);
+  paymentData = userData.Items[0].paymentData
+  if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
+    noTransfer = true;
+  }
+
+  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer });
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req.body);
   //Parse and validate the data
+  console.log(req.body);
   var payment = 0;
 
   if (req.body.payment == 'efectivo') {
@@ -34,8 +50,12 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   }
 
   if (req.body.shipping == 'local') {
+    req.body.shippingDate = ''
     req.body.locality = 'Retiro en tienda'
     req.body.shippingMethod = req.body.pickupAddress
+  }
+  else if(req.body.shipping == 'domicilio') {
+    req.body.pickupDate = '';
   }
 
   //Shipping Cost
@@ -46,6 +66,8 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   if (req.body.shippingCost < 0) {
     res.redirect('/create');
   }
+  console.log("=====POSTPROCESS=====");
+  console.log(req.body);
 
   //Items
   var itemList = [];
@@ -87,7 +109,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     if (orderQuery.Count == 0) {
       //If no colission, create order
       params = {
-        TableName:'app',
+        TableName:process.env.AWS_DYNAMODB_TABLE,
         Item:{
           "PK": req.user.user,
           "SK": "ORDER#"+orderID,
@@ -269,7 +291,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     else {
       paymentStatus = 3;
     }
-    if (getOrder.Items[0].shippingMethod == "Retiro en tienda") {
+    if (getOrder.Items[0].shippingMethod == "Retiro en tienda" || getOrder.Items[0].clientData.address.locality == "Retiro en tienda") {
       req.body.apart = "";
       req.body.direccion= "";
     }

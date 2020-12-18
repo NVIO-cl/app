@@ -29,7 +29,7 @@ router.post('/login', upload.none(), function (req, res, next) {
   //Passport Authentication
   passport.authenticate('local', {session: false}, (err, user, info) => {
     if (err || !user) {
-      res.cookie('error', true);
+      res.cookie('error', {type:'danger', message:'Correo o contraseña incorrecto'});
       return res.redirect('/login');
     }
     req.login(user, {session: false}, (err) => {
@@ -53,6 +53,7 @@ router.post('/login', upload.none(), function (req, res, next) {
 
 router.get('/logout', (req, res, next) => {
   res.clearCookie('token');
+  res.cookie('error', {type:'success', message:'Sesión cerrada con éxito'});
   return res.redirect('/login');
 });
 
@@ -62,11 +63,12 @@ router.get('/login', (req, res) => {
   var errormsg;
   var date = new Date();
   var year = date.getFullYear();
-  if (req.cookies.error == true) {
-    errormsg = "Correo o contraseña incorrectos";
+  if (req.cookies.error) {
+    errormsg = req.cookies.error
+    res.clearCookie('error');
+
   }
-  res.clearCookie('error');
-  res.render('login', {title: name, error: errormsg});
+  res.render('login', {title: name, error: req.cookies.error});
 });
 
 //Register route
@@ -79,6 +81,11 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', upload.none(), async(req, res) => {
+
+  if (!validator.isEmail(req.body.email)){
+    return res.redirect('/register');
+  }
+
   const name = "Register";
   var errormsg;
   var date = new Date();
@@ -176,6 +183,7 @@ router.post('/register', upload.none(), async(req, res) => {
 
           profilePut = await db.put(params_profile);
           emailPut = await db.put(params_email);
+          res.cookie('error', {type:'success', message:'Cuenta creada con éxito. Por favor incia sesión.'});
           return res.redirect('/login');
         }
       }
