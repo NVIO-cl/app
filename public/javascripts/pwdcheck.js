@@ -17,7 +17,6 @@ $(document).ready(function(){
       }
     }
     else {
-      console.log("NO COMPARE");
       $('#password').removeClass('is-invalid').removeClass('is-valid')
       $('#repeatPassword').removeClass('is-invalid').removeClass('is-valid')
     }
