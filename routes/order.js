@@ -23,7 +23,6 @@ aws.config.update({
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Get user data
   var noTransfer = false;
-  console.log(req.user.user);
   var params = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
@@ -42,7 +41,6 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Parse and validate the data
-  console.log(req.body);
   var payment = 0;
 
   if (req.body.payment == 'efectivo') {
@@ -66,8 +64,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   if (req.body.shippingCost < 0) {
     res.redirect('/create');
   }
-  console.log("=====POSTPROCESS=====");
-  console.log(req.body);
 
   //Items
   var itemList = [];
