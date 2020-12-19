@@ -199,7 +199,6 @@ router.post('/saveImage', upload.single('imageUpload'),passport.authenticate('jw
   try {
     var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
   } catch (e) {
-    console.log("IMAGE NOT OK:");
     console.log(e);
     return res.status(500).send("Image error")
   }
