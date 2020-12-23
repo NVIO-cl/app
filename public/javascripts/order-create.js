@@ -1,4 +1,45 @@
+window.onload = (e) => {
+
+};
+
+function valueChanged(){
+    if($('#checkShipping').is(':checked')){
+      // Shipping is mandatory
+      $('#shippingInfo').show();
+      $('#pickupInfo').hide();
+      $('#locality').attr('required', true);
+      $('#shippingMethod').attr('required', true);
+      $('#shippingCost').attr('required', true);
+      $('#pickupAddress').attr('required', false);
+    }
+    if($('#checkInStore').is(':checked')){
+        // Shipping is NOT mandatory
+        $('#shippingInfo').hide();
+        $('#pickupInfo').show();
+        $('#locality').attr('required', false);
+        $('#shippingMethod').attr('required', false);
+        $('#shippingCost').attr('required', false);
+        $('#pickupAddress').attr('required', true);
+    }
+}
+
 $(document).ready(function(){
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1;
+  var yyyy = today.getFullYear();
+  if(dd<10){
+        dd='0'+dd
+    }
+    if(mm<10){
+        mm='0'+mm
+    }
+today = yyyy+'-'+mm+'-'+dd;
+  $('#pickupDate').attr('min', today)
+  $('#shippingDate').attr('min', today)
+
+
+  valueChanged();
   $(window).keydown(function(event){
     if(event.keyCode == 13) {
       event.preventDefault();
@@ -77,6 +118,4 @@ $(document).ready(function(){
       });
     }
   })
-
-
 });

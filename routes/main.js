@@ -67,7 +67,6 @@ router.get('/detail/comprobante/:id',passport.authenticate('jwt', {session: fals
 });
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Detail requested")
   const name = "Detail" + req.params.id;
   var params={
     "TableName": process.env.AWS_DYNAMODB_TABLE,
@@ -89,7 +88,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   };
 
   detailQuery = await db.query(params);
-
+  
   var created_at = detailQuery.Items[0].createdAt.N;
   var parsed_created_at = date_parser.parse_date(created_at);
   if (detailQuery.Items[0].status.M.shippingDate) {
@@ -113,7 +112,6 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
 /* GET historial. */
 router.get('/historial',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Historial requested")
   const name = "Historial";
   var params={
     "TableName": process.env.AWS_DYNAMODB_TABLE,
