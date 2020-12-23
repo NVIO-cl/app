@@ -199,8 +199,12 @@ head
                                                         | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
                                                     else
                                                         | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
+                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()}
+                                                    if new Date(parseInt(ORD.createdAt.N)).getHours() >= 10
+                                                        |  #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    else
+                                                        |  0#{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() >= 10
                                                         | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
                                                     else
                                                         | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
@@ -215,8 +219,28 @@ head
 
                                                 td #{a}
                                                 td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
-                                                td #{ORD.status.M.payment.N}
-                                                td #{ORD.status.M.order.N}
+                                                td
+                                                  if (ORD.status.M.payment.N == 0)
+                                                    | Sin información de cliente
+                                                  else if (ORD.status.M.payment.N == 1)
+                                                    | Comprobante subido, pago sin verificar
+                                                  else if (ORD.status.M.payment.N == 2)
+                                                    | Pago verificado
+                                                  else if (ORD.status.M.payment.N == 3)
+                                                    | Pago en efectivo
+                                                td 
+                                                  if (ORD.status.M.order.N == 0)
+                                                    | Sin información de cliente
+                                                  else if (ORD.status.M.order.N == 1)
+                                                    | Datos de cliente rellenados
+                                                  else if (ORD.status.M.order.N == 2)
+                                                    | En proceso de preparación
+                                                  else if (ORD.status.M.order.N == 3)
+                                                    | Listo para retirar
+                                                  else if (ORD.status.M.order.N == 4)
+                                                    | En proceso de despacho
+                                                  else if (ORD.status.M.order.N == 5)
+                                                    | Pedido finalizado
 
                                                 td
                                                     if (a = parseInt(ORD.items.L.length)) > 2
@@ -298,4 +322,5 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.m
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
 script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+script(src='//cdn.datatables.net/plug-ins/1.10.22/sorting/datetime-moment.js')
 script(src='javascripts/historytable.js')

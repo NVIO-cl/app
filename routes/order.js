@@ -21,11 +21,41 @@ aws.config.update({
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  //Get user data
+  var noTransfer = false;
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
+  }
+
+  userData = await db.queryv2(params);
+  paymentData = userData.Items[0].paymentData
+  if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
+    noTransfer = true;
+  }
+
+  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer });
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Parse and validate the data
+  var payment = 0;
+
+  if (req.body.payment == 'efectivo') {
+    payment = 3;
+  }
+
+  if (req.body.shipping == 'local') {
+    req.body.shippingDate = ''
+    req.body.locality = 'Retiro en tienda'
+    req.body.shippingMethod = req.body.pickupAddress
+  }
+  else if(req.body.shipping == 'domicilio') {
+    req.body.pickupDate = '';
+  }
+
   //Shipping Cost
   var orderID;
   if (!validator.isInt(req.body.shippingCost)) {
@@ -65,7 +95,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     //Generate ID
     orderID = nanoid(6);
     params = {
-      "TableName": "app",
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
       "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
       "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
       "ExpressionAttributeValues": {":cd420": {"S": req.user.user},":cd421": {"S": "ORDER#"+orderID}}
@@ -75,7 +105,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     if (orderQuery.Count == 0) {
       //If no colission, create order
       params = {
-        TableName:'app',
+        TableName:process.env.AWS_DYNAMODB_TABLE,
         Item:{
           "PK": req.user.user,
           "SK": "ORDER#"+orderID,
@@ -91,8 +121,9 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           },
           "items": itemList,
           "status": {
-            "payment": 0,
+            "payment": payment,
             "order": 0,
+            "shippingDate": req.body.shippingDate,
             "comments": [
               {
                 "timestamp": Date.now(),
@@ -100,7 +131,10 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
               }
             ]
           },
-          "shippingMethod": req.body.shippingMethod
+          "shippingMethod": req.body.shippingMethod,
+          "shippingDate": req.body.shippingDate,
+          "pickupAddress": req.body.pickupAddress,
+          "pickupDate": req.body.pickupDate
         }
       };
       putItem = await db.put(params);
@@ -109,7 +143,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     }
     else {
       //If colission, repeat process
-      console.log("COLISSION. Starting over.");
       colcheck();
     }
   }
@@ -139,7 +172,7 @@ router.get('/:id',  async(req, res) => {
   var logo = await s3.getSignedUrl('getObject', {Key: "logos/"+companyID+".png", Expires: 60});
 
   var params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": {"S":companyID},":cd421": {"S":orderID}}
@@ -153,9 +186,14 @@ router.get('/:id',  async(req, res) => {
   if (getOrder.Items[0].status.M.order.N > 0) {
     res.redirect('/order/finished');
   }
-
+  if (getOrder.Items[0].status.M.shippingDate) {
+    if (getOrder.Items[0].status.M.shippingDate.S != "") {
+      var parsed_deliveryDate = getOrder.Items[0].status.M.shippingDate.S.split("-");
+      getOrder.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+    }
+  }
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ProjectionExpression": "companyName, paymentData",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
@@ -173,79 +211,94 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
   var profileID = "PROFILE#" + fullID.substring(0, 6);
   var orderID = "ORDER#" + fullID.substring(6, 12);
   var valid = true;
+  var orderStatus;
+  var paymentStatus;
+
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+
+  getOrder = await db.queryv2(params);
+
   //Check Terms
   if (req.body.tyc != 'on') {
-    console.log("Terms and conditions NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   //Check fields
   if (await !validator.isAlpha(req.body.nombre.trim().replace(" ", ""),'es-ES')) {
-    console.log("Nombre NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await !validator.isAlpha(req.body.apellido.trim().replace(" ", ""),'es-ES')) {
-    console.log("Apellido NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await validator.isEmpty(req.body.telefono)) {
-    console.log("Telefono NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await !validator.isEmail(req.body.email)) {
-    console.log("Correo NOT OK");
     res.redirect(req.headers.referer);
     valid = false;
   }
   if (valid == true) {
-    //Check image uploading and save the image
-    var s3up;
-    if (req.file) {
-      if (await !req.file.mimetype.startsWith("image")) {
-        console.log("INVALID image");
-        res.redirect(req.headers.referer);
+    //Check if payment is cash or card
+    if (getOrder.Items[0].status.payment != 3) {
+      //Check image uploading and save the image
+      var s3up;
+      if (req.file) {
+        if (await !req.file.mimetype.startsWith("image")) {
+          res.redirect(req.headers.referer);
+        }
+        else {
+
+          var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+          var scaled = await file.scaleToFit(500, 1000);
+          var buffer = await scaled.getBufferAsync(Jimp.AUTO);
+          var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
+          var params = {
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
+            ACL: 'private',
+            Body: buffer
+          }
+          s3up = await s3.putObject(params, function (err, data) {
+            if (err) {
+              console.log("Error: ", err);
+            } else {
+              paymentStatus = 1;
+            }
+          }).promise();
+
+        }
       }
       else {
-
-        var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
-        var scaled = await file.scaleToFit(500, 1000);
-        var buffer = await scaled.getBufferAsync(Jimp.AUTO);
-        var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
-        var params = {
-          Bucket: process.env.AWS_S3_BUCKET,
-          Key: "comprobantes/" + fullID.substring(0, 6) + "/" + fullID.substring(6, 12) + ".png",
-          ACL: 'private',
-          Body: buffer
-        }
-        s3up = await s3.putObject(params, function (err, data) {
-          if (err) {
-            console.log("Error: ", err);
-          } else {
-            console.log("Image uploaded OK");
-          }
-        }).promise();
-
+        res.redirect(req.headers.referer);
       }
     }
     else {
-      console.log("NO IMAGE");
-      res.redirect(req.headers.referer);
+      paymentStatus = 3;
+    }
+    if (getOrder.Items[0].shippingMethod == "Retiro en tienda" || getOrder.Items[0].clientData.address.locality == "Retiro en tienda") {
+      req.body.apart = "";
+      req.body.direccion= "";
     }
     //Save the order data
     var params = {
-      "TableName": "app",
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
       "Key": {
         "PK":companyID,
         "SK": orderID
       },
-      "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #updatedAt = :updatedAt ",
+      "UpdateExpression": "set #clientData.#firstName = :firstName, #clientData.#lastName = :lastName, #clientData.#email = :email, #clientData.#contactNumber = :contactNumber, #clientData.#address.#street = :street, #clientData.#address.#apart = :apart, #comment = :comment, #status.#order = :order, #status.#payment = :payment, #updatedAt = :updatedAt ",
       "ExpressionAttributeNames": {
         "#clientData":"clientData",
         "#firstName":"firstName",
@@ -255,6 +308,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
         "#comment":"comment",
         "#status":"status",
         "#order":"order",
+        "#payment":"payment",
         "#updatedAt":"updatedAt",
         "#address":"address",
         "#street":"street",
@@ -267,6 +321,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
         ":contactNumber": parseInt(req.body.telefono),
         ":comment": req.body.comentario,
         ":order": 1,
+        ":payment": paymentStatus,
         ":updatedAt": Date.now(),
         ":street": req.body.direccion,
         ":apart": req.body.apart
@@ -277,7 +332,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
 
     //Add commentary
     params = {
-      "TableName": "app",
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
       "Key": {
         "PK": companyID,
         "SK": orderID
