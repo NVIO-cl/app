@@ -102,12 +102,28 @@ router.post('/register', upload.none(), async(req, res) => {
     Name: 'email',
     Value: req.body.email
   }
-  console.log("EMAIL DATA:");
-  console.log(emailData);
+  var updated_atData = {
+    Name: 'updated_at',
+    Value: Date.now().toString()
+  }
+
+  var first_nameData = {
+    Name: 'custom:first_name',
+    Value: req.body.firstName
+  }
+
+  var last_nameData = {
+    Name: 'custom:last_name',
+    Value: req.body.lastName
+  }
 
   var emailAttribute = AmazonCognitoIdentity.CognitoUserAttribute(emailData);
+  var updated_atAttribute = AmazonCognitoIdentity.CognitoUserAttribute(updated_atData);
+  var first_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(first_nameData);
+  var last_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(last_nameData);
 
-  userPool.signUp(req.body.email, req.body.password, [emailAttribute], null, (err, data)=>{
+
+  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData], null, (err, data)=>{
     if (err) {
       console.log(err);
       res.cookie('message', {type:'danger', content:err.message});
