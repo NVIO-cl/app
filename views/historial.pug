@@ -199,8 +199,12 @@ head
                                                         | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
                                                     else
                                                         | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() > 10
+                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()}
+                                                    if new Date(parseInt(ORD.createdAt.N)).getHours() >= 10
+                                                        |  #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    else
+                                                        |  0#{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() >= 10
                                                         | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
                                                     else
                                                         | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
@@ -318,4 +322,5 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.m
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
 script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+script(src='//cdn.datatables.net/plug-ins/1.10.22/sorting/datetime-moment.js')
 script(src='javascripts/historytable.js')
