@@ -166,7 +166,7 @@ head
                 a.btn.btn-primary(type='button' style='margin-bottom: 10px;background: #6e3c8e;' href='../historial')
                     i.fa.fa-arrow-left
                     | &nbsp;Regresar
-                a.btn.btn-primary(type='button' style='float: right; margin-bottom: 10px;background: #6e3c8e;' href='../edit')
+                a.btn.btn-primary(type='button' style='float: right; margin-bottom: 10px;background: #6e3c8e;' href='../edit/' + order[0].SK.S.replace("ORDER#",""))
                     i.fa.fa-pencil
                     | &nbsp;Editar
                 .row
@@ -267,8 +267,6 @@ head
                                         p(id='totalAbs' style='text-align: center;') $
                                             - var subtotal = parseInt(order[0].cost.M.order.N) + parseInt(order[0].cost.M.shipping.N)
                                                 | #{subtotal}
-                                button.btn.btn-primary.btn-sm Guardar
-                                    //- This button should submit changes
                         if (order[0].status.M.payment.N != 3)
                           .card.shadow.mb-4
                               .card-header.d-flex.justify-content-between.align-items-center
@@ -291,7 +289,10 @@ head
                                       a(data-toggle='modal' data-target='#modal-comprobante')
                                           img(src=logo style='display: block;margin-bottom: 5px;margin-left: auto;margin-right: auto;max-height: 250px; max-width: 300px;width: auto;height: auto;')
                                   button#comprobante.btn.btn-primary(type='button' style='display: block;background: #6e3c8e;margin: auto;width: 50%;') Descargar Comprobante
-                        button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-borrar' style='background: #6e3c8e;') Borrar Pedido
+                        if (order[0].status.M.order.N == 0)
+                            button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-borrar' style='background: #6e3c8e;margin-bottom: 10px;') Borrar Pedido
+                        else
+                            button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-borrar' style='background: #6e3c8e;margin-bottom: 10px;') Borrar Pedido
                     .col
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
@@ -417,14 +418,26 @@ head
                         .modal-content
                             .modal-header
                                 h5.modal-title Estás a punto de eliminar el pedido ##{order[0].SK.S.replace("ORDER#","")}
-                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                button.close(type='button' data-dismiss='modal' aria-label='Close')
                                     span(aria-hidden='true') &times;
                             .modal-body
                                 p ¿Quieres eliminar este pedido?
                             .modal-footer
-                                a.btn.btn-danger(type='button' href='/delete') Eliminar Pedido
-                                    //-- insert deletion call here
-                                button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
+                                form(action='/order/delete' method='POST')
+                                    button.btn.btn-danger(type='submit') Eliminar Pedido
+                                button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
+                .modal.fade#modal-no-borrar(tabindex='-1' role='dialog')
+                    .modal-dialog(role='document')
+                        .modal-content
+                            .modal-header
+                                h5.modal-title No puedes eliminar este pedido ##{order[0].SK.S.replace("ORDER#", "")}
+                                button.close(type='button' data-dismiss='modal' aria-label='Close')
+                                    span(aria-hidden='true') &times;
+                            .modal-body
+                                p No puedes eliminar este pedido pues tu cliente ya ingresó sus datos para este pedido
+                            .modal-footer
+                                button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
+                //- *****
 
         footer.bg-white.sticky-footer
             .container.my-auto

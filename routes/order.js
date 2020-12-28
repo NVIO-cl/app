@@ -165,7 +165,22 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
 });
 
 router.post('/delete',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var companyID = req.user.user;
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var valid = true;
 
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+
+  getOrder = await db.queryv2(params);
+  var orderStatus = getOrder.Items[0].status.order;
+  if(orderStatus == 0){
+    // delete (standby for backend help since this is a destructive operation)
+  }
 });
 
 router.get('/finished', async (req,res)=> {
