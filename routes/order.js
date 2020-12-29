@@ -149,7 +149,22 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
 });
 
 router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/edit', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  var companyID = req.user.user;
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var valid = true;
+
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+
+  getOrder = await db.queryv2(params);
+  var order = getOrder.Items[0];
+  console.log(order.items)
+
+  res.render('order/edit', { title: 'NVIO', productList: order.items, userID: req.user.user.replace("COMPANY#", "") });
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

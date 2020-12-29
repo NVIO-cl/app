@@ -166,7 +166,7 @@ head
           .col
             .card.shadow.mb-3
               .card-header.py-3
-                p.text-primary.m-0.font-weight-bold Crear Nueva Orden
+                p.text-primary.m-0.font-weight-bold Editar Orden
               .card-body
                 form#editOrder(action='/order/edit' method='POST')
                   .form-row.align-items-center
@@ -180,17 +180,18 @@ head
                               th Cantidad
                               th Subtotal
                           tbody#tableBody
-                            tr(id='items[0]')
-                              td
-                                input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
-                              td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
-                              td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required)
-                              td
-                                .d-inline(id='items[0][subtotal]')
-                                  | $ 0
-                                i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
+                            each ORD, index in productList
+                              tr(id='items[' + index + ']')
+                                td
+                                  input.form-control(type='text' id='items[0][product]' name='items[0][product]' required value=ORD.product)
+                                td
+                                  input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required value=ORD.price)
+                                td
+                                  input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required value=ORD.quantity)
+                                td
+                                  .d-inline(id='items[0][subtotal]')
+                                    | $ 0
+                                  i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
                           tr
                             td
                               button#clickAdd.btn.btn-primary.btn-sm Agregar producto
@@ -280,7 +281,7 @@ head
                                     small
                                       | Puedes ingresar una fecha de retiro estimada si deseas
                   .form-group(style="text-align: center;")
-                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Crear Venta
+                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Editar Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
