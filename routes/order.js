@@ -151,23 +151,35 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
 router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   var companyID = req.user.user;
   var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
-  var valid = true;
+  var noTransfer = false;
+  var paramsUser = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
+  }
 
-  var params = {
+  userData = await db.queryv2(paramsUser);
+  paymentData = userData.Items[0].paymentData
+  if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
+    noTransfer = true;
+  }
+
+  var paramsOrder = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
   }
 
-  getOrder = await db.queryv2(params);
+  getOrder = await db.queryv2(paramsOrder);
   var order = getOrder.Items[0];
-  console.log(order.items)
 
-  res.render('order/edit', { title: 'NVIO', productList: order.items, userID: req.user.user.replace("COMPANY#", "") });
+  res.render('order/edit', { title: 'NVIO', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer});
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  /*
   var valid = true;
   var invalidItems = []
   //Validate data
@@ -175,8 +187,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
     invalidItems.push(["#companyName","El nombre de empresa no puede estar vacío"])
     var valid = false;
   }
-
-
+  */
 });
 
 router.post('/delete',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

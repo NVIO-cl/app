@@ -14,7 +14,7 @@ head
   link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
   link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
-#wrapper
+#wrapper(onload='recalc();')
   nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
     .container-fluid.d-flex.flex-column.p-0
       a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
@@ -30,11 +30,11 @@ head
             i.fas.fa-user
             span Perfil
         li.nav-item
-          a.nav-link(href='/historial')
+          a.nav-link.active(href='/historial')
             i.fas.fa-table
             span Historial de Ventas
         li.nav-item
-          a.nav-link.active(href='/order/create')
+          a.nav-link(href='/order/create')
             i.fas.fa-plus-square
             span Crear Nueva Orden
         li.nav-item
@@ -180,17 +180,17 @@ head
                               th Cantidad
                               th Subtotal
                           tbody#tableBody
-                            each ORD, index in productList
+                            each ORD, index in editOrderInfo.items
                               tr(id='items[' + index + ']')
                                 td
-                                  input.form-control(type='text' id='items[0][product]' name='items[0][product]' required value=ORD.product)
+                                  input.form-control(type='text' id='items[' + index + '][product]' name='items[0][product]' required value=ORD.product)
                                 td
-                                  input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required value=ORD.price)
+                                  input.form-control(type='number' style='width: 100px;' id='items[' + index + '][price]' name='items[0][price]' min='1' required value=ORD.price)
                                 td
-                                  input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required value=ORD.quantity)
+                                  input.form-control(type='number' style='width: 100px;' id='items[' + index + '][quantity]' name='items[0][quantity]' min='1' required value=ORD.quantity)
                                 td
                                   .d-inline(id='items[0][subtotal]')
-                                    | $ 0
+                                    | $ #{ORD.quantity*ORD.price}
                                   i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
                           tr
                             td
@@ -207,11 +207,12 @@ head
                             td
                             td
                               .col
-                                p#totalProd $ 0
+                                p#totalProd $ #{editOrderInfo.cost.order}
                               .col
-                                p#totalShip $ 0
+                                p#totalShip $ #{editOrderInfo.cost.shipping}
                               .col
-                                p#totalFin $ 0
+                                - var total = editOrderInfo.cost.order + editOrderInfo.cost.shipping
+                                p#totalFin $ #{total}
                       .form-row
                         .col
                           hr
@@ -261,7 +262,7 @@ head
                                     | Debes especificar el nombre de la compañía o servicio que se utilizará para el envío
                                 .col-lg
                                   p.font-weight-bold.m-0 Precio del Despacho
-                                  input.form-control#shippingCost(type='number' name='shippingCost' value=0 min="0" required)
+                                  input.form-control#shippingCost(type='number' name='shippingCost' value=editOrderInfo.cost.shipping min="0" required)
                                   small
                                     | Debes ingresar el valor asociado al método de despacho escogido
                                 .col-lg
@@ -277,7 +278,7 @@ head
                                       | Ingresa la dirección donde debe retirarse el pedido
                                 .col-lg-4
                                   p.font-weight-bold.m-0 Fecha de Retiro (Opcional)
-                                    input.form-control#pickupDate(type='date' name='pickupDate')
+                                    input.form-control#pickupDate(type='date' name='pickupDate' value='')
                                     small
                                       | Puedes ingresar una fecha de retiro estimada si deseas
                   .form-group(style="text-align: center;")
@@ -287,4 +288,5 @@ head
         .text-center.my-auto.copyright
           span Copyright &copy; NVIO 2020
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-  script(src='/javascripts/order-create.js')
+  script(src='/javascripts/order-edit.js')
+
