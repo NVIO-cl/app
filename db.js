@@ -98,9 +98,14 @@ module.exports = {
     try {
       var docClient = new aws.DynamoDB.DocumentClient();
       const deleteOutput = await docClient.delete(params).promise();
+      if(process.env.NODE_ENV == 'develop'){
+        console.info('Delete successful.');
+      }
       return deleteOutput;
     } catch (err) {
-      console.log(err);
+      if(process.env.NODE_ENV == 'develop'){
+        console.log(err);
+      }
     }
   }
 }

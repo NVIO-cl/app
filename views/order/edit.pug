@@ -164,6 +164,9 @@ head
       .container-fluid
         .row
           .col
+            if (message)
+              .alert.alert-dismissible.fade.show(role="alert" class="alert-"+message.type)
+                | #{message.message}
             .card.shadow.mb-3
               .card-header.py-3
                 p.text-primary.m-0.font-weight-bold Editar Orden
@@ -183,15 +186,15 @@ head
                             each ORD, index in editOrderInfo.items
                               tr(id='items[' + index + ']')
                                 td
-                                  input.form-control(type='text' id='items[' + index + '][product]' name='items[0][product]' required value=ORD.product)
+                                  input.form-control(type='text' id='items[' + index + '][product]' name='items['+ index +'][product]' required value=ORD.product)
                                 td
-                                  input.form-control(type='number' style='width: 100px;' id='items[' + index + '][price]' name='items[0][price]' min='1' required value=ORD.price)
+                                  input.form-control(type='number' style='width: 100px;' id='items[' + index + '][price]' name='items['+ index +'][price]' min='1' required value=ORD.price)
                                 td
-                                  input.form-control(type='number' style='width: 100px;' id='items[' + index + '][quantity]' name='items[0][quantity]' min='1' required value=ORD.quantity)
+                                  input.form-control(type='number' style='width: 100px;' id='items[' + index + '][quantity]' name='items['+ index +'][quantity]' min='1' required value=ORD.quantity)
                                 td
                                   .d-inline(id='items[0][subtotal]')
                                     | $ #{ORD.quantity*ORD.price}
-                                  i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
+                                  i.fas.fa-trash.d-inline.float-right.text-danger(id='delete['+ index +']' role='button')
                           tr
                             td
                               button#clickAdd.btn.btn-primary.btn-sm Agregar producto
@@ -222,12 +225,20 @@ head
                               .form-row(style='padding-left: 10px;')
                                   .form-group
                                     if (noTransfer == false)
-                                      .form-check
-                                        input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
-                                        label.form-check-label(for='checkWire') Transferencia
-                                      .form-check
-                                        input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
-                                        label.form-check-label(for='checkCash') Efectivo
+                                      if (editOrderInfo.status.payment == 3)
+                                        .form-check
+                                          input.form-check-input(type='radio' name='payment' id='checkWire' value='transferencia')
+                                          label.form-check-label(for='checkWire') Transferencia
+                                        .form-check
+                                          input.form-check-input(type='radio' name='payment' id='checkCash' checked value='efectivo')
+                                          label.form-check-label(for='checkCash') Efectivo
+                                      else
+                                        .form-check
+                                          input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
+                                          label.form-check-label(for='checkWire') Transferencia
+                                        .form-check
+                                          input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
+                                          label.form-check-label(for='checkCash') Efectivo
                                     else
                                       .form-check
                                         input.form-check-input(type='radio' name='payment' id='checkCash' checked value='efectivo')
@@ -242,22 +253,31 @@ head
                               p.font-weight-bold.m-0 Método de Despacho
                               .form-row(style='padding-left: 10px;')
                                 #shippingRadios(onchange='valueChanged()')
-                                  .form-group
-                                    .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' checked value='domicilio')
-                                      label.form-check-label(for='checkShipping') Despacho a Domicilio
-                                    .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
-                                      label.form-check-label(for='checkInStore') Retiro en Local
+                                  if (editOrderInfo.clientData.address.locality != 'Retiro en tienda')
+                                    .form-group
+                                      .form-check
+                                        input.form-check-input(type='radio' name='shipping' id='checkShipping' checked value='domicilio')
+                                        label.form-check-label(for='checkShipping') Despacho a Domicilio
+                                      .form-check
+                                        input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
+                                        label.form-check-label(for='checkInStore') Retiro en Local
+                                  else
+                                    .form-group
+                                      .form-check
+                                        input.form-check-input(type='radio' name='shipping' id='checkShipping' value='domicilio')
+                                        label.form-check-label(for='checkShipping') Despacho a Domicilio
+                                      .form-check
+                                        input.form-check-input(type='radio' name='shipping' id='checkInStore' checked value='local')
+                                        label.form-check-label(for='checkInStore') Retiro en Local
                               .form-row#shippingInfo
                                 .col-lg
                                   p.font-weight-bold.m-0 Comuna de Destino
-                                  input.form-control#locality(type='text' name='locality' required)
+                                  input.form-control#locality(type='text' name='locality' value=editOrderInfo.clientData.address.locality required)
                                   small
                                     | Debes ingresar la comuna a la cual se enviará el pedido
                                 .col-lg
                                   p.font-weight-bold.m-0 Método de Despacho
-                                  input.form-control#shippingMethod(type='text' name='shippingMethod' required)
+                                  input.form-control#shippingMethod(type='text' name='shippingMethod' value=editOrderInfo.shippingMethod required)
                                   small
                                     | Debes especificar el nombre de la compañía o servicio que se utilizará para el envío
                                 .col-lg
@@ -267,18 +287,18 @@ head
                                     | Debes ingresar el valor asociado al método de despacho escogido
                                 .col-lg
                                   p.font-weight-bold.m-0 Fecha de Entrega (Opcional)
-                                    input.form-control#shippingDate(type='date' name='shippingDate')
+                                    input.form-control#shippingDate(type='date' name='shippingDate' value=editOrderInfo.shippingDate)
                                     small
                                       | Puedes ingresar una fecha de entrega estimada si deseas
                               .form-row#pickupInfo
                                 .col-lg-4
                                   p.font-weight-bold.m-0 Dirección de Retiro
-                                    input.form-control#pickupAddress(type='text' name='pickupAddress' required)
+                                    input.form-control#pickupAddress(type='text' name='pickupAddress' value=editOrderInfo.pickupAddress required)
                                     small
                                       | Ingresa la dirección donde debe retirarse el pedido
                                 .col-lg-4
                                   p.font-weight-bold.m-0 Fecha de Retiro (Opcional)
-                                    input.form-control#pickupDate(type='date' name='pickupDate' value='')
+                                    input.form-control#pickupDate(type='date' name='pickupDate' value=editOrderInfo.pickupDate)
                                     small
                                       | Puedes ingresar una fecha de retiro estimada si deseas
                   .form-group(style="text-align: center;")
@@ -289,4 +309,3 @@ head
           span Copyright &copy; NVIO 2020
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
   script(src='/javascripts/order-edit.js')
-

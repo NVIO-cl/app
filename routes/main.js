@@ -37,6 +37,50 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
   res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
 });
 
+router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK": req.user.user,
+      "SK": "ORDER#" + req.body.orderid
+    },
+    "UpdateExpression": "set #status.#order = :orderStatus, #updatedAt = :updatedAt",
+    "ExpressionAttributeNames": {
+      "#status": "status",
+      "#order": "order",
+      "#updatedAt": "updatedAt"
+    },
+    "ExpressionAttributeValues": {
+      ":orderStatus": parseInt(req.body.status),
+      ":updatedAt": Date.now(),
+    }
+  }
+  commentResult = await db.update(params);
+  res.json("Ok")
+});
+
+router.post('/detail/validatePayment',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK": req.user.user,
+      "SK": "ORDER#" + req.body.orderid
+    },
+    "UpdateExpression": "set #status.#payment = :paymentStatus, #updatedAt = :updatedAt",
+    "ExpressionAttributeNames": {
+      "#status": "status",
+      "#payment": "payment",
+      "#updatedAt": "updatedAt"
+    },
+    "ExpressionAttributeValues": {
+      ":paymentStatus": 2,
+      ":updatedAt": Date.now(),
+    }
+  }
+  commentResult = await db.update(params);
+  res.json("Ok")
+});
+
 router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   params = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
@@ -88,7 +132,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   };
 
   detailQuery = await db.query(params);
-  
+
   var created_at = detailQuery.Items[0].createdAt.N;
   var parsed_created_at = date_parser.parse_date(created_at);
   if (detailQuery.Items[0].status.M.shippingDate) {
