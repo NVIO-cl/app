@@ -149,11 +149,162 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
 });
 
 router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('order/edit', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  var companyID = req.user.user;
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var noTransfer = false;
+  var paramsUser = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
+  }
+
+  userData = await db.queryv2(paramsUser);
+  paymentData = userData.Items[0].paymentData
+  if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
+    noTransfer = true;
+  }
+
+  var paramsOrder = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+  getOrder = await db.queryv2(paramsOrder);
+  var order = getOrder.Items[0];
+
+  var message
+  if (req.cookies.message) {
+    console.log(message);
+    message = req.cookies.message
+    res.clearCookie('message');
+  }
+
+  res.render('order/edit', { title: 'NVIO', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message});
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
 
+  if (req.body.shipping == 'local') {
+    req.body.shippingDate = ''
+    req.body.locality = 'Retiro en tienda'
+    req.body.shippingMethod = req.body.pickupAddress
+  }
+  else if(req.body.shipping == 'domicilio') {
+    req.body.pickupDate = '';
+  }
+
+  //Shipping Cost
+  if (!validator.isInt(req.body.shippingCost)) {
+    res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+  }
+  if (req.body.shippingCost < 0) {
+    res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+  }
+
+  //Items
+  var itemList = [];
+  var cost = 0;
+  req.body.items.forEach((item, i) => {
+    if (!validator.isInt(item.quantity)) {
+      res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+    }
+    if (!validator.isInt(item.price)) {
+      res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+    }
+    itemList[i] = {}
+    itemList[i].product = item.product;
+    itemList[i].quantity = parseInt(item.quantity);
+    if (itemList[i].quantity <=0) {
+      res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+    }
+    itemList[i].price = parseInt(item.price);
+    if (itemList[i].price <=0) {
+      res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+    }
+    cost = parseInt(cost + item.price * item.quantity);
+  });
+
+
+  console.log(req.body);
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var payment = 0;
+  if (req.body.payment == 'efectivo') {
+    payment = 3;
+  }
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK":req.user.user,
+      "SK": orderID
+    },
+    "UpdateExpression": "set #items = :items, #updatedAt = :updatedAt, #status.#payment = :payment, #clientData.#address.#locality = :locality, #cost.#order = :orderCost, #cost.#shipping= :shippingCost, #shippingMethod=:shippingMethod, #shippingDate=:shippingDate, #pickupAddress=:pickupAddress, #pickupDate=:pickupDate",
+    "ExpressionAttributeNames": {
+      "#items":"items",
+      "#updatedAt":"updatedAt",
+      "#status":"status",
+      "#payment":"payment",
+      "#clientData":"clientData",
+      "#address":"address",
+      "#locality":"locality",
+      "#cost":"cost",
+      "#order":"order",
+      "#shipping":"shipping",
+      "#shippingMethod":"shippingMethod",
+      "#shippingDate":"shippingDate",
+      "#pickupAddress":"pickupAddress",
+      "#pickupDate":"pickupDate"
+    },
+    "ExpressionAttributeValues": {
+      ":items": itemList,
+      ":updatedAt": Date.now(),
+      ":payment": payment,
+      ":locality": req.body.locality,
+      ":orderCost": cost,
+      ":shippingCost": parseInt(req.body.shippingCost),
+      ":shippingMethod": req.body.shippingMethod,
+      ":shippingDate": req.body.shippingDate,
+      ":pickupAddress": req.body.pickupAddress,
+      ":pickupDate": req.body.pickupDate
+    }
+  }
+  updateResult = await db.update(params);
+  res.cookie('message', {type:'success', message:'Orden editada con éxito'});
+  res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+});
+
+router.post('/delete',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var companyID = req.user.user;
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var valid = true;
+
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+
+  getOrder = await db.queryv2(params);
+  var orderStatus = getOrder.Items[0].status.order;
+  if(orderStatus == 0){
+    var deleteParams = {
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
+      "Key": {
+        "PK": companyID,
+        "SK": orderID
+      },
+      "ConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+      "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+      "ExpressionAttributeValues": {":cd420": companyID ,":cd421": orderID}
+    }
+    deleteOrder = await db.delete(deleteParams);
+    console.log(deleteOrder);
+    res.cookie('message', {type:'success', message:'Orden eliminada con éxito'});
+    res.redirect("/historial")
+    // delete (standby for backend help since this is a destructive operation)
+  }
 });
 
 router.get('/finished', async (req,res)=> {
