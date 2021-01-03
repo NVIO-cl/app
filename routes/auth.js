@@ -38,24 +38,21 @@ router.post('/login', upload.none(), function (req, res, next) {
   //Passport Authentication
   passport.authenticate('local', {session: false}, (err, user, info) => {
     if (err || !user) {
-      res.cookie('error', true);
+      console.log(err);
+      if (err == 'UserNotConfirmedException') {
+        res.cookie('message', {type:'danger', content:'Correo no verificado. Por favor confirma tu correo.'});
+      }
+      else {
+        res.cookie('message', {type:'danger', content:'Correo o contraseña incorrecto.'});
+      }
       return res.redirect('/login');
     }
     req.login(user, {session: false}, (err) => {
       if (err) {
         res.send(err);
       }
-      if (user.includes("ADMIN")){
-        return res.redirect('/login');
-      }
-      else if (user.includes("USER")) {
-        return res.redirect('/login');
-      }
-      else if (user.includes("COMPANY")){
-        const token = jwt.sign({user, iat: Math.floor(Date.now()/1000)}, process.env.JWT_SECRET, {expiresIn: expiresIn, });
-        res.cookie('token', token, {maxAge: maxAge, secure: false, httpOnly: true,});
-        return res.redirect('/');
-      }
+      res.cookie('token', user, {maxAge: maxAge, secure: false, httpOnly: true,});
+      return res.redirect('/');
     });
   })(req, res);
 });
@@ -116,14 +113,45 @@ router.post('/register', upload.none(), async(req, res) => {
     Name: 'custom:last_name',
     Value: req.body.lastName
   }
+  var company_id = await colcheck();
 
+  var company_idData = {
+    Name: 'custom:company_id',
+    Value: company_id
+  }
+
+  var params_profile={
+    TableName: process.env.AWS_DYNAMODB_TABLE,
+    Item: {
+      "PK": company_id,
+      "SK": company_id.replace("COMPANY#", "PROFILE#") ,
+      "companyName": "",
+      "firstName": req.body.firstName,
+      "lastName": req.body.lastName,
+      "email": req.body.email,
+      "contactNumber": 912345678,
+      "companyTurn": "",
+      "companyRut": "",
+      "paymentData": {
+        "name": "",
+        "rut": "",
+        "bank": "",
+        "accType": "",
+        "accNum": "",
+        "email": ""
+      },
+      "createdAt": Date.now()
+    }
+  };
+  profilePut = await db.put(params_profile);
   var emailAttribute = AmazonCognitoIdentity.CognitoUserAttribute(emailData);
   var updated_atAttribute = AmazonCognitoIdentity.CognitoUserAttribute(updated_atData);
   var first_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(first_nameData);
   var last_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(last_nameData);
+  var company_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(company_idData);
 
 
-  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData], null, (err, data)=>{
+  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData], null, (err, data)=>{
     if (err) {
       console.log(err);
       res.cookie('message', {type:'danger', content:err.message});
@@ -136,116 +164,35 @@ router.post('/register', upload.none(), async(req, res) => {
       return res.redirect('/login');
     }
   })
-  /*
+  console.log("Cognito register!");
+});
 
-  var date = new Date();
-  var year = date.getFullYear();
-  const saltRounds = 10;
-  var email = req.body.email;
-  var password = req.body.password;
-  var password_repeat = req.body.password_repeat;
-  // Check if email is already taken
-  var params_check_email = {
+async function colcheck(){
+  // Generate ID
+  userID = nanoid(6);
+  // Check if colission
+  var params_check_id = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeValues": {
-      ":cd420": "EMAIL",
-      ":cd421": "EMAIL#" + email
+      ":cd420": "COMPANY#" + userID,
+      ":cd421": "PROFILE#" + userID
     },
     "ExpressionAttributeNames": {
       "#cd420": "PK",
       "#cd421": "SK"
     }
   };
-  check_email = await db.queryv2(params_check_email);
-  if(check_email.Count == 1){
-    res.cookie('error', 'Ya existe una cuenta con ese email');
-    return res.redirect('/register');
-    //res.redirect('register', {title: name, error: errormsg});
+  check_id = await db.queryv2(params_check_id);
+  if(check_id.Count >= 1){
+    colcheck();
   }
-  else{
-    // CHeck if password is double ok
-    if(password == password_repeat){
-      var hashed_pw = bcrypt.hashSync(password, saltRounds);
-      //Run colcheck
-      colcheck();
-
-      async function colcheck(){
-        // Generate ID
-        userID = nanoid(6);
-        // Check if colission
-        var params_check_id = {
-          "TableName": process.env.AWS_DYNAMODB_TABLE,
-          "ScanIndexForward": false,
-          "ConsistentRead": false,
-          "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
-          "ExpressionAttributeValues": {
-            ":cd420": "COMPANY#" + userID,
-            ":cd421": "PROFILE#" + userID
-          },
-          "ExpressionAttributeNames": {
-            "#cd420": "PK",
-            "#cd421": "SK"
-          }
-        };
-        check_id = await db.queryv2(params_check_email);
-        if(check_id.Count >= 1){
-          colcheck();
-        }
-        else {
-          var params_profile={
-            TableName: process.env.AWS_DYNAMODB_TABLE,
-            Item: {
-              "PK": "COMPANY#" + userID,
-              "SK": "PROFILE#" + userID,
-              "companyName": " ",
-              "firstName": " ",
-              "lastName": " ",
-              "email": " ",
-              "contactNumber": 912345678,
-              "password": hashed_pw,
-              "companyTurn": " ",
-              "companyRut": " ",
-              "paymentData": {
-                "name": " ",
-                "rut": " ",
-                "bank": " ",
-                "accType": " ",
-                "accNum": " ",
-                "email": " "
-              },
-              "resetToken": "Null",
-              "tokenExp": "Null",
-              "createdAt": Date.now()
-            }
-          };
-
-          var params_email={
-            TableName: process.env.AWS_DYNAMODB_TABLE,
-            Item: {
-              "PK": "EMAIL",
-              "SK": "EMAIL#" + email,
-              "userID": "COMPANY#" + userID
-            }
-          };
-
-          profilePut = await db.put(params_profile);
-          emailPut = await db.put(params_email);
-          return res.redirect('/login');
-        }
-      }
-    }else{
-      console.log("Contraseñas no son idénticas")
-      return res.redirect('/register');
-    }
+  else {
+    return('COMPANY#'+userID)
   }
-  */
-
-  console.log("Cognito register!");
-
-});
+}
 
 // Account verification route
 router.get('/verify', (req, res) => {

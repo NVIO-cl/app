@@ -23,6 +23,7 @@ var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.user);
   res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
 });
 
