@@ -57,11 +57,6 @@ router.post('/login', upload.none(), function (req, res, next) {
   })(req, res);
 });
 
-router.get('/logout', (req, res, next) => {
-  res.clearCookie('token');
-  return res.redirect('/login');
-});
-
 //Login route
 router.get('/login', (req, res) => {
   const name = "Login";
@@ -167,6 +162,34 @@ router.post('/register', upload.none(), async(req, res) => {
   console.log("Cognito register!");
 });
 
+router.get('/logout', (req, res, next) => {
+  res.clearCookie('token');
+  return res.redirect('/login');
+});
+
+// Account verification route
+router.get('/verify', (req, res) => {
+  var userData = {
+    Pool: userPool,
+    Username: req.query.u
+  }
+  var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+  cognitoUser.confirmRegistration(req.query.c, true, function(err, result) {
+    if (err) {
+        res.cookie('message', {type:'danger', content:'El código de verificación es inválido'});
+        return res.redirect('/login');
+    }
+    else {
+      res.cookie('message', {type:'success', content:'Correo verificado. Ahora puedes iniciar sesión'});
+      return res.redirect('/login');
+    }
+  });
+})
+
+router.get('/forgot', (req,res)=>{
+  res.render('reset_password');
+})
+
 async function colcheck(){
   // Generate ID
   userID = nanoid(6);
@@ -193,25 +216,6 @@ async function colcheck(){
     return('COMPANY#'+userID)
   }
 }
-
-// Account verification route
-router.get('/verify', (req, res) => {
-  var userData = {
-    Pool: userPool,
-    Username: req.query.u
-  }
-  var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-  cognitoUser.confirmRegistration(req.query.c, true, function(err, result) {
-    if (err) {
-        res.cookie('message', {type:'danger', content:'El código de verificación es inválido'});
-        return res.redirect('/login');
-    }
-    else {
-      res.cookie('message', {type:'success', content:'Correo verificado. Ahora puedes iniciar sesión'});
-      return res.redirect('/login');
-    }
-  });
-})
 
 
 module.exports = router;
