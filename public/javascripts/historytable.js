@@ -26,7 +26,7 @@ $(document).ready(function () {
             }
         },
         "columnDefs": [
-            { "type": "datetime-moment", "targets": 1 }
+            { "type": "integer", "targets": 1 }
         ],
         "order": [[ 1, "desc" ]]
     });
