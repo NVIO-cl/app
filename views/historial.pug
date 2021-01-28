@@ -191,6 +191,8 @@ head
                                             tr.text-center
                                                 td #{ORD.SK.S.replace("ORDER#","")}
                                                 td
+                                                    span(style='display: none;')
+                                                        | 0#{parseInt(ORD.createdAt.N)}
                                                     if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
                                                         | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
                                                     else
@@ -199,17 +201,13 @@ head
                                                         | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
                                                     else
                                                         | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()}
-                                                    if new Date(parseInt(ORD.createdAt.N)).getHours() >= 10
-                                                        |  #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                    else
-                                                        |  0#{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() >= 10
-                                                        | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
-                                                    else
+                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() < 10
                                                         | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+                                                    else
+                                                        | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
 
-                                                // Make it prettier pls
+                                                //- Make it prettier pls
                                                 -
                                                     try {
                                                         a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
