@@ -1,54 +1,57 @@
 doctype html
-head
-    meta(charset='utf-8')
-    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Register - NVIO
-    script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
-    script.
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-SJETCMY2EN');
-    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
-    link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
-.container
-    .card.shadow-lg.o-hidden.border-0.my-5
-        .card-body.p-0
-            .row
-                .col-lg-5.d-none.d-lg-flex
-                    .flex-grow-1.bg-register-image(style='background-image: url("https://nvio.s3.amazonaws.com/assets/img/dogs/image2.jpeg");')
-                .col-lg-7
-                    .p-5
-                        .text-center(style='padding: 10px;')
-                            img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_fondo.png' style='width: 100%;')
-                        form.user(action='/register' method='POST' enctype='multipart/form-data')
-                            .form-group
-                                input#email.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email' pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" required)
-                            .form-group.row
-                                .col-sm-6.mb-3.mb-sm-0
-                                    input#password.form-control.form-control-user(type='password' placeholder='Contraseña' name='password' required)
-                                .col-sm-6
-                                    input#repeatPassword.form-control.form-control-user(type='password' placeholder='Confirmar Contraseña' name='password_repeat' required)
-                            .form-group
-                                .custom-control.custom-checkbox.small
-                                    .form-check
-                                        input#terms.form-check-input.custom-control-input(type='checkbox' value='terms' required)
-                                        label.form-check-label.custom-control-label(for='terms')
-                                          | Acepto los <a href="https://nvio.cl/terminos-y-condiciones/" target="_blank">términos y condiciones</a> y la <a href="https://nvio.cl/politicas-de-privacidad/" target="_blank">política de privacidad</a>
-                            button.btn.btn-primary.btn-block.text-white.btn-user(type='submit' style='background: #058791;') Registrarme
-                            //hr
-                            //a.btn.btn-primary.btn-block.text-white.btn-google.btn-user(role='button')
-                            //    i.fab.fa-google
-                            //    | &nbsp; Registrarme con Google
-                            //a.btn.btn-primary.btn-block.text-white.btn-facebook.btn-user(role='button')
-                            //    i.fab.fa-facebook-f
-                            //    | &nbsp; Registrarme con Facebook
-                            hr
-                        .text-center
-                            // a.small(href='forgot-password.html') ¿Olvidaste tu contraseña?
-                        .text-center
-                            a.small(href='/login') ¿Ya tienes cuenta? Ingresa aquí
+html(style='background: #0861ff;')
+    head
+        meta(charset='utf-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
+        title Register - Alia
+        script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+        script.
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-SJETCMY2EN');
+        link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    .bg-gradient-primary(style='background: #0861ff;')
+        .container
+            .row.justify-content-center
+                .col-md-9.col-lg-12.col-xl-10
+                    .card.shadow-lg.o-hidden.border-0.my-5
+                        .card-body.p-0
+                            .row
+                                .col
+                                    .p-5
+                                        .text-center(style='padding: 10px;')
+                                            img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_color.png' style='width: 85%;')
+                                        h2(style="text-align:center;") Crear cuenta
+                                        form.user(action='/register' method='POST' enctype='multipart/form-data')
+                                            .form-group
+                                                input#email.form-control.form-control-user(type='email' aria-describedby='emailHelp' placeholder='Correo Electrónico' name='email' pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" required)
+                                            .form-group.row
+                                                .col-sm-6.mb-3.mb-sm-0
+                                                    input#password.form-control.form-control-user(type='password' placeholder='Contraseña' name='password' required)
+                                                .col-sm-6
+                                                    input#repeatPassword.form-control.form-control-user(type='password' placeholder='Confirmar Contraseña' name='password_repeat' required)
+                                            .form-group
+                                                .custom-control.custom-checkbox.small
+                                                    .form-check
+                                                        input#terms.form-check-input.custom-control-input(type='checkbox' value='terms' required)
+                                                        label.form-check-label.custom-control-label(for='terms')
+                                                          | Acepto los <a href="https://nvio.cl/terminos-y-condiciones/" target="_blank">términos y condiciones</a> y la <a href="https://nvio.cl/politicas-de-privacidad/" target="_blank">política de privacidad</a>
+                                            button.btn.btn-primary.btn-block.text-white.btn-user(type='submit' style='background: #12c4f2; border: #12c4f2') Registrarme
+                                            //hr
+                                            //a.btn.btn-primary.btn-block.text-white.btn-google.btn-user(role='button')
+                                            //    i.fab.fa-google
+                                            //    | &nbsp; Registrarme con Google
+                                            //a.btn.btn-primary.btn-block.text-white.btn-facebook.btn-user(role='button')
+                                            //    i.fab.fa-facebook-f
+                                            //    | &nbsp; Registrarme con Facebook
+                                            hr
+                                        .text-center
+                                            // a.small(href='forgot-password.html') ¿Olvidaste tu contraseña?
+                                        .text-center
+                                            a.small(href='/login') ¿Ya tienes cuenta? Ingresa aquí
 
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')

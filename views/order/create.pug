@@ -15,12 +15,12 @@ head
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
   link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
 #wrapper
-  nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
+  nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #0861ff;')
     .container-fluid.d-flex.flex-column.p-0
       a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-        img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_blanco.png' style='width: 90%;')
+        img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
       hr.sidebar-divider.my-0
-      ul#accordionSidebar.nav.navbar-nav.text-light
+      ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
         li.nav-item
           a.nav-link(href='/')
             i.fas.fa-tachometer-alt
@@ -46,7 +46,7 @@ head
         button#sidebarToggle.btn.rounded-circle.border-0(type='button')
   #content-wrapper.d-flex.flex-column
     #content
-      nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
+      nav.navbar(style='margin-top: 17px;')
         //-
           .container-fluid
             button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
@@ -162,128 +162,127 @@ head
                         i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                         | &nbsp;Logout
       .container-fluid
-        .row
-          .col
-            .card.shadow.mb-3
-              .card-header.py-3
-                p.text-primary.m-0.font-weight-bold Crear Nueva Orden
-              .card-body
-                form#newOrder(action='/order/create' method='POST')
-                  .form-row.align-items-center
-                    .col
-                      .table-responsive
-                        table.table
-                          thead
-                            tr
-                              th Nombre Producto
-                              th Precio Unitario
-                              th Cantidad
-                              th Subtotal
-                          tbody#tableBody
-                            tr(id='items[0]')
-                              td
-                                input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
-                              td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
-                              td
-                                input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required)
-                              td
-                                .d-inline(id='items[0][subtotal]')
-                                  | $ 0
-                                i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
+          h3.text-dark.mb-4 Crear Nueva Orden
+          .card.shadow
+            .card-header.py-3
+              p.text-primary.m-0.font-weight-bold Creador de Orden
+            .card-body
+              form#newOrder(action='/order/create' method='POST')
+                .form-row.align-items-center
+                  .col
+                    .table-responsive
+                      table.table
+                        thead
                           tr
+                            th Nombre Producto
+                            th Precio Unitario
+                            th Cantidad
+                            th Subtotal
+                        tbody#tableBody
+                          tr(id='items[0]')
                             td
-                              button#clickAdd.btn.btn-primary.btn-sm Agregar producto
-                          tr
+                              input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
                             td
-                              .col
-                                p Productos
-                              .col
-                                p Despacho
-                              .col
-                                p Total
+                              input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
                             td
+                              input.form-control(type='number' style='width: 100px;' id='items[0][quantity]' name='items[0][quantity]' min='1' required)
                             td
-                            td
-                              .col
-                                p#totalProd $ 0
-                              .col
-                                p#totalShip $ 0
-                              .col
-                                p#totalFin $ 0
-                      .form-row
-                        .col
-                          hr
-                          .form-row.text-right.mb-3
-                            .col.text-left.align-self-center
-                              p.font-weight-bold.m-0 Método de Pago
-                              .form-row(style='padding-left: 10px;')
-                                  .form-group
-                                    if (noTransfer == false)
-                                      .form-check
-                                        input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
-                                        label.form-check-label(for='checkWire') Transferencia
-                                      .form-check
-                                        input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
-                                        label.form-check-label(for='checkCash') Efectivo
-                                    else
-                                      .form-check
-                                        input.form-check-input(type='radio' name='payment' id='checkCash' checked value='efectivo')
-                                        label.form-check-label(for='checkCash') Efectivo
-                                      p
-                                        b Si quieres activar el pago por transferencia, rellena los datos en <a href="/profile">tu perfil</a>.
-                      .form-row
-                        .col
-                          hr
-                          .form-row.text-right.mb-3
-                            .col.text-left.align-self-center
-                              p.font-weight-bold.m-0 Método de Despacho
-                              .form-row(style='padding-left: 10px;')
-                                #shippingRadios(onchange='valueChanged()')
-                                  .form-group
+                              .d-inline(id='items[0][subtotal]')
+                                | $ 0
+                              i.fas.fa-trash.d-inline.float-right.text-danger(id='delete[0]' role='button')
+                        tr
+                          td
+                            button#clickAdd.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2;') Agregar producto
+                        tr
+                          td
+                            .col
+                              p Productos
+                            .col
+                              p Despacho
+                            .col
+                              p Total
+                          td
+                          td
+                          td
+                            .col
+                              p#totalProd $ 0
+                            .col
+                              p#totalShip $ 0
+                            .col
+                              p#totalFin $ 0
+                    .form-row
+                      .col
+                        hr
+                        .form-row.text-right.mb-3
+                          .col.text-left.align-self-center
+                            p.font-weight-bold.m-0 Método de Pago
+                            .form-row(style='padding-left: 10px;')
+                                .form-group
+                                  if (noTransfer == false)
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkShipping' checked value='domicilio')
-                                      label.form-check-label(for='checkShipping') Despacho a Domicilio
+                                      input.form-check-input(type='radio' name='payment' id='checkWire' checked value='transferencia')
+                                      label.form-check-label(for='checkWire') Transferencia
                                     .form-check
-                                      input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
-                                      label.form-check-label(for='checkInStore') Retiro en Local
-                              .form-row#shippingInfo
-                                .col-lg
-                                  p.font-weight-bold.m-0 Comuna de Destino
-                                  input.form-control#locality(type='text' name='locality' required)
+                                      input.form-check-input(type='radio' name='payment' id='checkCash' value='efectivo')
+                                      label.form-check-label(for='checkCash') Efectivo
+                                  else
+                                    .form-check
+                                      input.form-check-input(type='radio' name='payment' id='checkCash' checked value='efectivo')
+                                      label.form-check-label(for='checkCash') Efectivo
+                                    p
+                                      b Si quieres activar el pago por transferencia, rellena los datos en <a href="/profile">tu perfil</a>.
+                    .form-row
+                      .col
+                        hr
+                        .form-row.text-right.mb-3
+                          .col.text-left.align-self-center
+                            p.font-weight-bold.m-0 Método de Despacho
+                            .form-row(style='padding-left: 10px;')
+                              #shippingRadios(onchange='valueChanged()')
+                                .form-group
+                                  .form-check
+                                    input.form-check-input(type='radio' name='shipping' id='checkShipping' checked value='domicilio')
+                                    label.form-check-label(for='checkShipping') Despacho a Domicilio
+                                  .form-check
+                                    input.form-check-input(type='radio' name='shipping' id='checkInStore' value='local')
+                                    label.form-check-label(for='checkInStore') Retiro en Local
+                            .form-row#shippingInfo
+                              .col-lg
+                                p.font-weight-bold.m-0 Comuna de Destino
+                                input.form-control#locality(type='text' name='locality' required)
+                                small
+                                  | Debes ingresar la comuna a la cual se enviará el pedido
+                              .col-lg
+                                p.font-weight-bold.m-0 Método de Despacho
+                                input.form-control#shippingMethod(type='text' name='shippingMethod' required)
+                                small
+                                  | Debes especificar el nombre de la compañía o servicio que se utilizará para el envío
+                              .col-lg
+                                p.font-weight-bold.m-0 Precio del Despacho
+                                input.form-control#shippingCost(type='number' name='shippingCost' value=0 min="0" required)
+                                small
+                                  | Debes ingresar el valor asociado al método de despacho escogido
+                              .col-lg
+                                p.font-weight-bold.m-0 Fecha de Entrega (Opcional)
+                                  input.form-control#shippingDate(type='date' name='shippingDate')
                                   small
-                                    | Debes ingresar la comuna a la cual se enviará el pedido
-                                .col-lg
-                                  p.font-weight-bold.m-0 Método de Despacho
-                                  input.form-control#shippingMethod(type='text' name='shippingMethod' required)
+                                    | Puedes ingresar una fecha de entrega estimada si deseas
+                            .form-row#pickupInfo
+                              .col-lg-4
+                                p.font-weight-bold.m-0 Dirección de Retiro
+                                  input.form-control#pickupAddress(type='text' name='pickupAddress' required)
                                   small
-                                    | Debes especificar el nombre de la compañía o servicio que se utilizará para el envío
-                                .col-lg
-                                  p.font-weight-bold.m-0 Precio del Despacho
-                                  input.form-control#shippingCost(type='number' name='shippingCost' value=0 min="0" required)
+                                    | Ingresa la dirección donde debe retirarse el pedido
+                              .col-lg-4
+                                p.font-weight-bold.m-0 Fecha de Retiro (Opcional)
+                                  input.form-control#pickupDate(type='date' name='pickupDate')
                                   small
-                                    | Debes ingresar el valor asociado al método de despacho escogido
-                                .col-lg
-                                  p.font-weight-bold.m-0 Fecha de Entrega (Opcional)
-                                    input.form-control#shippingDate(type='date' name='shippingDate')
-                                    small
-                                      | Puedes ingresar una fecha de entrega estimada si deseas
-                              .form-row#pickupInfo
-                                .col-lg-4
-                                  p.font-weight-bold.m-0 Dirección de Retiro
-                                    input.form-control#pickupAddress(type='text' name='pickupAddress' required)
-                                    small
-                                      | Ingresa la dirección donde debe retirarse el pedido
-                                .col-lg-4
-                                  p.font-weight-bold.m-0 Fecha de Retiro (Opcional)
-                                    input.form-control#pickupDate(type='date' name='pickupDate')
-                                    small
-                                      | Puedes ingresar una fecha de retiro estimada si deseas
-                  .form-group(style="text-align: center;")
-                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Crear Venta
+                                    | Puedes ingresar una fecha de retiro estimada si deseas
+                .form-group(style="text-align: center;")
+                  button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit' style='background: #12c4f2; border: #12c4f2;') Crear Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
-          span Copyright &copy; NVIO 2020
+          span Copyright &copy; Alia 2021
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
   script(src='/javascripts/order-create.js')
