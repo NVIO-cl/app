@@ -124,7 +124,7 @@ router.post('/register', upload.none(), async(req, res) => {
       "firstName": req.body.firstName,
       "lastName": req.body.lastName,
       "email": req.body.email,
-      "contactNumber": 912345678,
+      "contactNumber": 56912345678,
       "companyTurn": "",
       "companyRut": "",
       "paymentData": {
@@ -168,7 +168,7 @@ router.get('/logout', (req, res, next) => {
 });
 
 // Account verification route
-router.get('/verify', (req, res) => {
+router.get('/verify', async (req, res) => {
   var userData = {
     Pool: userPool,
     Username: req.query.u
@@ -188,6 +188,47 @@ router.get('/verify', (req, res) => {
 
 router.get('/forgot', (req,res)=>{
   res.render('reset_password');
+})
+
+router.post('/forgot', upload.none(), async (req, res, next)=>{
+  var userData = {
+    Pool: userPool,
+    Username: req.body.email
+  }
+  var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+  console.log(req.body.email);
+  cognitoUser.forgotPassword({
+  	onSuccess: function(data) {
+      console.log(data);
+  		// successfully initiated reset password request
+  		console.log('CodeDeliveryData from forgotPassword: ' + data);
+  	},
+  	onFailure: function(err) {
+  		alert(err.message || JSON.stringify(err));
+  	}
+  })
+})
+
+router.get('/resetPassword', async (req,res)=>{
+  console.log(req.query);
+  res.render('new_password', {code: req.query.c, user: req.query.u});
+})
+
+router.post('/resetPassword', upload.none(), async (req, res, next)=>{
+  var userData = {
+    Pool: userPool,
+    Username: req.body.user
+  }
+  var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+  cognitoUser.confirmPassword(req.body.code, req.body.password, {
+			onSuccess() {
+				console.log('Password confirmed!');
+			},
+			onFailure(err) {
+				console.log('Password not confirmed!');
+        console.log(err);
+			},
+		});
 })
 
 async function colcheck(){
