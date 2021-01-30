@@ -199,12 +199,12 @@ router.post('/forgot', upload.none(), async (req, res, next)=>{
   console.log(req.body.email);
   cognitoUser.forgotPassword({
   	onSuccess: function(data) {
-      console.log(data);
-  		// successfully initiated reset password request
-  		console.log('CodeDeliveryData from forgotPassword: ' + data);
+      res.cookie('message', {type:'success', content:'Hemos enviado un correo a tu cuenta con las instrucciones'});
+      return res.redirect('/login');
   	},
   	onFailure: function(err) {
-  		alert(err.message || JSON.stringify(err));
+      res.cookie('message', {type:'danger', content:'Error al enviar correo de recuperación.'});
+      return res.redirect('/login');
   	}
   })
 })
@@ -222,11 +222,12 @@ router.post('/resetPassword', upload.none(), async (req, res, next)=>{
   var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
   cognitoUser.confirmPassword(req.body.code, req.body.password, {
 			onSuccess() {
-				console.log('Password confirmed!');
+        res.cookie('message', {type:'success', content:'Contraseña cambiada con éxito. Por favor vuelve a iniciar sesión.'});
+        return res.redirect('/login');
 			},
 			onFailure(err) {
-				console.log('Password not confirmed!');
-        console.log(err);
+        res.cookie('message', {type:'danger', content:'Error al cambiar la contraseña.'});
+        return res.redirect('/login');
 			},
 		});
 })
