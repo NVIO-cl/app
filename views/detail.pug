@@ -2,7 +2,7 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Detalle - NVIO
+    title Detalle - Alia
     script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
     script.
       window.dataLayer = window.dataLayer || [];
@@ -17,12 +17,12 @@ head
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
 #wrapper
-    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
+    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #0861ff;')
         .container-fluid.d-flex.flex-column.p-0
             a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_blanco.png' style='width: 90%;')
+                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
             hr.sidebar-divider.my-0
-            ul#accordionSidebar.nav.navbar-nav.text-light
+            ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
                 li.nav-item
                     a.nav-link(href='/')
                         i.fas.fa-tachometer-alt
@@ -48,7 +48,7 @@ head
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column
         #content
-            nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
+            nav.navbar(style='margin-top: 17px;')
                 //--
                     .container-fluid
                         button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
@@ -162,28 +162,30 @@ head
                                         a.dropdown-item(href='#')
                                             i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                             | &nbsp;Logout
-
             .container-fluid
-                a.btn.btn-primary(type='button' style='margin-bottom: 10px;background: #6e3c8e;' href='../historial')
+                a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../historial')
                     i.fa.fa-arrow-left
                     | &nbsp;Regresar
-                if order[0].status.M.order.N == 0
-                    a#edit.btn.btn-primary(type='button' style='float: right; margin-bottom: 10px;background: #6e3c8e;' href='../order/edit/' + order[0].SK.S.replace("ORDER#",""))
-                        i.fa.fa-pencil
-                        | &nbsp;Editar
-                else
-                    a#edit.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-editar' style='float: right; margin-bottom: 10px;background: #6e3c8e;')
-                        i.fa.fa-pencil
-                        | &nbsp;Editar
                 .row
                     .col
                         .card.shadow.mb-4
-                            .card-header.py-3.d-flex.justify-content-between.align-items-center
+                            .card-header.d-flex.justify-content-between.align-items-center
+                                // Pyme+orden
                                 h6#orderid.text-primary.font-weight-bold.m-0 Orden ##{order[0].SK.S.replace("ORDER#","")}
+                                .dropdown.no-arrow
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                        i.fas.fa-ellipsis-v.text-gray-400
+                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                        p.text-center.dropdown-header dropdown header:
+                                        a.dropdown-item(href='#') &nbsp;Action
+                                        a.dropdown-item(href='#') &nbsp;Another action
+                                        .dropdown-divider
+                                        a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
                                 p(style='width: 100%;')
                                     | Link del cliente:&nbsp
-                                    a(class='button' target="_blank" href='//app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
+                                    a(class='button' target="_blank" href= '//app.aliachile.com' + '/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.aliachile.com' + '/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
+                                    //a(class='button' target="_blank" href='//app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
                                     br
                                     | Fecha de Creación #{parsed_created_at}
                                     br
@@ -236,37 +238,43 @@ head
                                         tbody
                                         each ORD, index in order[0].items.L
                                             tr
-                                                td
-                                                    p #{ORD.M.product.S}
-                                                td
-                                                    p(id='precio_'+index) #{ORD.M.price.N}
-                                                td
-                                                    p(id='cantidad_'+index) #{ORD.M.quantity.N}
+                                                td #{ORD.M.product.S}
+                                                td #{ORD.M.price.N}
+                                                td #{ORD.M.quantity.N}
                                                 td
                                                     - var subtotal = parseInt(ORD.M.price.N) * parseInt(ORD.M.quantity.N)
-                                                        p(id='subtotal_'+index) #{subtotal}
+                                                        | #{subtotal}
                                 .row
                                     .col
                                         strong Total Productos
                                     .col.col-3(style='text-align: center;')
-                                        p(id='totalProd') $ #{order[0].cost.M.order.N}
+                                        p $ #{order[0].cost.M.order.N}
                                 .row
                                     .col
                                         strong Total Despacho
                                     .col.col-3(style='text-align: center;')
-                                        p(id='totalDespacho') $ #{order[0].cost.M.shipping.N}
+                                        p $ #{order[0].cost.M.shipping.N}
                                 hr
                                 .row
                                     .col
                                         strong Total
                                     .col.col-3
-                                        p(id='totalAbs' style='text-align: center;') $
+                                        p(style='text-align: center;') $
                                             - var subtotal = parseInt(order[0].cost.M.order.N) + parseInt(order[0].cost.M.shipping.N)
                                                 | #{subtotal}
                         if (order[0].status.M.payment.N != 3)
                           .card.shadow.mb-4
-                              .card-header.py-3.d-flex.justify-content-between.align-items-center
+                              .card-header.d-flex.justify-content-between.align-items-center
                                   h6.text-primary.font-weight-bold.m-0 Estado de Pago
+                                  .dropdown.no-arrow
+                                      button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                          i.fas.fa-ellipsis-v.text-gray-400
+                                      .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                          p.text-center.dropdown-header dropdown header:
+                                          a.dropdown-item(href='#') &nbsp;Action
+                                          a.dropdown-item(href='#') &nbsp;Another action
+                                          .dropdown-divider
+                                          a.dropdown-item(href='#') &nbsp;Something else here
                               .card-body
                                   strong Comprobante de Pago
                                   br
@@ -275,18 +283,20 @@ head
                                   .text-center.small.mt-4(style='margin: auto;width: 99%;')
                                       a(data-toggle='modal' data-target='#modal-comprobante')
                                           img(src=logo style='display: block;margin-bottom: 5px;margin-left: auto;margin-right: auto;max-height: 250px; max-width: 300px;width: auto;height: auto;')
-                                  button#comprobante.mb-1.btn.btn-primary(type='button' style='display: block;background: #6e3c8e;margin: auto;width: 50%;') Descargar Comprobante
-                                  if (order[0].status.M.payment.N != 2)
-                                    button#validarPago.btn.btn-primary(type='button' style='display: block;background: #6e3c8e;margin: auto;width: 50%;') Validar Pago
-                        if (order[0].status.M.order.N == 0)
-                            button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-borrar' style='background: #6e3c8e;margin-bottom: 10px;') Borrar Pedido
-                        else
-                            button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-borrar' style='background: #6e3c8e;margin-bottom: 10px;') Borrar Pedido
+                                  button#comprobante.btn.btn-primary(type='button' style='display: block; background: #12c4f2; border: #12c4f2; margin: auto;width: 50%;') Descargar Comprobante
                     .col
                         .card.shadow.mb-4
-                            .card-header.py-3.d-flex.justify-content-between.align-items-center
+                            .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Notas Del Cliente
                                 .dropdown.no-arrow
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                        i.fas.fa-ellipsis-v.text-gray-400
+                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                        p.text-center.dropdown-header dropdown header:
+                                        a.dropdown-item(href='#') &nbsp;Action
+                                        a.dropdown-item(href='#') &nbsp;Another action
+                                        .dropdown-divider
+                                        a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
                                 -
                                     try {
@@ -296,8 +306,17 @@ head
                                     }
                                 p #{nota}
                         .card.shadow.mb-4
-                            .card-header.py-3.d-flex.justify-content-between.align-items-center
+                            .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Detalles Cliente
+                                .dropdown.no-arrow
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                        i.fas.fa-ellipsis-v.text-gray-400
+                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                        p.text-center.dropdown-header dropdown header:
+                                        a.dropdown-item(href='#') &nbsp;Action
+                                        a.dropdown-item(href='#') &nbsp;Another action
+                                        .dropdown-divider
+                                        a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
                                 -
                                     try {
@@ -312,6 +331,8 @@ head
                                     .col
                                         p(style='width: 80%;') Información de Contacto
                                     .col.col-3(style='text-align: right;')
+                                        a(href='#')
+                                            i.fa.fa-pencil
                                 -
                                     try {
                                         var email = order[0].clientData.M.email.S
@@ -325,6 +346,7 @@ head
                                     } catch (err) {
                                         var telefono = "El cliente no ha registrado su teléfono"
                                     }
+
                                 p
                                     | #{email}
                                     br
@@ -336,6 +358,8 @@ head
                                       .col
                                           p(style='width: 80%;') Direcci&oacute;n de Despacho
                                       .col.col-3(style='text-align: right;')
+                                          a(href='#')
+                                              i.fa.fa-pencil
                                   -
                                       try {
                                           var direccion = order[0].clientData.M.address.M.street.S + " " + order[0].clientData.M.address.M.apart.S
@@ -349,40 +373,17 @@ head
                                       | #{order[0].clientData.M.address.M.locality.S}
                                       br
                         .card.shadow.mb-4
-                            .card-header.py-3.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Modificar Estado de Pedido
-                            .card-body
-                                if (order[0].status.M.order.N != 0)
-                                    #status.input-group.mb-3
-                                        .input-group-prepend
-                                            label.input-group-text(for='status') Estado de Pedido
-                                        select#selectStatus.custom-select
-                                            if (order[0].status.M.order.N == 1)
-                                                option(selected value='1') Datos de cliente rellenados
-                                            else
-                                                option(value='1') Datos de cliente rellenados
-                                            if (order[0].status.M.order.N == 2)
-                                                option(selected value='2') En proceso de preparación
-                                            else
-                                                option(value='2') En proceso de preparación
-                                            if (order[0].status.M.order.N == 3)
-                                                option(selected value='3') Listo para retirar
-                                            else
-                                                option(value='3') Listo para retirar
-                                            if (order[0].status.M.order.N == 4)
-                                                option(selected value='4') En proceso de despacho
-                                            else
-                                                option(value='4') En proceso de despacho
-                                            if (order[0].status.M.order.N == 5)
-                                                option(selected value='5') Pedido finalizado
-                                            else
-                                                option(value='5') Pedido finalizado
-                                    button.btn.btn-primary.btn-sm#editStatus(type='submit') Guardar
-                                else
-                                    p Espera a que tu cliente rellene sus datos para editar el estado del pedido
-                        .card.shadow.mb-4
-                            .card-header.py-3.d-flex.justify-content-between.align-items-center
+                            .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Comentarios
+                                .dropdown.no-arrow
+                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                        i.fas.fa-ellipsis-v.text-gray-400
+                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                        p.text-center.dropdown-header dropdown header:
+                                        a.dropdown-item(href='#') &nbsp;Action
+                                        a.dropdown-item(href='#') &nbsp;Another action
+                                        .dropdown-divider
+                                        a.dropdown-item(href='#') &nbsp;Something else here
                             .card-body
                                 .table-responsive(style='text-align: center;')
                                     table.table
@@ -397,7 +398,7 @@ head
                                     .input-group-prepend
                                     input#comentario.form-control(type='text')
                                     .input-group-append
-                                        button#comentar.btn.btn-primary(type='button' style='background: #6e3c8e;') Comentar
+                                        button#comentar.btn.btn-primary(type='button' style='background: #12c4f2; border: #12c4f2') Comentar
                 .modal.fade#modal-comprobante(role='dialog' tabindex='-1')
                     .modal-dialog.modal-lg.modal-dialog-centered(role='document')
                         .modal-content
@@ -407,47 +408,10 @@ head
                                     span(aria-hidden='true') &times;
                             .modal-body
                                 img.img-responsive(src=logo style='height: 100%; width: 100%;')
-                .modal.fade#modal-borrar(tabindex='-1', role='dialog')
-                    .modal-dialog(role='document')
-                        .modal-content
-                            .modal-header
-                                h5.modal-title Estás a punto de eliminar el pedido ##{order[0].SK.S.replace("ORDER#","")}
-                                button.close(type='button' data-dismiss='modal' aria-label='Close')
-                                    span(aria-hidden='true') &times;
-                            .modal-body
-                                p ¿Quieres eliminar este pedido?
-                            .modal-footer
-                                form(action='/order/delete' method='POST')
-                                    button.btn.btn-danger(type='submit') Eliminar Pedido
-                                button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
-                .modal.fade#modal-no-borrar(tabindex='-1' role='dialog')
-                    .modal-dialog(role='document')
-                        .modal-content
-                            .modal-header
-                                h5.modal-title No puedes eliminar el pedido ##{order[0].SK.S.replace("ORDER#", "")}
-                                button.close(type='button' data-dismiss='modal' aria-label='Close')
-                                    span(aria-hidden='true') &times;
-                            .modal-body
-                                p No puedes eliminar este pedido pues tu cliente ya ingresó sus datos para este pedido
-                            .modal-footer
-                                button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
-                .modal.fade#modal-no-editar(tabindex='-1' role='dialog')
-                    .modal-dialog(role='document')
-                        .modal-content
-                            .modal-header
-                                h5.modal-title No puedes editar el pedido ##{order[0].SK.S.replace("ORDER#", "")}
-                                button.close(type='button' data-dismiss='modal' aria-label='Close')
-                                    span(aria-hidden='true') &times;
-                            .modal-body
-                                p No puedes editar otros datos de este pedido pues tu cliente ya ingresó sus datos para este pedido
-                            .modal-footer
-                                button.btn.btn-secondary(type='button' data-dismiss='modal') Cancelar
-                //- *****
-
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
-                    span Copyright &copy; NVIO 2020
+                    span Copyright &copy; Alia 2021
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
