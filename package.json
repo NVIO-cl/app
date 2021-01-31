@@ -5,7 +5,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@googlemaps/google-maps-services-js": "^3.1.14",
+    "@googlemaps/google-maps-services-js": "^3.1.16",
     "amazon-cognito-identity-js": "^4.5.6",
     "aws-sdk": "^2.823.0",
     "bcrypt": "^5.0.0",

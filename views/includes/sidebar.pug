@@ -1,0 +1,29 @@
+nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #0861ff;')
+    .container-fluid.d-flex.flex-column.p-0
+        a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
+            img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
+        hr.sidebar-divider.my-0
+        ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
+            li.nav-item
+                a#linkIndex.nav-link(href='/')
+                    i.fas.fa-tachometer-alt
+                    span Dashboard
+            li.nav-item
+                a#linkProfile.nav-link(href='/profile')
+                    i.fas.fa-user
+                    span Perfil
+            li.nav-item
+                a#linkHistorial.nav-link(href='/historial')
+                    i.fas.fa-table
+                    span Historial de Ventas
+            li.nav-item
+                a#linkCreate.nav-link(href='/order/create')
+                    i.fas.fa-plus-square
+                    span Crear Nueva Orden
+            li.nav-item
+                a#linkLogout.nav-link(href='/logout')
+                    i.far.fa-user-circle
+                    span Cerrar Sesión
+            li.nav-item
+        .text-center.d-none.d-md-inline
+            button#sidebarToggle.btn.rounded-circle.border-0(type='button')
