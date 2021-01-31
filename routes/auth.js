@@ -265,4 +265,13 @@ async function colcheck(){
 }
 
 
+router.get('/resetPassword', async (req,res)=>{
+  console.log(req.query);
+  res.render('new_password', {code: req.query.c, user: req.query.u});
+})
+
+router.get('/forgot', (req,res)=>{
+  res.render('reset_password');
+})
+
 module.exports = router;
