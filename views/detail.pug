@@ -2,7 +2,7 @@ doctype html
 head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title Detalle - NVIO
+    title Detalle - Alia
     script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
     script.
       window.dataLayer = window.dataLayer || [];
@@ -17,12 +17,12 @@ head
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
 #wrapper
-    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
+    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #0861ff;')
         .container-fluid.d-flex.flex-column.p-0
             a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_blanco.png' style='width: 90%;')
+                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
             hr.sidebar-divider.my-0
-            ul#accordionSidebar.nav.navbar-nav.text-light
+            ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
                 li.nav-item
                     a.nav-link(href='/')
                         i.fas.fa-tachometer-alt
@@ -48,7 +48,7 @@ head
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column
         #content
-            nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
+            nav.navbar(style='margin-top: 17px;')
                 //--
                     .container-fluid
                         button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
@@ -163,7 +163,7 @@ head
                                             i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                             | &nbsp;Logout
             .container-fluid
-                a.btn.btn-primary(type='button' style='margin-bottom: 10px;background: #6e3c8e;' href='../historial')
+                a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../historial')
                     i.fa.fa-arrow-left
                     | &nbsp;Regresar
                 .row
@@ -184,14 +184,48 @@ head
                             .card-body
                                 p(style='width: 100%;')
                                     | Link del cliente:&nbsp
-                                    a(class='button' target="_blank" href='//app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
+                                    a(class='button' target="_blank" href= '//app.aliachile.com' + '/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.aliachile.com' + '/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
+                                    //a(class='button' target="_blank" href='//app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
                                     br
                                     | Fecha de Creación #{parsed_created_at}
                                     br
-                                    | Estado: #{order[0].status.M.order.N}
+                                    | Estado pedido: 
+                                    if (order[0].status.M.order.N == 0)
+                                      | Sin información de cliente
+                                    else if (order[0].status.M.order.N == 1)
+                                      | Datos de cliente rellenados
+                                    else if (order[0].status.M.order.N == 2)
+                                      | En proceso de preparación
+                                    else if (order[0].status.M.order.N == 3)
+                                      | Listo para retirar
+                                    else if (order[0].status.M.order.N == 4)
+                                      | En proceso de despacho
+                                    else if (order[0].status.M.order.N == 5)
+                                      | Pedido finalizado
                                     br
-                                    | Método Entrega: #{order[0].shippingMethod.S}
+                                    | Estado pago: 
+                                    if (order[0].status.M.payment.N == 0)
+                                      | Sin información de cliente
+                                    else if (order[0].status.M.payment.N == 1)
+                                      | Comprobante subido, pago sin verificar
+                                    else if (order[0].status.M.payment.N == 2)
+                                      | Pago verificado
+                                    else if (order[0].status.M.payment.N == 3)
+                                      | Pago en efectivo
                                     br
+                                    if (order[0].clientData.M.address.M.locality.S == 'Retiro en tienda')
+                                      | Método Entrega: Retiro en tienda
+                                      if (order[0].pickupDate)
+                                        if (order[0].pickupDate.S != "")
+                                          br
+                                          | Fecha de retiro: #{order[0].pickupDate.S.split("-")[2]}/#{order[0].pickupDate.S.split("-")[1]}/#{order[0].pickupDate.S.split("-")[0]}
+                                    else 
+                                      | Método Entrega: #{order[0].shippingMethod.S}
+                                      if (order[0].shippingDate)
+                                        if (order[0].shippingDate.S != "")
+                                          br
+                                          | Fecha de entrega: #{order[0].shippingDate.S.split("-")[2]}/#{order[0].shippingDate.S.split("-")[1]}/#{order[0].shippingDate.S.split("-")[0]}
+                                      
                                 strong Listado de Artículos
                                 .table-responsive(style='text-align: center;')
                                     table.table
@@ -210,7 +244,6 @@ head
                                                 td
                                                     - var subtotal = parseInt(ORD.M.price.N) * parseInt(ORD.M.quantity.N)
                                                         | #{subtotal}
-
                                 .row
                                     .col
                                         strong Total Productos
@@ -229,24 +262,28 @@ head
                                         p(style='text-align: center;') $
                                             - var subtotal = parseInt(order[0].cost.M.order.N) + parseInt(order[0].cost.M.shipping.N)
                                                 | #{subtotal}
-                        .card.shadow.mb-4
-                            .card-header.d-flex.justify-content-between.align-items-center
-                                h6.text-primary.font-weight-bold.m-0 Estado de Pago
-                                .dropdown.no-arrow
-                                    button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
-                                        i.fas.fa-ellipsis-v.text-gray-400
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
-                                        p.text-center.dropdown-header dropdown header:
-                                        a.dropdown-item(href='#') &nbsp;Action
-                                        a.dropdown-item(href='#') &nbsp;Another action
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#') &nbsp;Something else here
-                            .card-body
-                                strong Comprobante de Pago
-                                p
-                                .text-center.small.mt-4
-                                    img(src=logo style='margin-bottom: 5px; max-height: 250px;')
-                                button#comprobante.btn.btn-primary(type='button' style='background: #6e3c8e;') Descargar Comprobante
+                        if (order[0].status.M.payment.N != 3)
+                          .card.shadow.mb-4
+                              .card-header.d-flex.justify-content-between.align-items-center
+                                  h6.text-primary.font-weight-bold.m-0 Estado de Pago
+                                  .dropdown.no-arrow
+                                      button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                          i.fas.fa-ellipsis-v.text-gray-400
+                                      .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                          p.text-center.dropdown-header dropdown header:
+                                          a.dropdown-item(href='#') &nbsp;Action
+                                          a.dropdown-item(href='#') &nbsp;Another action
+                                          .dropdown-divider
+                                          a.dropdown-item(href='#') &nbsp;Something else here
+                              .card-body
+                                  strong Comprobante de Pago
+                                  br
+                                  small Haz click en la imagen para ver el tamaño completo
+                                  p
+                                  .text-center.small.mt-4(style='margin: auto;width: 99%;')
+                                      a(data-toggle='modal' data-target='#modal-comprobante')
+                                          img(src=logo style='display: block;margin-bottom: 5px;margin-left: auto;margin-right: auto;max-height: 250px; max-width: 300px;width: auto;height: auto;')
+                                  button#comprobante.btn.btn-primary(type='button' style='display: block; background: #12c4f2; border: #12c4f2; margin: auto;width: 50%;') Descargar Comprobante
                     .col
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
@@ -268,7 +305,6 @@ head
                                         var nota = "Aún no hay notas del cliente para esta orden"
                                     }
                                 p #{nota}
-
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Detalles Cliente
@@ -315,25 +351,27 @@ head
                                     | #{email}
                                     br
                                     | #{telefono}
-                                hr
-                                .row
-                                    .col
-                                        p(style='width: 80%;') Direcci&oacute;n de Despacho
-                                    .col.col-3(style='text-align: right;')
-                                        a(href='#')
-                                            i.fa.fa-pencil
-                                -
-                                    try {
-                                        var direccion = order[0].clientData.M.address.M.street.S + " " + order[0].clientData.M.address.M.apart.S
-                                    } catch (err) {
-                                        var direccion = "El cliente no ha registrado sus datos"
-                                    }
+                                
+                                if (order[0].clientData.M.address.M.locality.S != 'Retiro en tienda')
+                                  hr
+                                  .row
+                                      .col
+                                          p(style='width: 80%;') Direcci&oacute;n de Despacho
+                                      .col.col-3(style='text-align: right;')
+                                          a(href='#')
+                                              i.fa.fa-pencil
+                                  -
+                                      try {
+                                          var direccion = order[0].clientData.M.address.M.street.S + " " + order[0].clientData.M.address.M.apart.S
+                                      } catch (err) {
+                                          var direccion = "El cliente no ha registrado sus datos"
+                                      }
 
-                                p
-                                    | #{direccion}
-                                    br
-                                    | #{order[0].clientData.M.address.M.locality.S}
-                                    br
+                                  p
+                                      | #{direccion}
+                                      br
+                                      | #{order[0].clientData.M.address.M.locality.S}
+                                      br
                         .card.shadow.mb-4
                             .card-header.d-flex.justify-content-between.align-items-center
                                 h6.text-primary.font-weight-bold.m-0 Comentarios
@@ -360,13 +398,20 @@ head
                                     .input-group-prepend
                                     input#comentario.form-control(type='text')
                                     .input-group-append
-                                        button#comentar.btn.btn-primary(type='button' style='background: #6e3c8e;') Comentar
+                                        button#comentar.btn.btn-primary(type='button' style='background: #12c4f2; border: #12c4f2') Comentar
+                .modal.fade#modal-comprobante(role='dialog' tabindex='-1')
+                    .modal-dialog.modal-lg.modal-dialog-centered(role='document')
+                        .modal-content
+                            .modal-header
+                                h5.modal-title Comprobante de orden #{order[0].SK.S.replace("ORDER#","")}
+                                button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
+                                    span(aria-hidden='true') &times;
+                            .modal-body
+                                img.img-responsive(src=logo style='height: 100%; width: 100%;')
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
-                    span Copyright &copy; NVIO 2020
-    a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-        i.fas.fa-angle-up
+                    span Copyright &copy; Alia 2021
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')

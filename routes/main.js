@@ -5,6 +5,7 @@ const validator = require('validator');
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
+const { nanoid } = require("nanoid");
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -16,29 +17,63 @@ aws.config.update({
   accessKeyId: process.env.AKID,
   secretAccessKey: process.env.SECRET
 });
-
-//AWS Settings
-var aws = require("aws-sdk");
-var db = require("../db");
-aws.config.update({
-  region: process.env.DBREGION,
-  endpoint: process.env.ENDPOINT,
-  accessKeyId: process.env.AKID,
-  secretAccessKey: process.env.SECRET
-});
-var s3Endpoint = new aws.Endpoint(process.env.AWS_S3_ENDPOINT);
 
 const xl = require('excel4node');
 var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.user);
   res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+});
+
+router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK": req.user.user,
+      "SK": "ORDER#" + req.body.orderid
+    },
+    "UpdateExpression": "set #status.#order = :orderStatus, #updatedAt = :updatedAt",
+    "ExpressionAttributeNames": {
+      "#status": "status",
+      "#order": "order",
+      "#updatedAt": "updatedAt"
+    },
+    "ExpressionAttributeValues": {
+      ":orderStatus": parseInt(req.body.status),
+      ":updatedAt": Date.now(),
+    }
+  }
+  commentResult = await db.update(params);
+  res.json("Ok")
+});
+
+router.post('/detail/validatePayment',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK": req.user.user,
+      "SK": "ORDER#" + req.body.orderid
+    },
+    "UpdateExpression": "set #status.#payment = :paymentStatus, #updatedAt = :updatedAt",
+    "ExpressionAttributeNames": {
+      "#status": "status",
+      "#payment": "payment",
+      "#updatedAt": "updatedAt"
+    },
+    "ExpressionAttributeValues": {
+      ":paymentStatus": 2,
+      ":updatedAt": Date.now(),
+    }
+  }
+  commentResult = await db.update(params);
+  res.json("Ok")
 });
 
 router.post('/detail/comentar',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   params = {
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "Key": {
       "PK": req.user.user,
       "SK": "ORDER#" + req.body.orderid
@@ -66,10 +101,9 @@ router.get('/detail/comprobante/:id',passport.authenticate('jwt', {session: fals
 });
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Detail requested")
   const name = "Detail" + req.params.id;
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -91,7 +125,12 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
   var created_at = detailQuery.Items[0].createdAt.N;
   var parsed_created_at = date_parser.parse_date(created_at);
-
+  if (detailQuery.Items[0].status.M.shippingDate) {
+    if (detailQuery.Items[0].status.M.shippingDate.S != "") {
+      var parsed_deliveryDate = detailQuery.Items[0].status.M.shippingDate.S.split("-");
+      detailQuery.Items[0].status.M.shippingDate.S = parsed_deliveryDate[2] + "/" + parsed_deliveryDate[1] + "/" + parsed_deliveryDate[0];
+    }
+  }
   let comentarios = []
   for (var i = 0; i < detailQuery.Items[0].status.M.comments.L.length; i++){
       var db_date = detailQuery.Items[0].status.M.comments.L[i].M.timestamp.N
@@ -107,10 +146,9 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 
 /* GET historial. */
 router.get('/historial',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log("Historial requested")
   const name = "Historial";
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -137,7 +175,7 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
   const ws = wb.addWorksheet('Pedidos');
 
   var params={
-    "TableName": "app",
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
     "ScanIndexForward": false,
     "ConsistentRead": false,
     "KeyConditionExpression": "#cd420 = :cd420 And begins_with(#cd421, :cd421)",
@@ -348,20 +386,5 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
 
   wb.write('Pedidos.xlsx', res);
 });
-
-//Login route
-router.get('/login', (req, res) => {
-  const name = "Login";
-  var errormsg;
-  var date = new Date();
-  var year = date.getFullYear();
-  if (req.cookies.error == true) {
-    errormsg = "Correo o contraseña incorrectos";
-  }
-  res.clearCookie('error');
-  res.render('login', {title: name, error: errormsg});
-});
-
-
 
 module.exports = router;
