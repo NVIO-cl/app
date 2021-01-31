@@ -14,7 +14,6 @@ append head-content
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
-    link(rel='stylesheet' href='/stylesheets/snackbar.css')
 append body-content
     #wrapper
         include includes/sidebar
@@ -155,16 +154,14 @@ append body-content
                                             a.dropdown-item(href='#') &nbsp;Something else here
                                 .card-body
                                     p(style='width: 100%;')
+                                        | Link del cliente:&nbsp
+                                        a(class='button' target="_blank" href='//app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
+                                        br
                                         | Fecha de Creación #{parsed_created_at}
                                         br
                                         | Estado: #{order[0].status.M.order.N}
                                         br
                                         | Método Entrega: #{order[0].shippingMethod.S}
-                                        br
-                                        | Link del cliente:&nbsp
-                                        a(class='button' target="_blank" onclick='copyAsLink(this);copySnackbar();') #{'app.nvio.cl/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
-                                        br
-                                        small Haz click en el enlace para copiar
                                         br
                                     strong Listado de Artículos
                                     .table-responsive(style='text-align: center;')
@@ -339,11 +336,11 @@ append body-content
                 .container.my-auto
                     .text-center.my-auto.copyright
                         span Copyright &copy; NVIO 2020
-        #snackbar Enlace copiado!
+        a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+            i.fas.fa-angle-up
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
     script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
     script(src='/javascripts/detail.js')
-    script(src='/javascripts/copy-on-click.js')
