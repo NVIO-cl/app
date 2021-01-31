@@ -18,9 +18,9 @@ main.page.payment-page
         .container
             .row
                 .col.align-self-center(style='text-align: center;')
-                    img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_color.png' style='max-width: 68%;' width='100%')
-                .col(style='text-align: center;')
-                    img(src=logo style='max-width: 171px;')
+                    img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_color.png' style='max-width: 68%;')
+                .col.align-self-center(style='text-align: center;')
+                    img(src=logo style='max-width: 68%;')
             .row.row-cols-sm-1.row-cols-md-1.row-cols-lg-1.row-cols-xl-2(style='min-height: auto;')
                 .col
                     form(action='/order/fill' method='POST' enctype="multipart/form-data")
