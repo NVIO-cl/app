@@ -1,7 +1,6 @@
-extends includes/doctype
-append head-content
-  link(rel='stylesheet', href='/stylesheets/style.css')
-block body-content
+extends layout
+
+block content
   h1= message
   h2= error.status
   pre #{error.stack}
