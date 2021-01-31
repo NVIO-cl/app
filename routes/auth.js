@@ -100,12 +100,12 @@ router.post('/register', upload.none(), async(req, res) => {
   }
 
   var first_nameData = {
-    Name: 'custom:first_name',
+    Name: 'given_name',
     Value: req.body.firstName
   }
 
   var last_nameData = {
-    Name: 'custom:last_name',
+    Name: 'family_name',
     Value: req.body.lastName
   }
   var company_id = await colcheck();
