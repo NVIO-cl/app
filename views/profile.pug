@@ -269,7 +269,10 @@ head
                                                     .form-group
                                                         label(for='contactNumber')
                                                             strong Tel&eacute;fono del Representante
-                                                        input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+" + companyData.contactNumber.N)
+                                                        if companyData.contactNumber
+                                                          input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+" + companyData.contactNumber.N)
+                                                        else
+                                                          input.form-control#contactNumber(type='text' placeholder='+56 9 1234 5678' name='contactNumber')
                                                 .col
                                                     .form-group
                                                         label(for='email')
