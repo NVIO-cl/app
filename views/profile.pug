@@ -268,11 +268,14 @@ head
                                                 .col
                                                     .form-group
                                                         label(for='contactNumber')
-                                                            strong Tel&eacute;fono del Representante
-                                                        if companyData.contactNumber
-                                                          input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value="+" + companyData.contactNumber.N)
-                                                        else
-                                                          input.form-control#contactNumber(type='text' placeholder='+56 9 1234 5678' name='contactNumber')
+                                                            strong Teléfono del Representante
+                                                        .input-group
+                                                          .input-group-prepend
+                                                            .input-group-text +56
+                                                          if companyData.contactNumber
+                                                            input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value=companyData.contactNumber.N)
+                                                          else
+                                                            input.form-control#contactNumber(type='text' placeholder='+56 9 1234 5678' name='contactNumber')
                                                 .col
                                                     .form-group
                                                         label(for='email')
