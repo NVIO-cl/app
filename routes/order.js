@@ -181,7 +181,7 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
     res.clearCookie('message');
   }
 
-  res.render('order/edit', { title: 'NVIO', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message});
+  res.render('order/edit', { title: 'Alia', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message});
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -271,7 +271,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
   }
   updateResult = await db.update(params);
   res.cookie('message', {type:'success', message:'Orden editada con éxito'});
-  res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
+  res.redirect('/detail/'+req.headers.referer.slice(req.headers.referer.length - 6));
 });
 
 router.post('/delete',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
