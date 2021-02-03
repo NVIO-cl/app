@@ -1,30 +1,27 @@
 doctype html
 head
-    meta(charset='utf-8')
-    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-    title form
-    script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
-    script.
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-SJETCMY2EN');
-    link(rel='icon' type='image/png' href='https://alia.s3.amazonaws.com/assets/img/favicon.png')
-    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
-    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css')
-    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/css/styles.min.css')
-main.page.payment-page
-    section.clean-block.payment-form.dark
-      .container
-          .row.justify-content-center
-              .col-md-9.col-lg-12.col-xl-10
-                  .card.shadow-lg.o-hidden.border-0.my-5
-                      .card-body(style='width: 40%;')
-                          h4.card-title(style='font-size: 40px;width: 200%;') Orden Confirmada!
-                          h6.text-muted.card-subtitle.mb-2
-                          hr
-                          p.card-text(style='font-size: 20px;') Puedes cerrar esta ventana.
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
+  title form
+  script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+  script.
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SJETCMY2EN');
+  link(rel='icon' type='image/png' href='https://alia.s3.amazonaws.com/assets/img/favicon.png')
+  link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/bootstrap/css/bootstrap.min.css')
+  link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
+  link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/css/styles.min.css')
+body.h-100
+  .row.justify-content-center.align-items-center.h-100
+    .col-sm-10.col-md-8.col-lg-6
+      .card.shadow-lg.o-hidden.border-0.my-5.mx-1
+        .card-body.text-center
+          h2.card-title ¡Orden Confirmada!
+          p.card-text Puedes cerrar esta ventana.
+          p.card-text 
+            small Si necesitas ayuda, envíanos un correo a soporte@aliachile.com
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js')

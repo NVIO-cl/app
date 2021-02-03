@@ -50,12 +50,11 @@ app.use(bodyParser.json({limit:'50mb'}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log(req.cookies["token"])
   if(req.cookies["token"] === "" || req.cookies["token"] === undefined){
-    console.log("guest")
+    res.status(404)
     res.render("404_guest")
   }else{
-    console.log("404")
+    res.status(404)
     res.render("404")
   }
 });

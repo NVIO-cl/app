@@ -32,9 +32,6 @@ function(email, password, cb) {
   email = email.toLowerCase();
   var userID;
   var profileID;
-  console.log("=====RAW USER DATA=====");
-  console.log(email);
-  console.log(password);
 
   // 2) Initialize the userPool interface
   var poolData = {
@@ -127,14 +124,12 @@ var cookieExtractor = (req) => {
   var token = null;
   if (req && req.cookies){
     token = req.cookies['token'];
-    console.log("TOKEN COOKIE EXTRACTED");
   }
   return token;
 };
 
 let key = (req, done)=>{
   var pem = ''
-  console.log("GETTING JWK");
   url = 'https://cognito-idp.us-east-1.amazonaws.com/'+process.env.AWS_COGNITO_USERPOOLID+'/.well-known/jwks.json'
   https.get(url, function(res){
     var body = ''
@@ -142,10 +137,8 @@ let key = (req, done)=>{
       body += chunk
     });
     res.on('end', function(){
-      console.log("GOT JWK");
       parsedBody = JSON.parse(body)
       pem = jwkToPem(parsedBody.keys[0])
-      console.log(pem);
       done(null, pem)
     })
   })
@@ -156,7 +149,6 @@ passport.use(new JWTStrategy({
         ignoreExpiration: false
     },
     (jwtPayload, cb) => {
-      console.log(jwtPayload);
       return cb(null, jwtPayload, {message: 'Logged In Successfully'});
     }
 ));
