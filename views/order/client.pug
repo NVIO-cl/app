@@ -14,6 +14,7 @@ head
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets_form/css/styles.min.css')
+    link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
 main.page.payment-page
     section.clean-block.payment-form.dark
         .container
@@ -73,6 +74,10 @@ main.page.payment-page
                                               .col
                                                   //-button.btn.btn-primary(type='button' style='margin-top: -5px;line-height: 18px;border-radius: 8px;border-right-width: 12px;border-left-width: 12px;')   Adjuntar archivo
                                                   input#comprobante.form-control-file(type='file' accept="image/png, image/jpeg" name='comprobante' required)
+                                                  .mt-2.d-none#comprobanteCheck
+                                                    i.fas.fa-check.mr-1.text-success
+                                                    label.text-success Comprobante añadido 
+                                                  
                                                     
                                 .col-sm-8
                                     .form-group
@@ -155,3 +160,4 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js')
 script(src='https://nvio.s3.amazonaws.com/assets_form/js/script.min.js')
+script(src='/javascripts/form.js')
