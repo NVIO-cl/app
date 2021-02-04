@@ -90,7 +90,10 @@ today = yyyy+'-'+mm+'-'+dd;
       $('#items\\['+index+'\\]\\[subtotal\\]').html("$ " + subtotal)
       total = total + subtotal
     })
-    var shippingCost = $('#shippingCost').val()
+    var shippingCost = 0
+    if ($('#shippingCost').val() != ""){
+      shippingCost = $('#shippingCost').val();
+    }
 
     $("#totalProd").html("$ " + total);
     total = parseInt(total) + parseInt(shippingCost);
