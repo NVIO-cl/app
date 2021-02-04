@@ -58,11 +58,16 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
 
   //Shipping Cost
   var orderID;
-  if (!validator.isInt(req.body.shippingCost)) {
-    res.redirect('/create');
+  if(req.body.shipping != 'local'){
+    if (!validator.isInt(req.body.shippingCost)) {
+      res.redirect('/create');
+    }
+    if (req.body.shippingCost < 0) {
+      res.redirect('/create');
+    }
   }
-  if (req.body.shippingCost < 0) {
-    res.redirect('/create');
+  else {
+    req.body.shippingCost = 0;
   }
 
   //Items
