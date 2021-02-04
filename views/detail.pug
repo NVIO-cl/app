@@ -199,14 +199,25 @@ head
                 a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../historial')
                   i.fa.fa-arrow-left
                   | &nbsp;Regresar
-                if order[0].status.M.order.N == 0
-                    a#edit.btn.btn-primary(type='button' style='float: right; margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../order/edit/' + order[0].SK.S.replace("ORDER#",""))
-                        i.fa.fa-pencil
-                        | &nbsp;Editar
-                else
-                    a#edit.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-editar' style='float: right; margin-bottom: 10px;background: #12c4f2; border: #12c4f2;')
-                        i.fa.fa-pencil
-                        | &nbsp;Editar
+
+                .btn-group(role='group' style='float: right;')
+                    if order[0].status.M.order.N == 0
+                        a#edit.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #0d87f0; z-index: 0' href='../order/edit/' + order[0].SK.S.replace("ORDER#", ""))
+                            i.fa.fa-pencil
+                            | &nbsp;Editar
+                    else
+                        a#edit.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-editar' style='margin-bottom: 10px; background: #12c4f2; border: #0d87f0; z-index: 0')
+                            i.fa.fa-pencil
+                            | &nbsp;Editar
+                    if (order[0].status.M.order.N == 0)
+                        a#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-borrar' style='background: #0861ff; border: #0d87f0; margin-bottom: 10px;')
+                            i.fa.fa-trash
+                            | &nbsp;Borrar
+                    else
+                        a#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-borrar' style='background: #0861ff; border: #0d87f0; margin-bottom: 10px;')
+                            i.fa.fa-trash
+                            | &nbsp;Borrar
+
                 .row
                     .col
                         .card.shadow.mb-4
@@ -217,7 +228,7 @@ head
                                     | Link del cliente:&nbsp
                                     a(class='button' target="_blank" href='//app.aliachile.com/order/' + companyId + order[0].SK.S.replace("ORDER#","")) #{'app.aliachile.com/order/' + companyId + order[0].SK.S.replace("ORDER#","")}
                                     br
-                                    | Fecha de Creación #{parsed_created_at}
+                                    | Fecha de Creación: #{parsed_created_at}
                                     br
                                     | Estado pedido:&nbsp
                                     if (order[0].status.M.order.N == 0)
@@ -310,10 +321,6 @@ head
                                     button#comprobante.mb-1.btn.btn-primary(type='button' style='display: block;background: #12c4f2;border: #12c4f2;margin: auto;width: 50%;') Descargar Comprobante
                                     if (order[0].status.M.payment.N != 2)
                                         button#validarPago.btn.btn-primary(type='button' style='display: block;background: #12c4f2; border: #12c4f2;margin: auto;width: 50%;') Validar Pago
-                        if (order[0].status.M.order.N == 0)
-                            button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-borrar' style='background: #12c4f2; border: #12c4f2;margin-bottom: 10px;') Borrar Pedido
-                        else
-                            button#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-no-borrar' style='background: #12c4f2; border: #12c4f2;margin-bottom: 10px;') Borrar Pedido
                     .col
                         .card.shadow.mb-4
                             .card-header.py-3.d-flex.justify-content-between.align-items-center
