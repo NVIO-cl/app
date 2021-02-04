@@ -270,19 +270,19 @@ head
                                     .card-body
                                         form#nameForm
                                             .form-row
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='companyName')
                                                             strong Nombre de Empresa
                                                             br
                                                         input.form-control#companyName(type='text' placeholder='Nombre Empresa' name='companyName' value=companyData.companyName.S)
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='firstName')
                                                             strong Nombre Representante
                                                         input.form-control#firstName(type='text' placeholder='Nombre Representante' name='firstName' value=companyData.firstName.S)
                                             .form-row
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='lastName')
                                                             strong Apellidos Representante
@@ -298,7 +298,7 @@ head
                                     .card-body
                                         form#contactForm
                                             .form-row
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='contactNumber')
                                                             strong Teléfono del Representante
@@ -306,13 +306,13 @@ head
                                                           .input-group-prepend
                                                             .input-group-text +56
                                                           if companyData.contactNumber
-                                                            input.form-control#contactNumber(type='text' placeholder='+56 9 0000 0000' name='contactNumber' value=companyData.contactNumber.N)
+                                                            input.form-control#contactNumber(type='text' placeholder='9 0000 0000' name='contactNumber' value=companyData.contactNumber.N)
                                                           else
-                                                            input.form-control#contactNumber(type='text' placeholder='+56 9 1234 5678' name='contactNumber')
-                                                .col
+                                                            input.form-control#contactNumber(type='text' placeholder='9 1234 5678' name='contactNumber')
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='email')
-                                                            strong Correo del Representante (este NO es tu correo para inicar sesión)
+                                                            strong Correo del Representante
                                                         input.form-control#email(type='text' placeholder='ejemplo@email.com' name='email' value=companyData.email.S)
                                             .form-group
                                                 button.btn.btn-primary.btn-sm#contactFormButton(type='submit') Guardar
@@ -324,12 +324,12 @@ head
                                         form#transferForm
                                           p.text-primary.m-0.font-weight-bold Factura
                                             .form-row
-                                              .col
+                                              .col-xs-2.col-md-6
                                                   .form-group
                                                       label(for='companyTurn')
                                                           strong Giro
                                                       input.form-control#companyTurn(type='text' placeholder='Giro SII' name='companyTurn' value=companyData.companyTurn.S)
-                                              .col
+                                              .col-xs-2.col-md-6
                                                   .form-group
                                                       label(for='companyRut')
                                                           strong RUT Empresa
@@ -337,37 +337,37 @@ head
                                       
                                           p.text-primary.m-0.font-weight-bold Transferencia
                                             .form-row
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='paymentDataName')
                                                             strong Nombre Asociado a Cuenta
                                                         input.form-control#paymentDataName(type='text' placeholder='Nombre' name='paymentDataName' value=companyData.paymentData.M.name.S)
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='paymentDataRut')
                                                             strong RUT
                                                         input.form-control#paymentDataRut(type='text' placeholder='RUT' name='paymentDataRut' value=companyData.paymentData.M.rut.S)
                                             .form-row
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='paymentDataBank')
                                                             strong Banco
                                                             br
                                                         input.form-control#paymentDataBank(type='text' placeholder='Banco' name='paymentDataBank' value=companyData.paymentData.M.bank.S)
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='paymentDataAccType')
                                                             strong Tipo de Cuenta
                                                             br
                                                         input.form-control#paymentDataAccType(type='text' placeholder='Tipo Cuenta' name='paymentDataAccType' value=companyData.paymentData.M.accType.S)
                                             .form-row
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='paymentDataAccNum')
                                                             strong Número de Cuenta
                                                             br
                                                         input.form-control#paymentDataAccNum(type='text' placeholder='Número Cuenta' name='paymentDataAccNum' value=companyData.paymentData.M.accNum.S)
-                                                .col
+                                                .col-xs-2.col-md-6
                                                     .form-group
                                                         label(for='paymentDataEmail')
                                                             strong Correo Electr&oacute;nico Cuenta
@@ -379,8 +379,8 @@ head
             .container.my-auto
                 .text-center.my-auto.copyright
                     span Copyright &copy; Alia 2021
-        a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-            i.fas.fa-angle-up
+        //a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+        //    i.fas.fa-angle-up
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content
