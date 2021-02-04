@@ -1,0 +1,14 @@
+{
+  "name": "Alia",
+  "short_name": "Alia",
+  "description": "El mejor aliado de tu negocio",
+  "version": "0.4.0",
+  "manifest_version": 2,
+  "default_locale": "es-CL",
+  "author": "Alia SpA",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0861ff",
+  "background_color": "#FFFFFF"
+}

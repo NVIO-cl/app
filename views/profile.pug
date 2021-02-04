@@ -1,7 +1,11 @@
 doctype html
 head
     meta(charset='utf-8')
-    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no')
+    meta(name='apple-mobile-web-app-capable' content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style' content='default')
+    meta(name='apple-mobile-web-app-title' content='alia')
+    meta(name='apple-touch-fullscreen' content='yes')
     title Profile - Alia
     script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
     script.
@@ -15,6 +19,7 @@ head
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    link(rel='manifest' href='/manifest.json')
 .d-lg-flex.d-sm-block
     nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
       a.navbar-brand(href="/")
