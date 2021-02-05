@@ -18,17 +18,6 @@ aws.config.update({
   secretAccessKey: process.env.SECRET
 });
 
-//AWS Settings
-var aws = require("aws-sdk");
-var db = require("../db");
-aws.config.update({
-  region: process.env.DBREGION,
-  endpoint: process.env.ENDPOINT,
-  accessKeyId: process.env.AKID,
-  secretAccessKey: process.env.SECRET
-});
-var s3Endpoint = new aws.Endpoint(process.env.AWS_S3_ENDPOINT);
-
 const xl = require('excel4node');
 var date_parser = require("../date_parser");
 
