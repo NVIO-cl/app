@@ -2,7 +2,11 @@ doctype html
 head
   meta(charset='utf-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
-  title Editar Orden - NVIO
+  meta(name='apple-mobile-web-app-capable' content='yes')
+  meta(name='apple-mobile-web-app-status-bar-style' content='default')
+  meta(name='apple-mobile-web-app-title' content='alia')
+  meta(name='apple-touch-fullscreen' content='yes')
+  title Editar Orden - Alia
   script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
   script.
     window.dataLayer = window.dataLayer || [];
@@ -11,42 +15,71 @@ head
     gtag('config', 'G-SJETCMY2EN', {
       'user_id': '#{userID}'
     });
+  link(rel='icon' type='image/png' href='https://alia.s3.amazonaws.com/assets/img/favicon.png')
   link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
   link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
-#wrapper(onload='recalc();')
-  nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0(style='background: #6e3c8e;')
-    .container-fluid.d-flex.flex-column.p-0
-      a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-        img(src='https://nvio.s3.amazonaws.com/assets/img/logo_nvio_blanco.png' style='width: 90%;')
-      hr.sidebar-divider.my-0
-      ul#accordionSidebar.nav.navbar-nav.text-light
+.d-lg-flex.d-sm-block(onload="recalc();")
+  nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
+    a.navbar-brand(href="/")
+      img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='max-height:50px;')
+    button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")    
+      span.navbar-toggler-icon
+    .collapse.navbar-collapse#navbarNav
+      ul.navbar-nav
         li.nav-item
-          a.nav-link(href='/')
-            i.fas.fa-tachometer-alt
-            span Dashboard
+            a.nav-link(href='/')
+                i.fas.fa-tachometer-alt.mr-1
+                span Dashboard
         li.nav-item
-          a.nav-link(href='/profile')
-            i.fas.fa-user
-            span Perfil
+            a.nav-link(href='/profile')
+                i.fas.fa-user.mr-1
+                span Perfil
         li.nav-item
-          a.nav-link.active(href='/historial')
-            i.fas.fa-table
-            span Historial de Ventas
+            a.nav-link.active(href='/historial')
+                i.fas.fa-table.mr-1
+                span Historial de Ventas
         li.nav-item
-          a.nav-link(href='/order/create')
-            i.fas.fa-plus-square
-            span Crear Nueva Orden
+            a.nav-link(href='/order/create')
+                i.fas.fa-plus-square.mr-1
+                span Crear Nueva Orden
         li.nav-item
-          a.nav-link(href='/login')
-            i.far.fa-user-circle
-            span Cerrar Sesi&oacute;n
-        li.nav-item
-      .text-center.d-none.d-md-inline
-        button#sidebarToggle.btn.rounded-circle.border-0(type='button')
-  #content-wrapper.d-flex.flex-column
+            a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+                i.far.fa-user-circle.mr-1
+                span Cerrar Sesión 
+                                          
+  nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
+      .container-fluid.d-flex.flex-column.p-0
+          a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
+              img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
+          hr.sidebar-divider.my-0
+          ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
+              li.nav-item
+                  a.nav-link(href='/')
+                      i.fas.fa-tachometer-alt
+                      span Dashboard
+              li.nav-item
+                  a.nav-link(href='/profile')
+                      i.fas.fa-user
+                      span Perfil
+              li.nav-item
+                  a.nav-link.active(href='/historial')
+                      i.fas.fa-table
+                      span Historial de Ventas
+              li.nav-item
+                  a.nav-link(href='/order/create')
+                      i.fas.fa-plus-square
+                      span Crear Nueva Orden
+              li.nav-item
+                  a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+                      i.far.fa-user-circle
+                      span Cerrar Sesión
+              li.nav-item
+          .text-center.d-none.d-md-inline
+              button#sidebarToggle.btn.rounded-circle.border-0(type='button')
+  #content-wrapper.d-flex.flex-column.flex-fill
     #content
-      nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
+      nav.navbar(style='margin-top: 17px;')
         //-
           .container-fluid
             button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
@@ -197,7 +230,7 @@ head
                                   i.fas.fa-trash.d-inline.float-right.text-danger(id='delete['+ index +']' role='button')
                           tr
                             td
-                              button#clickAdd.btn.btn-primary.btn-sm Agregar producto
+                              button#clickAdd.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2;') Agregar producto
                           tr
                             td
                               .col
@@ -302,10 +335,24 @@ head
                                     small
                                       | Puedes ingresar una fecha de retiro estimada si deseas
                   .form-group(style="text-align: center;")
-                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit') Editar Venta
+                    button.btn.btn-primary.btn-sm#submit(type='submit' value='Submit' style='background: #12c4f2; border: #12c4f2;') Editar Venta
     footer.bg-white.sticky-footer
       .container.my-auto
         .text-center.my-auto.copyright
-          span Copyright &copy; NVIO 2020
+          span Copyright &copy; Alia 2021
+  .modal.fade#modal-logout(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5.modal-title Estás a punto de cerrar sesión
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          p ¿Deseas cerrar tu sesión?
+        .modal-footer
+          button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
+          a.btn.btn-danger(href='/logout') Cerrar Sesión
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
   script(src='/javascripts/order-edit.js')
+  script(src='/javascripts/theme.js')
+  script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
