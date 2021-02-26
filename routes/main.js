@@ -386,4 +386,14 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
   wb.write('Pedidos.xlsx', res);
 });
 
+router.get('/inventario',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Inventario";
+  res.render('inventory', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+});
+
+router.get('/producto',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Producto";
+  res.render('product/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+});
+
 module.exports = router;
