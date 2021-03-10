@@ -45,11 +45,11 @@ head
                         i.fas.fa-plus-square.mr-1
                         span Crear Nueva Orden
                 li.nav-item
-                    a.nav-link(href='/inventario')
+                    a.nav-link(href='/inventory')
                         i.fas.fa-boxes.mr-1
                         span Inventario
                 li.nav-item
-                    a.nav-link.active(href='/producto')
+                    a.nav-link.active(href='/inventory/create')
                         i.fas.fa-box.mr-1
                         span Crear Nuevo Producto
                 li.nav-item
@@ -144,18 +144,18 @@ head
                                                         label(for='productName')
                                                             strong Atributo
                                                             br
-                                                        input.form-control#attributeName(type='text' placeholder='Ej: Talla' name='attributeName')
+                                                        input.form-control(type='text' placeholder='Ej: Talla' name='attributes[0][name]' id='attributes[0][name]')
 
                                                 .col-xs-2.col-md-4
                                                     .form-group
                                                         label(for='productName')
                                                             strong Valores
                                                             br
-                                                        input.form-control#variationName(type='text' placeholder='Ej: S, M, L, XL' name='variationsName')
+                                                        input.form-control(type='text' placeholder='Ej: S, M, L, XL' name='attributes[0][value]' id='attributes[0][value]')
 
                                                 .col-xs-2.col-sm-12.text-center.text-md-left.p-2.col-md-4.col-lg-4.mt-md-4.mt-lg-4
                                                     .form-group
-                                                        a#borrar.btn.btn-primary(type='button' style='background: #0861ff; border: #0d87f0;')
+                                                        a.btn.btn-primary(type='button' id= 'delete[0]' style='background: #0861ff; border: #0d87f0;')
                                                             i.fa.fa-trash
                                                             | &nbsp;Borrar
 
@@ -163,7 +163,7 @@ head
                                                 button.btn.btn-primary.btn-sm#createAttribute(style='background: #12c4f2; border: #12c4f2; margin-top: 10px;') Agregar Atributo
 
                                         .form-group(style='text-align: center;')
-                                            button.btn.btn-primary.btn-sm#createProductButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Crear Producto
+                                            button.btn.btn-primary.btn-sm#createProductButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Crear producto
 
             .container-fluid
                 .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
