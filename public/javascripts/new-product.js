@@ -56,21 +56,79 @@ $(document).ready(function(){
   }
 
   $('#createProductButton').click(function(e){
-    $('#createProductButton').toggleClass("disabled").attr("disabled", true);
+    e.preventDefault();
+    //$('#createProductButton').toggleClass("disabled").attr("disabled", true);
     if (subproducts == true) {
-      $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
+      //$('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
       generateSubproducts();
     }
-    e.preventDefault();
+
   })
 
   function generateSubproducts(){
     console.log("GENERATING SUBPRODUCTS");
     var subproducts = [];
+    var attributeNames = [];
     $("[id$=\\[name\\]]").each(function(index){
-      console.log($('#attributes\\['+index+'\\]\\[name\\]').val());
-      console.log($('#attributes\\['+index+'\\]\\[values\\]').val());
-    })
+      attributeNames.push($('#attributes\\['+index+'\\]\\[name\\]').val())
+      var values = $('#attributes\\['+index+'\\]\\[values\\]').val().split(",");
+      values.forEach((item, i) => {
+        values[i] = item.trim()
+      });
 
+      subproducts.push(values);
+    })
+    console.log(attributeNames);
+    console.log(subproducts);
+
+    // https://stackoverflow.com/a/36234242
+    function cartesianProduct(arr) {
+      return arr.reduce(function(a,b){
+        return a.map(function(x){
+          return b.map(function(y){
+            return x.concat([y]);
+          })
+        }).reduce(function(a,b){ return a.concat(b) },[])
+      }, [[]])
+    }
+    var subproductList = cartesianProduct(subproducts);
+    subproductList.forEach((subproduct, i) => {
+      var name = $('#productName').val()
+      console.log(subproduct);
+      subproduct.forEach((item, i) => {
+        name = name.concat(" ", attributeNames[i], " ", item);
+      });
+      console.log(name);
+      var card = `
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" id="subproductCard[${i}]">
+        <div class="card shadow mb-3">
+          <div class="card-header py-3">
+            <p class="text-primary m-0 font-weight-bold">${name}</p>
+          </div>
+          <div class="card-body" id="subproduct[${i}]">
+            <form id="createProduct">
+              <div class="form-row">
+                <div class="col-xs-2 col-sm-12 col-md-12">
+                  <div class="form-group">
+                    <label for="productPrice"><strong>Precio</strong></label>
+                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000">
+                  </div>
+                  <div class="form-group">
+                    <label for="productStock"><strong>Stock</strong><br></label>
+                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25">
+                  </div>
+                  <div class="btn-group" role="group" style="margin-top: 5px;">
+                    <a class="btn btn-primary" id="edit" type="button" style="margin-bottom: 5px; background: #12c4f2; border: #0d87f0; z-index: 0"><i class="fa fa-check"></i>&nbsp;Guardar</a>
+                    <a class="btn btn-primary" id="borrar" type="button" style="margin-bottom: 5px; background: #0861ff; border: #0d87f0;"><i class="fa fa-trash"></i>&nbsp;Borrar</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      `
+      $('#subproductForms').append(card)
+    });
   }
 })
