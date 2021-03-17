@@ -114,11 +114,13 @@ head
                                                         strong Nombre del Producto
                                                         br
                                                     input.form-control#productName(type='text' placeholder='Ej: Polera' name='productName')
+                                                    .invalid-feedback El nombre del producto no puede estar vacío
                                             .col-xs-2.col-md-4
                                                 .form-group
                                                     label(for='productPrice')
                                                         strong Precio
                                                     input.form-control#productPrice(type='number' placeholder='Ej: 8000' name='productPrice')
+                                                    .invalid-feedback El precio no puede estar vacío
                                             .col-xs-2.col-md-4.d-none(id='stock')
                                                 .form-group
                                                     label(for='productStock')
@@ -145,6 +147,7 @@ head
                                                             strong Atributo
                                                             br
                                                         input.form-control(type='text' placeholder='Ej: Talla' name='attributes[0][name]' id='attributes[0][name]')
+                                                        .invalid-feedback El nombre del atributo no puede estar vacío
 
                                                 .col-xs-2.col-md-4
                                                     .form-group
@@ -152,6 +155,7 @@ head
                                                             strong Valores
                                                             br
                                                         input.form-control(type='text' placeholder='Ej: S, M, L, XL' name='attributes[0][values]' id='attributes[0][values]')
+                                                        .invalid-feedback El atributo debe tener al menos un valor
 
                                                 .col-xs-2.col-sm-12.text-center.text-md-left.p-2.col-md-4.col-lg-4.mt-md-4.mt-lg-4
                                                     .form-group

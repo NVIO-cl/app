@@ -2,8 +2,30 @@ $(document).ready(function(){
   var attributeCount = 1;
   var subproducts = false;
   $('#createAttribute').click(function(e){
+
     var last = attributeCount-1
-    var row = '<hr id="separator['+attributeCount+']"><div class="form-row" id="attributes['+attributeCount+']"><div class="col-xs-2 col-md-4"><div class="form-group"><label for="attributeName"><strong>Atributo</strong></br></label><input class="form-control" type="text" placeholder="Ej: Talla" id="attributes['+attributeCount+'][name]" name="attributes['+attributeCount+'][name]"></div></div><div class="col-xs-2 col-md-4"><div class="form-group"><label for="attributeValues"><strong>Valores</strong></br></label><input class="form-control" type="text" placeholder="Ej: S, M, L, XL" id="attributes['+attributeCount+'][values]" name="attributes['+attributeCount+'][values]"></div></div><div class="col-xs-2 col-sm-12 text-center text-md-left p-2 col-md-4 col-lg-4 mt-md-4 mt-lg-4"><div class="form-group"><a class="btn btn-primary" id= "delete['+attributeCount+']" type="button" style="background: #0861ff; border: #0d87f0;"><i class="fa fa-trash" role="button"></i>&nbsp;Borrar</a></div></div>'
+    var row = `
+    <hr id="separator[${attributeCount}]">
+    <div class="form-row" id="attributes[${attributeCount}]">
+      <div class="col-xs-2 col-md-4">
+        <div class="form-group">
+          <label for="attributeName"><strong>Atributo</strong></br></label>
+          <input class="form-control" type="text" placeholder="Ej: Talla" id="attributes[${attributeCount}][name]" name="attributes[${attributeCount}][name]">
+          <div class="invalid-feedback">El nombre del atributo no puede estar vacío</div>
+        </div>
+      </div>
+      <div class="col-xs-2 col-md-4">
+        <div class="form-group">
+          <label for="attributeValues"><strong>Valores</strong></br></label>
+          <input class="form-control" type="text" placeholder="Ej: S, M, L, XL" id="attributes[${attributeCount}][values]" name="attributes[${attributeCount}][values]">
+          <div class="invalid-feedback">El atributo debe tener al menos un valor</div>
+        </div>
+      </div>
+      <div class="col-xs-2 col-sm-12 text-center text-md-left p-2 col-md-4 col-lg-4 mt-md-4 mt-lg-4"><div class="form-group">
+        <a class="btn btn-primary" id= "delete[${attributeCount}]" type="button" style="background: #0861ff; border: #0d87f0;"><i class="fa fa-trash" role="button"></i>&nbsp;Borrar</a>
+      </div>
+    </div>
+    `;
     $('#attributes\\['+last+'\\]').after(row)
     attributeCount++;
     e.preventDefault();
@@ -27,7 +49,7 @@ $(document).ready(function(){
 
   $('body').on('click', "[id^=delete]", function(){
     if ($(this).attr('id') == 'delete[0]') {
-      alert("No puedes eliminar el primer producto")
+      alert("No puedes eliminar el primer atributo")
     }
     else {
       id = parseInt($(this).attr('id').replace("delete[", "").replace("]", ""))
@@ -56,17 +78,65 @@ $(document).ready(function(){
   }
 
   $('#createProductButton').click(function(e){
+    $('#createProductButton').addClass("disabled").attr("disabled", true);
+    var hasEmptyData = false;
     e.preventDefault();
-    //$('#createProductButton').toggleClass("disabled").attr("disabled", true);
-    if (subproducts == true) {
-      //$('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
-      generateSubproducts();
+    if ($('#productName').val() == "") {
+      $('#productName').addClass("is-invalid")
+      hasEmptyData=true;
     }
-
+    else {
+      $('#productName').removeClass("is-invalid")
+      $('#productName').addClass("is-valid")
+    }
+    if ($('#productPrice').val() == "") {
+      $('#productPrice').addClass("is-invalid")
+      hasEmptyData=true;
+    }
+    else {
+      $('#productPrice').removeClass("is-invalid")
+      $('#productPrice').addClass("is-valid")
+    }
+    if (subproducts) {
+      //Check if subproducts are filled with data
+      var $attributes = $("[id$=\\[name\\]]");
+      $attributes.each((index) => {
+        if ($('#attributes\\['+index+'\\]\\[name\\]').val()=="") {
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid')
+          hasEmptyData=true;
+        }
+        else {
+          $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid')
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid')
+        }
+        if ($('#attributes\\['+index+'\\]\\[values\\]').val()=="") {
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid')
+          hasEmptyData=true;
+        }
+        else {
+          $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid')
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid')
+        }
+      });
+    }
+    if (!hasEmptyData) {
+      if (subproducts) {
+        $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
+        generateSubproducts();
+      }
+      else {
+        $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
+      }
+    }
+    else {
+      console.log("EMPTY DATA WARN");
+      $('#createProductButton').removeClass("disabled").attr("disabled", false);
+    }
   })
 
   function generateSubproducts(){
     console.log("GENERATING SUBPRODUCTS");
+    var productPrice = $('#productPrice').val()
     var subproducts = [];
     var attributeNames = [];
     $("[id$=\\[name\\]]").each(function(index){
@@ -91,6 +161,7 @@ $(document).ready(function(){
         }).reduce(function(a,b){ return a.concat(b) },[])
       }, [[]])
     }
+
     var subproductList = cartesianProduct(subproducts);
     subproductList.forEach((subproduct, i) => {
       var name = $('#productName').val()
@@ -111,15 +182,11 @@ $(document).ready(function(){
                 <div class="col-xs-2 col-sm-12 col-md-12">
                   <div class="form-group">
                     <label for="productPrice"><strong>Precio</strong></label>
-                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000">
+                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}">
                   </div>
                   <div class="form-group">
                     <label for="productStock"><strong>Stock</strong><br></label>
                     <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25">
-                  </div>
-                  <div class="btn-group" role="group" style="margin-top: 5px;">
-                    <a class="btn btn-primary" id="edit" type="button" style="margin-bottom: 5px; background: #12c4f2; border: #0d87f0; z-index: 0"><i class="fa fa-check"></i>&nbsp;Guardar</a>
-                    <a class="btn btn-primary" id="borrar" type="button" style="margin-bottom: 5px; background: #0861ff; border: #0d87f0;"><i class="fa fa-trash"></i>&nbsp;Borrar</a>
                   </div>
                 </div>
               </div>
@@ -130,5 +197,6 @@ $(document).ready(function(){
       `
       $('#subproductForms').append(card)
     });
+    $('#createProductButton').addClass("d-none").attr("disabled", false);
   }
 })
