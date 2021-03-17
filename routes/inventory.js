@@ -12,19 +12,6 @@ const client = new Client({
   }
 })
 
-router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  const result = await client.search({
-    index: 'products',
-    body: {
-      query: {
-        match: { fullname: 'Polera roja' }
-      }
-    }
-  })
-  console.log(result.body.hits.hits);
-
-  res.status(200).json(result.body.hits.hits)
-});
 
 router.get('/searchProduct/:fullname',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const result = await client.search({
@@ -40,5 +27,16 @@ router.get('/searchProduct/:fullname',passport.authenticate('jwt', {session: fal
   res.status(200).json(result.body.hits.hits)
 });
 
+
+
+router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Inventario";
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+});
+
+router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Producto";
+  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+});
 
 module.exports = router;
