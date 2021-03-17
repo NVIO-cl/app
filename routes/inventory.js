@@ -23,12 +23,34 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 });
 
 router.post('/createProduct', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
-  console.log(req.body);
-  
+  req.body.owner = req.user.user.replace("COMPANY#", "")
+  if (req.body.checkStock == "on") {
+    req.body.checkStock = true
+  }
+  else {
+    delete req.body.productStock
+  }
+  if (req.body.checkAttributes == "on") {
+    req.body.checkAttributes = true
+  }
+  if (req.body.subproduct) {
+    console.log("SUBPRODUCTS PRESENT!");
+    console.log(req.body);
+
+  }
+  else {
+    console.log("SUBPRODUCTS NOT PRESENT");
+    delete req.body.attributes
+    console.log(req.body);
+  }
+
+
+  /*
   await client.index({
     index: 'products',
     body: req.body
   })
+  */
   res.json(req.body);
 });
 

@@ -96,6 +96,7 @@ head
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
         #content
+          form#createProduct(action="/inventory/createProduct" method="POST")
             nav.navbar(style='margin-top: 17px;')
             .container-fluid
                 h3.text-dark.mb-4 Crear Nuevo Producto
@@ -106,7 +107,6 @@ head
                                 .card-header.py-3
                                     p.text-primary.m-0.font-weight-bold Ingresar nuevo producto
                                 .card-body
-                                    form#createProduct(action="/inventory/createProduct" method="POST")
                                         .form-row
                                             .col-xs-2.col-md-4
                                                 .form-group
@@ -173,7 +173,7 @@ head
                 .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
                     .row#subproductForms
                     .form-group.text-center
-                        button#createSubproducts.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2; margin-top: 10px;') Guardar Subproductos
+                        button#createSubproducts.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2; margin-top: 10px;' onClick="$('#createProduct').submit()") Guardar Subproductos
 
         footer.bg-white.sticky-footer
             .container.my-auto
