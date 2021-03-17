@@ -126,6 +126,7 @@ $(document).ready(function(){
       }
       else {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
+        $('#createProduct').submit()
       }
     }
     else {

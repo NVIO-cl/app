@@ -12,6 +12,25 @@ const client = new Client({
   }
 })
 
+router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Inventario";
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+});
+
+router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Producto";
+  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+});
+
+router.post('/createProduct', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
+  console.log(req.body);
+  
+  await client.index({
+    index: 'products',
+    body: req.body
+  })
+  res.json(req.body);
+});
 
 router.get('/searchProduct/:fullname',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const result = await client.search({
@@ -25,18 +44,6 @@ router.get('/searchProduct/:fullname',passport.authenticate('jwt', {session: fal
   console.log(result.body.hits.hits);
 
   res.status(200).json(result.body.hits.hits)
-});
-
-
-
-router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  const name = "Inventario";
-  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", "")});
-});
-
-router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  const name = "Producto";
-  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
 });
 
 module.exports = router;
