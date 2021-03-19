@@ -14,7 +14,16 @@ const client = new Client({
 
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Inventario";
-  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+  const result = await client.search({
+    index: 'products',
+    body: {
+      query: {
+        match: { owner: req.body.owner = req.user.user.replace("COMPANY#", "") }
+      }
+    }
+  })
+  console.log(result.body.hits.hits);
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits});
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -22,44 +31,116 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
   res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
 });
 
-router.post('/createProduct', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
+router.post('/create', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
+  //Add owner data
   req.body.owner = req.user.user.replace("COMPANY#", "")
+
+  //Trim the data
+  req.body.productName = req.body.productName.trim();
+
+  //Convert main price string to int
+  req.body.productPrice = parseInt(req.body.productPrice);
+
   if (req.body.checkStock == "on") {
+    //If stock control is activated, parse stock into an int
     req.body.checkStock = true
+    req.body.productStock = parseInt(req.body.productStock)
   }
   else {
+    //Delete the stock variable
+    req.body.checkStock = false
     delete req.body.productStock
   }
+
   if (req.body.checkAttributes == "on") {
     req.body.checkAttributes = true
   }
-  if (req.body.subproduct) {
+
+  if (req.body.subproduct && req.body.checkAttributes) {
     console.log("SUBPRODUCTS PRESENT!");
+    if (req.body.checkStock) {
+      //If stock is checked, sum the subproducts stock into the master product stock
+      console.log("Check stock!");
+      var totalStock = 0
+      req.body.subproduct.forEach((item, i) => {
+        item.stock = parseInt(item.stock)
+        totalStock = totalStock + item.stock
+      });
+      req.body.productStock = totalStock;
+    }
+    else {
+      //Delete the stock value from master prodcut and subproducts
+      req.body.checkStock = false
+      req.body.subproduct.forEach((item, i) => {
+        delete item.stock
+      });
+    }
+    //Parse price into an int
+    req.body.subproduct.forEach((item, i) => {
+      item.price = parseInt(item.price)
+    });
+    //Save the master product first to get the ID
+    var masterProduct = {
+      productName: req.body.productName,
+      productPrice: req.body.productPrice,
+      productStock: req.body.productStock,
+      checkStock: req.body.checkStock,
+      checkAttributes: req.body.checkAttributes,
+    }
+    console.log(masterProduct);
+    result = await client.index({
+      index: 'products',
+      body: masterProduct
+    })
+    var masterID = result.body._id;
+    console.log("SAVED IN ELASTICSEARCH WITH ID " + result.body._id);
+    //Then save each subproduct with the master ID as reference
     console.log(req.body);
+    for (item of req.body.subproduct){
+      console.log(item);
+      var subprod = {
+        productName: item.fullName,
+        productPrice: item.price,
+        masterID: masterID,
+      }
+      if (req.body.checkStock) {
+        subprod.productStock = item.stock;
+      }
+
+      result = await client.index({
+        index: 'products',
+        body: subprod
+      })
+    };
 
   }
   else {
     console.log("SUBPRODUCTS NOT PRESENT");
+    //Delete unused attribute section
     delete req.body.attributes
+    req.body.checkAttributes = false
     console.log(req.body);
+
+    //Save the product as a main product
+    result = await client.index({
+      index: 'products',
+      body: req.body
+    })
+    console.log(result);
+    console.log("SAVED IN ELASTICSEARCH");
   }
 
 
-  /*
-  await client.index({
-    index: 'products',
-    body: req.body
-  })
-  */
+
   res.json(req.body);
 });
 
-router.get('/searchProduct/:fullname',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+router.get('/searchProduct/:productName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const result = await client.search({
     index: 'products',
     body: {
       query: {
-        match: { fullname: req.params.fullname }
+        match: { owner: req.body.owner = req.user.user.replace("COMPANY#", "") }
       }
     }
   })
