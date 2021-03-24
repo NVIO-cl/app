@@ -96,6 +96,7 @@ head
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
         #content
+          form#createProduct(action="/inventory/create" method="POST")
             nav.navbar(style='margin-top: 17px;')
             .container-fluid
                 h3.text-dark.mb-4 Crear Nuevo Producto
@@ -106,7 +107,6 @@ head
                                 .card-header.py-3
                                     p.text-primary.m-0.font-weight-bold Ingresar nuevo producto
                                 .card-body
-                                    form#createProduct
                                         .form-row
                                             .col-xs-2.col-md-4
                                                 .form-group
@@ -131,12 +131,12 @@ head
                                             .col-xs-2.col-md-4(style='height: 25px')
                                                 .form-group
                                                     label.form-check-label(for='checkStock') ¿Posee Stock?
-                                                    input.form-check-input(type='checkbox' name='shipping' id='checkStock' style='left: auto; margin-left: 10px;')
+                                                    input.form-check-input(type='checkbox' name='checkStock' id='checkStock' style='left: auto; margin-left: 10px;')
                                         .form-row
                                             .col-xs-2.col-md-4(style='height: 25px')
                                                 .form-group
                                                     label.form-check-label(for='checkAttributes') ¿Posee atributos?
-                                                    input.form-check-input(type='checkbox' name='shipping' id='checkAttributes' style='left: auto; margin-left: 10px;')
+                                                    input.form-check-input(type='checkbox' name='checkAttributes' id='checkAttributes' style='left: auto; margin-left: 10px;')
 
                                         #attributes.d-none
                                             hr
@@ -173,7 +173,7 @@ head
                 .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
                     .row#subproductForms
                     .form-group.text-center
-                        button#createSubproducts.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2; margin-top: 10px;') Guardar Subproductos
+                        button#createSubproducts.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2; margin-top: 10px;' onClick="$('#createProduct').submit()") Guardar Subproductos
 
         footer.bg-white.sticky-footer
             .container.my-auto

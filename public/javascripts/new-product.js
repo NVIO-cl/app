@@ -126,6 +126,7 @@ $(document).ready(function(){
       }
       else {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
+        $('#createProduct').submit()
       }
     }
     else {
@@ -177,7 +178,7 @@ $(document).ready(function(){
             <p class="text-primary m-0 font-weight-bold">${name}</p>
           </div>
           <div class="card-body" id="subproduct[${i}]">
-            <form id="createProduct">
+            <input type="hidden" id="subproduct[${i}][fullName]" name="subproduct[${i}][fullName]" value="${name}">
               <div class="form-row">
                 <div class="col-xs-2 col-sm-12 col-md-12">
                   <div class="form-group">
@@ -190,7 +191,6 @@ $(document).ready(function(){
                   </div>
                 </div>
               </div>
-            </form>
           </div>
         </div>
       </div>

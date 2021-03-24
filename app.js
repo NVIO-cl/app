@@ -38,7 +38,7 @@ app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/order',orderRouter);
 app.use('/profile',profileRouter);
-app.use('/inventory',inventoryRouter);
+app.use('/inventory', inventoryRouter);
 
 
 //Use cookieParser
