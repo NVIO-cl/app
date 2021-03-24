@@ -86,8 +86,8 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
       productStock: req.body.productStock,
       checkStock: req.body.checkStock,
       checkAttributes: req.body.checkAttributes,
+      owner: req.body.owner
     }
-    console.log(masterProduct);
     result = await client.index({
       index: 'products',
       body: masterProduct
@@ -95,23 +95,25 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     var masterID = result.body._id;
     console.log("SAVED IN ELASTICSEARCH WITH ID " + result.body._id);
     //Then save each subproduct with the master ID as reference
-    console.log(req.body);
+    var dataset = []
     for (item of req.body.subproduct){
-      console.log(item);
       var subprod = {
         productName: item.fullName,
         productPrice: item.price,
         masterID: masterID,
+        owner: req.body.owner
       }
       if (req.body.checkStock) {
         subprod.productStock = item.stock;
       }
-
-      result = await client.index({
-        index: 'products',
-        body: subprod
-      })
+      dataset.push(subprod)
     };
+
+    console.log(dataset);
+    var body = dataset.flatMap(doc => [{ index: { _index: 'subproducts' } }, doc])
+    const { body: bulkResponse } = await client.bulk({ refresh: true, body })
+    console.log(bulkResponse);
+
 
   }
   else {

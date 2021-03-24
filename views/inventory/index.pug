@@ -111,25 +111,21 @@ head
                                             thead
                                                 tr
                                                     th(scope='col') #
-                                                    th(scope='col') First
-                                                    th(scope='col') Last
-                                                    th(scope='col') Handle
+                                                    th(scope='col') Nombre
+                                                    th(scope='col') Subproductos?
+                                                    th(scope='col') Stock
+                                                    th(scope='col') Precio
+                                                    th(scope='col') Acciones
                                             tbody
+                                              each product, index in results
                                                 tr
-                                                    th(scope='row') 1
-                                                    td Mark
-                                                    td Otto
-                                                    td @mdo
-                                                tr
-                                                    th(scope='row') 2
-                                                    td Jacob
-                                                    td Thornton
-                                                    td @fat
-                                                tr
-                                                    th(scope='row') 3
-                                                    td Larry
-                                                    td the Bird
-                                                    td @twitter
+                                                    th(scope='row') #{index}
+                                                    td(scope='row') #{product._source.productName}
+                                                    td(scope='row') #{product._source.checkAttributes ? 'Sí' : 'No'}
+                                                    td(scope='row') #{product._source.checkStock ? product._source.productStock : 'N/A'}
+                                                    td(scope='row') #{parseInt(product._source.productPrice).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+                                                    td(scope='row') 
+                                                      button Editar
                                         .form-group
                                             button.btn.btn-primary.btn-sm#editProductsButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Editar productos
 
