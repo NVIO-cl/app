@@ -12,7 +12,7 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-console.log("====Alia====");
+console.log("====ALIA====");
 if (!process.env.PORT){
   console.log("ENV port is undefined. Using default port 3000");
 }

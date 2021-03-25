@@ -92,8 +92,6 @@ router.post('/register', upload.none(), async(req, res) => {
 
   const name = "Register";
   var errormsg;
-  console.log("BODY:");
-  console.log(req.body);
 
   var emailData = {
     Name: 'email',
@@ -157,13 +155,11 @@ router.post('/register', upload.none(), async(req, res) => {
       return res.redirect('/register');
     }
     else {
-      console.log(data);
       //Do something with the data!
       res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico'});
       return res.redirect('/login');
     }
   })
-  console.log("Cognito register!");
 });
 
 router.get('/logout', (req, res, next) => {
@@ -200,7 +196,6 @@ router.post('/forgot', upload.none(), async (req, res, next)=>{
     Username: req.body.email
   }
   var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-  console.log(req.body.email);
   cognitoUser.forgotPassword({
   	onSuccess: function(data) {
       res.cookie('message', {type:'success', content:'Hemos enviado un correo a tu cuenta con las instrucciones'});
@@ -214,7 +209,6 @@ router.post('/forgot', upload.none(), async (req, res, next)=>{
 })
 
 router.get('/resetPassword', async (req,res)=>{
-  console.log(req.query);
   res.render('new_password', {code: req.query.c, user: req.query.u});
 })
 
@@ -265,7 +259,6 @@ async function colcheck(){
 
 
 router.get('/resetPassword', async (req,res)=>{
-  console.log(req.query);
   res.render('new_password', {code: req.query.c, user: req.query.u});
 })
 
