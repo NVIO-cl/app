@@ -78,7 +78,7 @@ $(document).ready(function(){
   }
 
   $('#createProductButton').click(function(e){
-    $('#createProductButton').addClass("disabled").attr("disabled", true);
+    //$('#createProductButton').addClass("disabled").attr("disabled", true);
     var hasEmptyData = false;
     e.preventDefault();
     if ($('#productName').val() == "") {
@@ -178,7 +178,7 @@ $(document).ready(function(){
             <p class="text-primary m-0 font-weight-bold">${name}</p>
           </div>
           <div class="card-body" id="subproduct[${i}]">
-            <input type="hidden" id="subproduct[${i}][fullName]" name="subproduct[${i}][fullName]" value="${name}">
+            <input type="hidden" id="subproduct[${i}][name]" name="subproduct[${i}][name]" value="${name}">
               <div class="form-row">
                 <div class="col-xs-2 col-sm-12 col-md-12">
                   <div class="form-group">
