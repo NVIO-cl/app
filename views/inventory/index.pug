@@ -120,10 +120,10 @@ head
                                               each product, index in results
                                                 tr
                                                     th(scope='row') #{index}
-                                                    td(scope='row') #{product._source.productName}
+                                                    td(scope='row') #{product._source.name}
                                                     td(scope='row') #{product._source.checkAttributes ? 'Sí' : 'No'}
-                                                    td(scope='row') #{product._source.checkStock ? product._source.productStock : 'N/A'}
-                                                    td(scope='row') #{parseInt(product._source.productPrice).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+                                                    td(scope='row') #{product._source.checkStock ? product._source.stock : 'N/A'}
+                                                    td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
                                                     td(scope='row') 
                                                       button Editar
                                         .form-group
