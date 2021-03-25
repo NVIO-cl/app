@@ -159,7 +159,7 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
 
   //Put back the owner. We need it for elasticsearch
   masterProduct.owner = req.body.owner
-  //If there are subproducts, put them apart from the master product
+  //If there are subproducts, pull them apart from the master product
   var subproducts
   if (masterProduct.checkAttributes) {
     subproducts = masterProduct.subproducts
@@ -174,15 +174,19 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     }
 
   }
-  console.log(masterProduct);
-  console.log(subproducts);
   //Save the master product in Elasticsearch
   result = await client.index({
     index: 'products',
     id: req.body.owner + productID,
     body: masterProduct
   })
-  console.log(result);
+
+  //if there are subproducts, save them as separate documents (toe make them searchable)
+  if (masterProduct.checkAttributes) {
+    var body = subproducts.flatMap((doc,i) => [{ index: { _index: 'subproducts', _id: req.body.owner+productID+"-"+i  } }, doc])
+    const { body: bulkResponse } = await client.bulk({ refresh: true, body })
+    console.log(bulkResponse);
+  }
 
 
 
