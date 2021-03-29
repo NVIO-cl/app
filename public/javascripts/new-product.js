@@ -32,18 +32,50 @@ $(document).ready(function(){
   })
 
   $('#checkStock').click(function(e) {
-    $('#stock').toggleClass("d-none")
+    if (!$('#checkAttributes').is(":checked")) {
+      if ($('#checkStock').is(":checked")) {
+        $('#stock').removeClass("d-none")
+      }
+      else {
+        $('#stock').addClass("d-none")
+      }
+    }
+    else {
+      if ($('#checkStock').is(':checked')) {
+        $("[id$='stockGroup\\]']").each(function(){
+          $(this).removeClass("d-none")
+        })
+      }
+      else {
+        $("[id$='stockGroup\\]']").each(function(){
+          $(this).addClass("d-none")
+        })
+      }
+    }
+
   })
 
   $('#checkAttributes').click(function(e) {
     $('#attributes').toggleClass("d-none")
     if ($('#checkAttributes').is(":checked")) {
+      $("#priceLabel").html("<b>Precio base</b>")
       $('#createProductButton').html('Generar subproductos')
+      if($('#checkStock').is(":checked")){
+        $('#stock').addClass("d-none")
+      }
       subproducts = true;
     }
     else {
+      $("#priceLabel").html("<b>Precio</b>")
       $('#createProductButton').html('Crear producto')
+      if ($('#checkStock').is(":checked")) {
+        $('#stock').removeClass("d-none")
+      }
+      else {
+        $('#stock').addClass("d-none")
+      }
       subproducts = false;
+
     }
   })
 
@@ -130,13 +162,11 @@ $(document).ready(function(){
       }
     }
     else {
-      console.log("EMPTY DATA WARN");
       $('#createProductButton').removeClass("disabled").attr("disabled", false);
     }
   })
 
   function generateSubproducts(){
-    console.log("GENERATING SUBPRODUCTS");
     var productPrice = $('#productPrice').val()
     var subproducts = [];
     var attributeNames = [];
@@ -149,8 +179,6 @@ $(document).ready(function(){
 
       subproducts.push(values);
     })
-    console.log(attributeNames);
-    console.log(subproducts);
 
     // https://stackoverflow.com/a/36234242
     function cartesianProduct(arr) {
@@ -162,15 +190,14 @@ $(document).ready(function(){
         }).reduce(function(a,b){ return a.concat(b) },[])
       }, [[]])
     }
-
+    var subproductsCount = 0;
     var subproductList = cartesianProduct(subproducts);
     subproductList.forEach((subproduct, i) => {
       var name = $('#productName').val()
-      console.log(subproduct);
+      subproductsCount++
       subproduct.forEach((item, i) => {
         name = name.concat(" ", attributeNames[i], " ", item);
       });
-      console.log(name);
       var card = `
       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" id="subproductCard[${i}]">
         <div class="card shadow mb-3">
@@ -185,7 +212,7 @@ $(document).ready(function(){
                     <label for="productPrice"><strong>Precio</strong></label>
                     <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}">
                   </div>
-                  <div class="form-group">
+                  <div class="form-group" id="subproduct[${i}][stockGroup]">
                     <label for="productStock"><strong>Stock</strong><br></label>
                     <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25">
                   </div>
@@ -198,5 +225,17 @@ $(document).ready(function(){
       $('#subproductForms').append(card)
     });
     $('#createProductButton').addClass("d-none").attr("disabled", false);
+
+    if ($('#checkStock').is(":checked")) {
+
+    }
+
+    else {
+      for (var i = 0; i < subproductsCount; i++) {
+        $('#subproduct\\['+i+'\\]\\[stockGroup\\]').addClass('d-none')
+
+      }
+    }
+
   }
 })
