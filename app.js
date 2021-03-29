@@ -10,6 +10,7 @@ var indexRouter = require('./routes/main');
 var authRouter = require('./routes/auth');
 var orderRouter = require('./routes/order');
 var profileRouter = require('./routes/profile');
+var inventoryRouter = require('./routes/inventory');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/order',orderRouter);
 app.use('/profile',profileRouter);
+app.use('/inventory', inventoryRouter);
 
 
 //Use cookieParser
