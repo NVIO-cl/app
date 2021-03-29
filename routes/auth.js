@@ -42,6 +42,9 @@ router.post('/login', upload.none(), function (req, res, next) {
       if (err == 'UserNotConfirmedException') {
         res.cookie('message', {type:'danger', content:'Correo no verificado. Por favor confirma tu correo.'});
       }
+      else if (err == 'NotAuthorizedException'){
+        res.cookie('message', {type:'danger', content:'Cuenta deshabilitada. Por favor contactar a soporte@aliachile.com'});
+      }
       else {
         res.cookie('message', {type:'danger', content:'Correo o contraseña incorrecto.'});
       }
@@ -127,6 +130,7 @@ router.post('/register', upload.none(), async(req, res) => {
       "firstName": req.body.firstName,
       "lastName": req.body.lastName,
       "email": req.body.email,
+      "referral": req.body.referral,
       "companyTurn": "",
       "companyRut": "",
       "paymentData": {
