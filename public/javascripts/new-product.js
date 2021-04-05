@@ -155,6 +155,14 @@ $(document).ready(function(){
       if (subproducts) {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
         generateSubproducts();
+        $('#prodContainer').after(`
+          <div class="container-fluid">
+            <div class="col-lg-12" style="padding-left: 0px; padding-right: 0px;">
+              <div class="row" id="subproductForms">
+              </div>
+            </div>
+          </div>
+        `)
       }
       else {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
@@ -164,6 +172,8 @@ $(document).ready(function(){
     else {
       $('#createProductButton').removeClass("disabled").attr("disabled", false);
     }
+
+
   })
 
   function generateSubproducts(){
@@ -236,6 +246,10 @@ $(document).ready(function(){
 
       }
     }
-
+    $('#subproductForms').after(`
+      <div class="form-group text-center">
+        <button class="btn btn-primary btn-sm" id="createSubproducts" style="background: #12c4f2; border: #12c4f2; margin-top: 10px;" onclick="$('#createProduct').submit()">Guardar Subproductos</button>
+      </div>
+    `)
   }
 })
