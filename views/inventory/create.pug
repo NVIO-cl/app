@@ -98,7 +98,7 @@ head
         #content
           form#createProduct(action="/inventory/create" method="POST")
             nav.navbar(style='margin-top: 17px;')
-            .container-fluid
+            .container-fluid#prodContainer
                 h3.text-dark.mb-4 Crear Nuevo Producto
                 .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
                     .row
@@ -117,7 +117,7 @@ head
                                                     .invalid-feedback El nombre del producto no puede estar vacío
                                             .col-xs-2.col-md-4
                                                 .form-group
-                                                    label(for='productPrice')
+                                                    label#priceLabel(for='productPrice')
                                                         strong Precio
                                                     input.form-control#productPrice(type='number' placeholder='Ej: 8000' name='productPrice')
                                                     .invalid-feedback El precio no puede estar vacío
@@ -172,8 +172,6 @@ head
             .container-fluid
                 .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
                     .row#subproductForms
-                    .form-group.text-center
-                        button#createSubproducts.btn.btn-primary.btn-sm(style='background: #12c4f2; border: #12c4f2; margin-top: 10px;' onClick="$('#createProduct').submit()") Guardar Subproductos
 
         footer.bg-white.sticky-footer
             .container.my-auto
