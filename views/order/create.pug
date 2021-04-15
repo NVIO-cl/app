@@ -203,7 +203,7 @@ head
               form#newOrder(action='/order/create' method='POST')
                 .form-row.align-items-center
                   .col
-                    .table-responsive
+                    .table-responsive(style="overflow-y: -webkit-paged-x")
                       table.table
                         thead
                           tr
@@ -215,6 +215,11 @@ head
                           tr(id='items[0]')
                             td
                               input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
+                              .card.mt-1.float-left.shadow-sm(style='position:absolute;z-index:9999; -webkit-transform: translate3d(0,0,10px); max-width:90%; overflow:visible;' )
+                                ul.list-group.list-group-flush(id='items[0][autocompleteList]')
+                                  li.list-group-item Awesome Product 1
+                                  li.list-group-item Awesome Product 2
+                                  li.list-group-item Awesome Product 3
                             td
                               input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
                             td
@@ -243,7 +248,7 @@ head
                               p#totalShip $ 0
                             .col
                               p#totalFin $ 0
-                    .form-row
+                    .form-row(style='z-index: 0')
                       .col
                         hr
                         .form-row.text-right.mb-3

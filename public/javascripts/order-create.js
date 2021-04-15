@@ -121,4 +121,60 @@ today = yyyy+'-'+mm+'-'+dd;
       });
     }
   })
+  var autocompleteTimer;
+  $('#items\\[0\\]\\[product\\]').keyup(async function(){
+    clearTimeout(autocompleteTimer);
+    var caller = this
+    autocompleteTimer = setTimeout(async function(){
+      console.log("Firing up search!");
+      await getProducts($(caller).val(), caller)
+    }, 500)
+  });
 });
+
+async function getProducts(name, location){
+  // Get the autocomplete list Div
+  var listDiv = $(location).next().children();
+  //Clear the div
+  $(listDiv).html("");
+  //Set a "Searching"
+  $(listDiv).html('<li class="list-group-item"><div class="spinner-border spinner-border-sm" role="status"></div></li>')
+  // Get the products that match the query
+  var arr = { name:name};
+  $.ajax({
+    url: '/inventory/searchProduct',
+    type: 'POST',
+    data: JSON.stringify(arr),
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    async: true,
+    success: function(msg) {
+      $(listDiv).html("");
+      // Iterate through the results
+      msg.forEach((item, i) => {
+        var stockColor = "badge-secondary"
+        //If the stock is undefined, show N/A
+        if (item._source.stock === undefined) {
+          item._source.stock = "N/A"
+        }
+        //Stock amount cases
+        if (item._source.stock > 5) {
+          stockColor = "badge-success"
+        }
+        else if (item._source.stock <= 5 && item._source.stock > 0) {
+          stockColor = "badge-warning"
+        }
+        else if (item._source.stock == 0){
+          stockColor = "badge-danger"
+        }
+        listDiv.append(`
+          <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            ${item._source.name}
+            <span class="badge ml-2 ${stockColor}">${item._source.stock}</span>
+          </button>
+          `)
+        console.log(item);
+      });
+    }
+  })
+}
