@@ -49,7 +49,7 @@ today = yyyy+'-'+mm+'-'+dd;
   var count = 1;
   $('#clickAdd').click(function(e){
     var last = count-1
-    var row = '<tr id="items['+count+']"><td><input class="form-control" id="items['+count+'][product]" name="items['+count+'][product]" type="text" required></td><td><input class="form-control" id="items['+count+'][price]" name="items['+count+'][price]" type="number" style="width: 100px;" min="1" required></td><td><input class="form-control" id="items['+count+'][quantity]" name="items['+count+'][quantity]" type="number" min="1" style="width: 100px;" required></td><td><div id="items['+count+'][subtotal]" class="d-inline">$ 0 </div><i class="fas fa-trash d-inline float-right text-danger" id="delete['+count+']" role="button"></td></tr>'
+    var row = '<tr id="items['+count+']"><td><input class="form-control" id="items['+count+'][product]" name="items['+count+'][product]" type="text" required onfocus="focusItem(this)" onblur="hideItem(this)"><div class="card mt-1 float-left shadow-sm" style="position:absolute;z-index:9999; -webkit-transform: translate3d(0,0,10px); max-width:90%; overflow:visible;"><ul class="list-group list-group-flush" id="items['+count+'][autocompleteList]"></ul></div></td><td><input class="form-control" id="items['+count+'][price]" name="items['+count+'][price]" type="number" style="width: 100px;" min="1" required></td><td><input class="form-control" id="items['+count+'][quantity]" name="items['+count+'][quantity]" type="number" min="1" style="width: 100px;" required></td><td><div id="items['+count+'][subtotal]" class="d-inline">$ 0 </div><i class="fas fa-trash d-inline float-right text-danger" id="delete['+count+']" role="button"></td></tr>'
     $('#items\\['+last+'\\]').after(row)
     count++;
     e.preventDefault();
@@ -121,16 +121,46 @@ today = yyyy+'-'+mm+'-'+dd;
       });
     }
   })
+
+  //Define the autocomplete timeout timer
   var autocompleteTimer;
-  $('#items\\[0\\]\\[product\\]').keyup(async function(){
+
+  //On Key Up of inputs, start search timeout
+  $(document).on('keyup', "[id$=\\[product\\]]", async function(){
+    //Reset the timer
     clearTimeout(autocompleteTimer);
+    //Get the input that called the function
     var caller = this
+    //Set the timer again
     autocompleteTimer = setTimeout(async function(){
-      console.log("Firing up search!");
+      //When the timer ends, send the search request
       await getProducts($(caller).val(), caller)
     }, 500)
-  });
+  })
 });
+
+async function focusItem(e){
+  $(e).next().children().show()
+}
+
+async function hideItem(e){
+  /*
+  setTimeout(function(){
+    $(e).next().children().hide()
+  }, 100)
+  */
+}
+
+async function setProduct(e, name, price){
+  console.log("SET PRODUCT");
+  //Set the input to the correct name
+  console.log($(e).parent().parent().prev().val(name));
+  //Set the price to the correct one
+  console.log($(e).parent().parent().parent().next().children().val(price))
+  //Append the associated ID as a hidden input
+
+
+}
 
 async function getProducts(name, location){
   // Get the autocomplete list Div
@@ -167,12 +197,14 @@ async function getProducts(name, location){
         else if (item._source.stock == 0){
           stockColor = "badge-danger"
         }
+        //Append the list
         listDiv.append(`
-          <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            ${item._source.name}
+          <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="setProduct(this, '${item._source.name}', ${item._source.price})">
+            ${item._source.name}</br>
+            <small>$${item._source.price}</small>
             <span class="badge ml-2 ${stockColor}">${item._source.stock}</span>
           </button>
-          `)
+        `)
         console.log(item);
       });
     }
