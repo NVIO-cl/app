@@ -91,6 +91,10 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       res.redirect('/create');
     }
     cost = parseInt(cost + item.price * item.quantity);
+
+    if (item.regProduct) {
+      itemList[i].inventoryId = item.regProduct;
+    }
   });
 
   colcheck();
