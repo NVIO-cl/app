@@ -193,9 +193,10 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
   res.json(masterProduct);
 });
 
-router.get('/searchProduct/'/*,passport.authenticate('jwt', {session: false, failureRedirect: '/login'})*/,  async(req, res) => {
+router.post('/searchProduct',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const result = await client.search({
     index: '*products',
+    size: 5,
     body: {
       "query": {
         "bool": {
@@ -210,7 +211,7 @@ router.get('/searchProduct/'/*,passport.authenticate('jwt', {session: false, fai
             },
             {
               "match": {
-                "owner":"z1Tux_"
+                "owner":req.user.user.replace("COMPANY#", "")
               }
             },
             {
@@ -223,8 +224,9 @@ router.get('/searchProduct/'/*,passport.authenticate('jwt', {session: false, fai
       }
     }
   })
-  console.log(result.body.hits.hits);
-
+  console.log(result.body);
+  //Get only those with score >= 1
+  result.body.hits.hits = result.body.hits.hits.filter(item=>(item._score>=1))
   res.status(200).json(result.body.hits.hits)
 });
 
