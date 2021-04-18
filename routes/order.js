@@ -233,6 +233,9 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
       res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
     }
     cost = parseInt(cost + item.price * item.quantity);
+    if (item.regProduct) {
+      itemList[i].inventoryId = item.regProduct;
+    }
   });
 
 
