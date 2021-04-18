@@ -215,11 +215,11 @@ head
                           tr(id='items[0]')
                             td
                               input.form-control(type='text' id='items[0][product]' name='items[0][product]' required onfocus='focusItem(this)' onblur="hideItem(this)")
+                              .invalid-feedback 
+                                | Este producto se encuentra sin stock. 
+                                a(href="/inventory") Ir al inventario
                               .card.mt-1.float-left.shadow-sm(style='position:absolute;z-index:9999; -webkit-transform: translate3d(0,0,10px); max-width:90%; overflow:visible;' )
                                 ul.list-group.list-group-flush(id='items[0][autocompleteList]')
-                                  li.list-group-item Awesome Product 1
-                                  li.list-group-item Awesome Product 2
-                                  li.list-group-item Awesome Product 3
                             td
                               input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
                             td
