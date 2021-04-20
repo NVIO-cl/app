@@ -82,11 +82,11 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     }
     itemList[i] = {}
     itemList[i].product = item.product;
-    itemList[i].quantity = parseInt(item.quantity);
+    itemList[i].quantity = parseInt(item.quantity.replace('.',""));
     if (itemList[i].quantity <=0) {
       res.redirect('/create');
     }
-    itemList[i].price = parseInt(item.price);
+    itemList[i].price = parseInt(item.price.replace('.',""));
     if (itemList[i].price <=0) {
       res.redirect('/create');
     }
@@ -122,7 +122,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           },
           "cost": {
             "order": cost,
-            "shipping": parseInt(req.body.shippingCost)
+            "shipping": parseInt(req.body.shippingCost.replace('.',""))
           },
           "items": itemList,
           "status": {

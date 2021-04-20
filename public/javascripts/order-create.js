@@ -83,15 +83,16 @@ today = yyyy+'-'+mm+'-'+dd;
         $('#delete\\['+item+'\\]').attr('id', 'delete['+index+']')
 
       }
-      var price = $(this).val()
-      var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val()
+      var price = $(this).val().replace('.',"")
+      console.log(price);
+      var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val().replace('.',"")
       var subtotal = price * quantity;
       $('#items\\['+index+'\\]\\[subtotal\\]').html("$ " + subtotal)
       total = total + subtotal
     })
     var shippingCost = 0
     if ($('#shippingCost').val() != ""){
-      shippingCost = $('#shippingCost').val();
+      shippingCost = $('#shippingCost').val().replace('.',"");
     }
 
     $("#totalProd").html("$ " + total);
@@ -104,7 +105,7 @@ today = yyyy+'-'+mm+'-'+dd;
       $('#shippingCost').val(0);
     }
 
-    $('#totalShip').html('$ ' + $('#shippingCost').val())
+    $('#totalShip').html('$ ' + $('#shippingCost').val().replace('.',""))
     recalc();
   })
 
