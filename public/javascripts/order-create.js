@@ -226,7 +226,7 @@ function recalc(){
       $('#delete\\['+item+'\\]').attr('id', 'delete['+index+']')
 
     }
-    var price = $(this).val().replace('.',"")
+    var price = $(this).val().replace(/\./g,"")
     var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val().replace('.',"")
     var subtotal = price * quantity;
     $('#items\\['+index+'\\]\\[subtotal\\]').html("$ " + subtotal)

@@ -41,6 +41,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Parse and validate the data
+  var valid = true;
   var payment = 0;
 
   if (req.body.payment == 'efectivo') {
@@ -60,10 +61,11 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var orderID;
   if(req.body.shipping != 'local'){
     if (!validator.isInt(req.body.shippingCost)) {
-      res.redirect('/create');
+      req.body.shippingCost = req.body.shippingCost.replace('.',"");
     }
     if (req.body.shippingCost < 0) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
   }
   else {
@@ -75,20 +77,24 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var cost = 0;
   req.body.items.forEach((item, i) => {
     if (!validator.isInt(item.quantity)) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     if (!validator.isInt(item.price)) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     itemList[i] = {}
     itemList[i].product = item.product;
     itemList[i].quantity = parseInt(item.quantity.replace('.',""));
     if (itemList[i].quantity <=0) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     itemList[i].price = parseInt(item.price.replace('.',""));
     if (itemList[i].price <=0) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     cost = parseInt(cost + item.price * item.quantity);
 
@@ -96,8 +102,10 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       itemList[i].inventoryId = item.regProduct;
     }
   });
+  if (valid) {
+    colcheck();
+  }
 
-  colcheck();
 
   async function colcheck(){
 
@@ -126,7 +134,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           },
           "cost": {
             "order": cost,
-            "shipping": parseInt(req.body.shippingCost.replace('.',""))
+            "shipping": parseInt(req.body.shippingCost)
           },
           "items": itemList,
           "status": {
