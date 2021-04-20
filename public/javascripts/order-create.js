@@ -83,7 +83,7 @@ today = yyyy+'-'+mm+'-'+dd;
         $('#delete\\['+item+'\\]').attr('id', 'delete['+index+']')
 
       }
-      var price = $(this).val().replace('.',"")
+      var price = $(this).val().replace(/\./g,"")
       console.log(price);
       var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val().replace('.',"")
       var subtotal = price * quantity;

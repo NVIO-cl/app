@@ -97,8 +97,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       res.redirect('/order/create');
     }
     cost = parseInt(cost + item.price * item.quantity);
-    console.log(req.body.shippingCost);
-    req.body.shippingCost = req.body.shippingCost.replace('.',"")
   });
   if (valid) {
     colcheck();
