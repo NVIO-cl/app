@@ -226,15 +226,15 @@ function recalc(){
       $('#delete\\['+item+'\\]').attr('id', 'delete['+index+']')
 
     }
-    var price = $(this).val()
-    var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val()
+    var price = $(this).val().replace('.',"")
+    var quantity = $('#items\\['+index+'\\]\\[quantity\\]').val().replace('.',"")
     var subtotal = price * quantity;
     $('#items\\['+index+'\\]\\[subtotal\\]').html("$ " + subtotal)
     total = total + subtotal
   })
   var shippingCost = 0
   if ($('#shippingCost').val() != ""){
-    shippingCost = $('#shippingCost').val();
+    shippingCost = $('#shippingCost').val().replace('.',"");
   }
 
   $("#totalProd").html("$ " + total);
@@ -247,6 +247,6 @@ $('#shippingCost').change(function(){
     $('#shippingCost').val(0);
   }
 
-  $('#totalShip').html('$ ' + $('#shippingCost').val())
+  $('#totalShip').html('$ ' + $('#shippingCost').val().replace('.',""))
   recalc();
 })
