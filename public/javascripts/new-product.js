@@ -1,6 +1,7 @@
 $(document).ready(function(){
   var attributeCount = 1;
   var subproducts = false;
+  var regenExists = false;
   $('#createAttribute').click(function(e){
 
     var last = attributeCount-1
@@ -29,7 +30,7 @@ $(document).ready(function(){
     $('#attributes\\['+last+'\\]').after(row)
     attributeCount++;
     e.preventDefault();
-  })
+  });
 
   $('#checkStock').click(function(e) {
     if (!$('#checkAttributes').is(":checked")) {
@@ -53,26 +54,26 @@ $(document).ready(function(){
       }
     }
 
-  })
+  });
 
   $('#checkAttributes').click(function(e) {
-    $('#attributes').toggleClass("d-none")
+    $('#attributes').toggleClass("d-none");
     if ($('#checkAttributes').is(":checked")) {
-      $("#priceLabel").html("<b>Precio base</b>")
-      $('#createProductButton').html('Generar subproductos')
+      $("#priceLabel").html("<b>Precio base</b>");
+      $('#createProductButton').html('Generar subproductos');
       if($('#checkStock').is(":checked")){
-        $('#stock').addClass("d-none")
+        $('#stock').addClass("d-none");
       }
       subproducts = true;
     }
     else {
       $("#priceLabel").html("<b>Precio</b>")
-      $('#createProductButton').html('Crear producto')
+      $('#createProductButton').html('Crear producto');
       if ($('#checkStock').is(":checked")) {
-        $('#stock').removeClass("d-none")
+        $('#stock').removeClass("d-none");
       }
       else {
-        $('#stock').addClass("d-none")
+        $('#stock').addClass("d-none");
       }
       subproducts = false;
 
@@ -155,14 +156,14 @@ $(document).ready(function(){
       if (subproducts) {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
         generateSubproducts();
-        $('#prodContainer').after(`
-          <div class="container-fluid">
-            <div class="col-lg-12" style="padding-left: 0px; padding-right: 0px;">
-              <div class="row" id="subproductForms">
-              </div>
-            </div>
-          </div>
-        `)
+        // $('#prodContainer').after(` // Conflicts with #subproductForms def in pug
+        //   <div class="container-fluid">
+        //     <div class="col-lg-12" style="padding-left: 0px; padding-right: 0px;">
+        //       <div class="row" id="subproductForms">
+        //       </div>
+        //     </div>
+        //   </div>
+        // `)
       }
       else {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
@@ -176,15 +177,39 @@ $(document).ready(function(){
 
   })
 
+  // Show the "update attributes" button if there are changes in the attributes
+  $('#attributes').on('change', function(){
+    if($('#createProductButton').hasClass("d-none")){ // this means createProductButton is disabled
+      if(!regenExists){ // Check to see if the regenerate button exists
+        $("<br><button id='regenerateAttributes' class='btn btn-primary btn-sm' style='background: #12c4f2; border: #12c4f2; margin-top: 10px;'>Actualizar Atributos</button>").appendTo($('#createAttribute').parent());
+        regenExists = !regenExists;
+      }
+    }
+  });
+
+  // Generate new attributes
+  $(document).on('click', '#regenerateAttributes', function(e){
+    // Brutish solution: Once the button is clicked, clear subproducts, then generate, then hide the button
+    // The cleaner way to do this is to check for differences, keep a list of the IDs that exist, then compare it to the list that would be generated and remove/add cards accordingly
+    e.preventDefault();
+    $('#subproductForms').empty();
+    generateSubproducts();
+    $('#regenerateAttributes').remove();
+    $('#createSubproducts').remove();
+    $('br').remove();
+    regenExists = !regenExists;
+    // TODO: Implement a cleaner way to do this, as described at the beginning of this function
+  });
+
   function generateSubproducts(){
-    var productPrice = $('#productPrice').val()
+    var productPrice = $('#productPrice').val();
     var subproducts = [];
     var attributeNames = [];
     $("[id$=\\[name\\]]").each(function(index){
       attributeNames.push($('#attributes\\['+index+'\\]\\[name\\]').val())
       var values = $('#attributes\\['+index+'\\]\\[values\\]').val().split(",");
       values.forEach((item, i) => {
-        values[i] = item.trim()
+        values[i] = item.trim();
       });
 
       subproducts.push(values);
@@ -250,6 +275,6 @@ $(document).ready(function(){
       <div class="form-group text-center">
         <button class="btn btn-primary btn-sm" id="createSubproducts" style="background: #12c4f2; border: #12c4f2; margin-top: 10px;" onclick="$('#createProduct').submit()">Guardar Subproductos</button>
       </div>
-    `)
+    `);
   }
-})
+});
