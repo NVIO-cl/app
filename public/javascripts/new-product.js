@@ -184,6 +184,7 @@ $(document).ready(function(){
         $("<br><button id='regenerateAttributes' class='btn btn-primary btn-sm' style='background: #12c4f2; border: #12c4f2; margin-top: 10px;'>Actualizar Atributos</button>").appendTo($('#createAttribute').parent());
         regenExists = !regenExists;
       }
+      // TODO: Notify the user that they have changes pending update if they click "submit" while the "regenerateAttributes" button still exists
     }
   });
 
