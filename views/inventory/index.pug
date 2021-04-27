@@ -110,7 +110,7 @@ head
                                         table.table.table-striped
                                             thead
                                                 tr
-                                                    th(scope='col') #
+                                                    th(scope='col') ID
                                                     th(scope='col') Nombre
                                                     th(scope='col') Subproductos?
                                                     th(scope='col') Stock
@@ -119,13 +119,13 @@ head
                                             tbody
                                               each product, index in results
                                                 tr
-                                                    th(scope='row') #{index}
+                                                    th(scope='row') #{product._id}
                                                     td(scope='row') #{product._source.productName}
-                                                    td(scope='row') #{product._source.checkAttributes ? 'Sí' : 'No'}
-                                                    td(scope='row') #{product._source.checkStock ? product._source.productStock : 'N/A'}
-                                                    td(scope='row') #{parseInt(product._source.productPrice).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+                                                    td(scope='row') #{product._source.attributesList ? 'Sí' : 'No'}
+                                                    td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
+                                                    td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
                                                     td(scope='row') 
-                                                      button Editar
+                                                      a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
                                         .form-group
                                             button.btn.btn-primary.btn-sm#editProductsButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Editar productos
 
