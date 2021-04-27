@@ -119,10 +119,10 @@ head
                                             tbody
                                               each product, index in results
                                                 tr
-                                                    th(scope='row') #{product._id.substring(6)}
-                                                    td(scope='row') #{product._source.name}
-                                                    td(scope='row') #{product._source.checkAttributes ? 'Sí' : 'No'}
-                                                    td(scope='row') #{product._source.checkStock ? product._source.stock : 'N/A'}
+                                                    th(scope='row') #{product._id}
+                                                    td(scope='row') #{product._source.productName}
+                                                    td(scope='row') #{product._source.attributesList ? 'Sí' : 'No'}
+                                                    td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
                                                     td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
                                                     td(scope='row') 
                                                       a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
