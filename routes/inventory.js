@@ -19,7 +19,16 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     index: 'products',
     body: {
       query: {
-        match: { owner: req.body.owner = req.user.user.replace("COMPANY#", "") }
+        bool: {
+          must: [
+            {
+              terms: {"productType": ["main","single"]}
+            },
+            {
+              match: {"owner": req.user.user.replace("COMPANY#","")}
+            }
+          ]
+        }
       }
     }
   })
@@ -194,40 +203,42 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
 });
 
 router.post('/searchProduct',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.body.name);
+  console.log(req.user.user.replace("COMPANY#",""));
   const result = await client.search({
-    index: '*products',
+    index: 'products',
     size: 5,
     body: {
-      "query": {
-        "bool": {
-          "must": [
+      query: {
+        bool: {
+          must: [
             {
-              "match": {
-                "name": {
-                  "query": req.body.name,
-                  "operator": "and"
-                }
+              multi_match: {
+                query: req.body.name,
+                type: "bool_prefix",
+                fields: [
+                  "productName",
+                  "productName._2gram",
+                  "productName._3gram"
+                ]
               }
             },
             {
-              "match": {
-                "owner":req.user.user.replace("COMPANY#", "")
-              }
+              terms: {"productType": ["sub","single"]}
             },
             {
-              "match": {
-                "checkAttributes":false
-              }
+              match: {"owner": req.user.user.replace("COMPANY#","")}
             }
           ]
         }
       }
     }
   })
-  console.log(result.body);
+  console.log(result.body.hits.hits);
   //Get only those with score >= 1
   result.body.hits.hits = result.body.hits.hits.filter(item=>(item._score>=1))
   res.status(200).json(result.body.hits.hits)
+
 });
 
 module.exports = router;

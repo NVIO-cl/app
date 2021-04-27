@@ -163,7 +163,7 @@ async function getProducts(name, location){
   //Set a "Searching"
   $(listDiv).html('<li class="list-group-item"><div class="spinner-border spinner-border-sm" role="status"></div></li>')
   // Get the products that match the query
-  var arr = { name:name};
+  var arr = {name:name};
   $.ajax({
     url: '/inventory/searchProduct',
     type: 'POST',
@@ -192,9 +192,9 @@ async function getProducts(name, location){
         }
         //Append the list
         listDiv.append(`
-          <button type="button" class="list-group-item list-group-item-action" onclick="setProduct(this, '${item._source.name}', ${item._source.price}, '${item._id}', '${item._source.stock}')">
+          <button type="button" class="list-group-item list-group-item-action" onclick="setProduct(this, '${item._source.productName}', ${item._source.price}, '${item._id}', '${item._source.stock}')">
             <div class="d-flex w-100 justify-content-between align-items-center">
-              <div>${item._source.name}</div>
+              <div>${item._source.productName}</div>
 
             </div>
             <p class="mb-1"><small>Precio: $${item._source.price} | Stock: <span class="badge ${stockColor}">${item._source.stock}</span></small></p>
