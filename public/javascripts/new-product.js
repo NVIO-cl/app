@@ -203,11 +203,17 @@ $(document).ready(function(){
     var subproductsCount = 0;
     var subproductList = cartesianProduct(subproducts);
     subproductList.forEach((subproduct, i) => {
+      var attributes = []
       var name = $('#productName').val()
       subproductsCount++
       subproduct.forEach((item, i) => {
         name = name.concat(" ", attributeNames[i], " ", item);
+        attributes.push({
+          name:attributeNames[i],
+          value: item
+        })
       });
+      console.log(attributes);
       var card = `
       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" id="subproductCard[${i}]">
         <div class="card shadow mb-3">
@@ -233,13 +239,18 @@ $(document).ready(function(){
       </div>
       `
       $('#subproductForms').append(card)
+      attributes.forEach((attribute, n) => {
+        var attributesHtml = `
+        <input type="hidden" id="subproduct[${i}][attributes][${n}][name]" name="subproduct[${i}][attributes][${n}][name]" value="${attribute.name}">
+        <input type="hidden" id="subproduct[${i}][attributes][${n}][value]" name="subproduct[${i}][attributes][${n}][value]" value="${attribute.value}">
+        `
+        $('[id^=subproduct\\['+i+'\\]\\[name\\]').append(attributesHtml)
+      });
+
     });
     $('#createProductButton').addClass("d-none").attr("disabled", false);
-
     if ($('#checkStock').is(":checked")) {
-
     }
-
     else {
       for (var i = 0; i < subproductsCount; i++) {
         $('#subproduct\\['+i+'\\]\\[stockGroup\\]').addClass('d-none')

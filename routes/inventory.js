@@ -42,16 +42,169 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 });
 
 router.post('/create', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
-  // TODO: PARSE EVERYTHING
+  //Data Parsing
+  //Parse stock checking bool
+  if (req.body.checkStock === undefined) {
+    req.body.checkStock = false
+  }
+  else {
+    req.body.checkStock = true
+  }
+  //Parse attribute checking bool
+  if (req.body.checkAttributes === undefined) {
+    req.body.checkAttributes = false
+    delete req.body.attributes
+  }
+  else {
+    req.body.checkAttributes = true
+  }
 
-  //Add owner data
-  req.body.owner = req.user.user.replace("COMPANY#", "")
-
-  //Trim the data
+  //Trim the name
   req.body.productName = req.body.productName.trim();
 
   //Convert main price string to int
   req.body.productPrice = parseInt(req.body.productPrice);
+
+  // If main stock is NaN, set it to null. If not, parse the stock.
+  if (isNaN(parseInt(req.body.productStock))) {
+    req.body.productStock = null
+  }
+  else {
+    req.body.productStock = parseInt(req.body.productStock);
+  }
+
+  if (req.body.checkAttributes) {
+    //Convert attribute list into an array if it exists
+    for (var attribute of req.body.attributes) {
+      attribute.values = attribute.values.split(",")
+      for (var index in attribute.values) {
+        attribute.values[index] = attribute.values[index].trim()
+      }
+    }
+    // Parse the subproducts stock and price
+    req.body.subproduct.forEach((item, i) => {
+      item.price = parseInt(item.price)
+      if (req.body.checkStock) {
+        item.stock = parseInt(item.stock)
+      }
+      else {
+        item.stock = null;
+      }
+    });
+  }
+
+  // TODO: Parse numbers (negatives and decimals) and possible empty names and values
+
+  // DynamoDB Section
+
+  // Define the product to be saved to DynamoDB
+  var dynamoProduct = {}
+  //If there are attributes, add them to the product.
+  if (req.body.checkAttributes) {
+    dynamoProduct.attributesList = []
+    //Iterate for each attribute.
+    req.body.attributes.forEach((item, i) => {
+      dynamoProduct.attributesList[i] = {
+        name: item.name,
+        values: item.values
+      }
+    });
+  }
+  // A new product is available by default, always.
+  dynamoProduct.available = true;
+
+  // If there are attributes, the main product price must be null. If not, set it.
+  if(req.body.checkAttributes){
+    dynamoProduct.price = null;
+  }
+  else {
+    dynamoProduct.price = req.body.productPrice;
+  }
+
+  // Set the product name
+  dynamoProduct.productName = req.body.productName;
+
+  // Set the product type
+  if (req.body.checkAttributes) {
+    dynamoProduct.productType = "main"
+  }
+  else {
+    dynamoProduct.productType = "single"
+  }
+
+  // If the product has subproducts, the stock is the sum of the subproducts stock. Only if stock is checked.
+  if (req.body.checkStock) {
+    if (req.body.checkAttributes) {
+      var totalStock = 0;
+      req.body.subproduct.forEach((item, i) => {
+        totalStock += item.stock
+      });
+      dynamoProduct.stock = totalStock
+    }
+    else {
+      dynamoProduct.stock = req.body.productStock
+    }
+  }
+  else {
+    dynamoProduct.stock = null
+  }
+  // If there are attributes, add the subproducts to the main product in DynamoDB
+  if (req.body.checkAttributes) {
+    dynamoProduct.subproduct = []
+    req.body.subproduct.forEach((item, i) => {
+      dynamoProduct.subproduct[i] = item
+    });
+  }
+
+  //Create Product ID variable
+  var productID;
+  //Save the product in DynamoDB (checking for ID colission, of course)
+  //We need to use await becuase we need the product ID :(
+  await colcheck();
+  async function colcheck(){
+    //Generate ID
+    productID = nanoid(6);
+    var dynamoIDs = {
+      "PK": req.user.user,
+      "SK": "PRODUCT#"+productID,
+    }
+    //Join the DynamoDB Keys and the dynamo product
+    var Item = Object.assign({},dynamoIDs,dynamoProduct)
+    var paramsProduct = {
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
+      "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+      "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+      "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+productID}
+    }
+    productQuery = await db.queryv2(paramsProduct);
+    //Check for colission
+    if (productQuery.Count == 0) {
+      //If no colission, create the product!
+      params = {
+        TableName:process.env.AWS_DYNAMODB_TABLE,
+        Item: Item,
+      };
+      putProduct = await db.put(params);
+    }
+    else {
+      //If colission, repeat process
+      colcheck();
+    }
+  }
+  console.log(productID);
+  //DynamoDB insertion finished
+
+  console.log(dynamoProduct);
+  res.json(dynamoProduct);
+
+  /*
+
+  //Add owner data
+  req.body.owner = req.user.user.replace("COMPANY#", "")
+
+
+
+
 
   //Check if stock control is activated
   if (req.body.checkStock == "on") {
@@ -199,7 +352,9 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     console.log(bulkResponse);
   }
 
+
   res.json(masterProduct);
+  */
 });
 
 router.post('/searchProduct',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
