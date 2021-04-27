@@ -3,7 +3,8 @@ const router = express.Router();
 const passport = require('passport');
 const { nanoid } = require("nanoid");
 const validator = require('validator');
-const {Client, Status} = require("@googlemaps/google-maps-services-js");
+//const {Client, Status} = require("@googlemaps/google-maps-services-js");
+const { Client } = require('@elastic/elasticsearch')
 var multer  = require('multer');
 var upload = multer();
 var Jimp = require('jimp');
@@ -19,6 +20,15 @@ aws.config.update({
   accessKeyId: process.env.AKID,
   secretAccessKey: process.env.SECRET
 });
+
+//Elasticsearch Settings
+const client = new Client({
+  node: process.env.ELASTIC_ENDPOINT,
+  auth: {
+    username: process.env.ELASTIC_USERNAME,
+    password: process.env.ELASTIC_PASSWORD
+  }
+})
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Get user data
@@ -41,6 +51,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Parse and validate the data
+  var valid = true;
   var payment = 0;
 
   if (req.body.payment == 'efectivo') {
@@ -60,10 +71,11 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var orderID;
   if(req.body.shipping != 'local'){
     if (!validator.isInt(req.body.shippingCost)) {
-      res.redirect('/create');
+      req.body.shippingCost = req.body.shippingCost.replace('.',"");
     }
     if (req.body.shippingCost < 0) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
   }
   else {
@@ -75,25 +87,35 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var cost = 0;
   req.body.items.forEach((item, i) => {
     if (!validator.isInt(item.quantity)) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     if (!validator.isInt(item.price)) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     itemList[i] = {}
     itemList[i].product = item.product;
-    itemList[i].quantity = parseInt(item.quantity);
+    itemList[i].quantity = parseInt(item.quantity.replace('.',""));
     if (itemList[i].quantity <=0) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
-    itemList[i].price = parseInt(item.price);
+    itemList[i].price = parseInt(item.price.replace('.',""));
     if (itemList[i].price <=0) {
-      res.redirect('/create');
+      valid = false;
+      res.redirect('/order/create');
     }
     cost = parseInt(cost + item.price * item.quantity);
-  });
 
-  colcheck();
+    if (item.regProduct) {
+      itemList[i].inventoryId = item.regProduct;
+    }
+  });
+  if (valid) {
+    colcheck();
+  }
+
 
   async function colcheck(){
 
@@ -229,6 +251,9 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
       res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
     }
     cost = parseInt(cost + item.price * item.quantity);
+    if (item.regProduct) {
+      itemList[i].inventoryId = item.regProduct;
+    }
   });
 
 
@@ -447,7 +472,42 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       req.body.apart = "";
       req.body.direccion= "";
     }
+
+    // Check each item for stock reduction
+    for (var item of getOrder.Items[0].items) {
+      var result = await client.search({
+        index: '*products',
+        body: {
+          query: {
+            ids: {
+              values: [item.inventoryId]
+            }
+          }
+        }
+      })
+
+      //If the item has stock control, reduce stock of each product
+      if (result.body.hits.hits[0]._source.stock) {
+        var newStock = result.body.hits.hits[0]._source.stock - item.quantity;
+        //If the quantity exceeds stock, just set it at 0 for now. (it should alert when creating it!)
+        if (newStock < 0) {
+          newStock = 0;
+        }
+        updateResult = await client.update({
+          index: result.body.hits.hits[0]._index,
+          id: result.body.hits.hits[0]._id,
+          body: {
+            doc: {
+              stock: newStock
+            }
+          }
+        })
+        
+        // TODO: IF IT IS A SUBPRODUCT, REDUCE GENERAL STOCK TOO
+      }
+    }
     //Save the order data
+
     var params = {
       "TableName": process.env.AWS_DYNAMODB_TABLE,
       "Key": {
@@ -507,6 +567,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
     }
     commentResult = await db.update(params);
     res.redirect('/order/finished')
+
   }
 });
 

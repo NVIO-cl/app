@@ -19,7 +19,16 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     index: 'products',
     body: {
       query: {
-        match: { owner: req.body.owner = req.user.user.replace("COMPANY#", "") }
+        bool: {
+          must: [
+            {
+              terms: {"productType": ["main","single"]}
+            },
+            {
+              match: {"owner": req.user.user.replace("COMPANY#","")}
+            }
+          ]
+        }
       }
     }
   })
@@ -171,6 +180,8 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     var subID = 0
     for (var subproduct of subproducts) {
       subproduct.owner = req.body.owner;
+      //Add a checkAttributes=false to make searching easier
+      subproduct.checkAttributes = false;
     }
 
   }
@@ -181,79 +192,53 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     body: masterProduct
   })
 
-  //if there are subproducts, save them as separate documents (toe make them searchable)
+  //if there are subproducts, save them as separate documents (to make them searchable)
   if (masterProduct.checkAttributes) {
     var body = subproducts.flatMap((doc,i) => [{ index: { _index: 'subproducts', _id: req.body.owner+productID+"-"+i  } }, doc])
     const { body: bulkResponse } = await client.bulk({ refresh: true, body })
     console.log(bulkResponse);
   }
 
-
-
-  /*
-
-    result = await client.index({
-      index: 'products',
-      body: masterProduct
-    })
-    var masterID = result.body._id;
-    console.log("SAVED IN ELASTICSEARCH WITH ID " + result.body._id);
-    //Then save each subproduct with the master ID as reference
-    var dataset = []
-    for (item of req.body.subproduct){
-      var subprod = {
-        name: item.fullName,
-        price: item.price,
-        masterID: masterID,
-        owner: req.body.owner
-      }
-      if (req.body.checkStock) {
-        subprod.stock = item.stock;
-      }
-      dataset.push(subprod)
-    };
-
-    console.log(dataset);
-    var body = dataset.flatMap(doc => [{ index: { _index: 'subproducts' } }, doc])
-    const { body: bulkResponse } = await client.bulk({ refresh: true, body })
-    console.log(bulkResponse);
-
-
-  }
-  else {
-    console.log("SUBPRODUCTS NOT PRESENT");
-    //Delete unused attribute section
-    delete req.body.attributes
-    req.body.checkAttributes = false
-    console.log(req.body);
-
-    //Save the product as a main product
-    result = await client.index({
-      index: 'products',
-      body: req.body
-    })
-    console.log(result);
-    console.log("SAVED IN ELASTICSEARCH");
-  }
-  */
-
-
-
   res.json(masterProduct);
 });
 
-router.get('/searchProduct/:productName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+router.post('/searchProduct',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req.body.name);
+  console.log(req.user.user.replace("COMPANY#",""));
   const result = await client.search({
     index: 'products',
+    size: 5,
     body: {
       query: {
-        match: { owner: req.body.owner = req.user.user.replace("COMPANY#", "") }
+        bool: {
+          must: [
+            {
+              multi_match: {
+                query: req.body.name,
+                type: "bool_prefix",
+                fields: [
+                  "productName",
+                  "productName._2gram",
+                  "productName._3gram"
+                ]
+              }
+            },
+            {
+              terms: {"productType": ["sub","single"]}
+            },
+            {
+              match: {"owner": req.user.user.replace("COMPANY#","")}
+            }
+          ]
+        }
       }
     }
   })
   console.log(result.body.hits.hits);
-
+  //Get only those with score >= 1
+  result.body.hits.hits = result.body.hits.hits.filter(item=>(item._score>=1))
   res.status(200).json(result.body.hits.hits)
+
 });
 
 module.exports = router;
