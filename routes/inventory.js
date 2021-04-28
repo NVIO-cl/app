@@ -90,6 +90,15 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
       else {
         item.stock = null;
       }
+
+      // Add an ID to each one.
+      var usedIDs = []
+      var subID = nanoid(6);
+      while (usedIDs.includes(subID)) {
+        subID = nanoid(6);
+      }
+      usedIDs.push(subID);
+      item.id = subID
     });
   }
 
@@ -234,6 +243,7 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     elasticProduct.productType = "single"
   }
 
+  var elasticID = req.user.user.replace("COMPANY#", "") + productID
   // If the product has subproducts, the stock is the sum of the subproducts stock. Only if stock is checked.
   if (req.body.checkStock) {
     if (req.body.checkAttributes) {
@@ -250,17 +260,14 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
   else {
     elasticProduct.stock = null
   }
-
   // Save the main product to get the ID.
   result = await client.index({
     index: 'products',
+    id: elasticID,
     body: elasticProduct
   })
   console.log("=====MAIN RESULT====");
   console.log(result);
-
-
-
 
   // If there are attributes, create the subproducts independently
   if (req.body.checkAttributes) {
@@ -276,7 +283,7 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
       elasticSubproducts[i].productType = "sub";
       elasticSubproducts[i].stock = item.stock;
     });
-    var body = elasticSubproducts.flatMap((doc,i) => [{ index: { _index: 'products'} }, doc])
+    var body = elasticSubproducts.flatMap((doc,i) => [{ index: { _index: 'products', _id: elasticSubproducts[i].parent+req.body.subproduct[i].id } }, doc])
     const { body: bulkResponse } = await client.bulk({ refresh: true, body })
     console.log("====BULK RESULT====");
     console.log(bulkResponse);
