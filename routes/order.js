@@ -164,9 +164,34 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           "pickupDate": req.body.pickupDate
         }
       };
-      putItem = await db.put(params);
+      //Save the order in DynamoDB
+      //putItem = await db.put(params);
+
+      // TODO: Save the order in Elasticsearch
+
+      //Check if items are in the inventory and substract the quantity
+      console.log(itemList);
+      for (var item of itemList) {
+        if (item.inventoryId) {
+          //Substract the quantity in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+          updateResult = await client.update({
+            index:'products',
+            id: item.inventoryId,
+            body: {
+              script: {
+                lang: "painless",
+                source: "if(ctx._source.stock - params.count < 0){ctx._source.stock = 0}else{ctx._source.stock -= params.count}",
+                params: {
+                  count: item.quantity
+                }
+              }
+            }
+          })
+
+        }
+      }
       //Redirect back to order detail
-      res.redirect('/detail/' + orderID);
+      //res.redirect('/detail/' + orderID);
     }
     else {
       //If colission, repeat process
@@ -502,7 +527,7 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
             }
           }
         })
-        
+
         // TODO: IF IT IS A SUBPRODUCT, REDUCE GENERAL STOCK TOO
       }
     }
