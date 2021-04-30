@@ -165,22 +165,22 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
         }
       };
       //Save the order in DynamoDB
-      //putItem = await db.put(params);
+      putItem = await db.put(params);
 
       // TODO: Save the order in Elasticsearch
 
-      //Check if items are in the inventory and substract the quantity
+      // Check if items are in the inventory and substract the quantity
       console.log(itemList);
       for (var item of itemList) {
         if (item.inventoryId) {
-          //Substract the quantity in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+          //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
           updateResult = await client.update({
             index:'products',
             id: item.inventoryId,
             body: {
               script: {
                 lang: "painless",
-                source: "if(ctx._source.stock - params.count < 0){ctx._source.stock = 0}else{ctx._source.stock -= params.count}",
+                source: "if(ctx._source.stock != null){if(ctx._source.stock - params.count < 0){ctx._source.stock = 0}else{ctx._source.stock -= params.count}}",
                 params: {
                   count: item.quantity
                 }
@@ -188,10 +188,55 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
             }
           })
 
+          // If it's a subproduct, we have to substract to the master product too
+          if (item.inventoryId.length == 18) {
+            //Substract the quantity to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+            updateResult = await client.update({
+              index:'products',
+              id: item.inventoryId.substring(0,12),
+              body: {
+                script: {
+                  lang: "painless",
+                  source: "if(ctx._source.stock != null){if(ctx._source.stock - params.count < 0){ctx._source.stock = 0}else{ctx._source.stock -= params.count}}",
+                  params: {
+                    count: item.quantity
+                  }
+                }
+              }
+            })
+            // Substract the quantity on the main and subproduct in DynamoDB
+            // Get the product data in DynamoDB
+            var paramsProduct = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+              "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+              "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
+            }
+            // Do the query
+            productQuery = await db.queryv2(paramsProduct);
+            // If main product stock is not null, then it uses stock control
+            if (productQuery.Items[0].stock != null) {
+              // Get the subproduct index
+              subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18))
+              // Set the parameters for updating the product
+              var params = {
+                "TableName": process.env.AWS_DYNAMODB_TABLE,
+                "Key": {
+                  "PK":req.user.user,
+                  "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+                },
+                "UpdateExpression": "set stock = stock - :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock - :val",
+                "ExpressionAttributeValues": {":val":item.quantity},
+                "ReturnValues": "UPDATED_NEW"
+              }
+              // Do the update
+              updateResult = await db.update(params);
+            }
+          }
         }
       }
       //Redirect back to order detail
-      //res.redirect('/detail/' + orderID);
+      res.redirect('/detail/' + orderID);
     }
     else {
       //If colission, repeat process
@@ -498,39 +543,6 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       req.body.direccion= "";
     }
 
-    // Check each item for stock reduction
-    for (var item of getOrder.Items[0].items) {
-      var result = await client.search({
-        index: '*products',
-        body: {
-          query: {
-            ids: {
-              values: [item.inventoryId]
-            }
-          }
-        }
-      })
-
-      //If the item has stock control, reduce stock of each product
-      if (result.body.hits.hits[0]._source.stock) {
-        var newStock = result.body.hits.hits[0]._source.stock - item.quantity;
-        //If the quantity exceeds stock, just set it at 0 for now. (it should alert when creating it!)
-        if (newStock < 0) {
-          newStock = 0;
-        }
-        updateResult = await client.update({
-          index: result.body.hits.hits[0]._index,
-          id: result.body.hits.hits[0]._id,
-          body: {
-            doc: {
-              stock: newStock
-            }
-          }
-        })
-
-        // TODO: IF IT IS A SUBPRODUCT, REDUCE GENERAL STOCK TOO
-      }
-    }
     //Save the order data
 
     var params = {
