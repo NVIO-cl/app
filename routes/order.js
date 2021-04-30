@@ -228,6 +228,8 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
                 "ExpressionAttributeValues": {":val":item.quantity},
                 "ReturnValues": "UPDATED_NEW"
               }
+              // Do the update
+              updateResult = await db.update(params);
             }
           }
           else {
@@ -242,9 +244,10 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
               "ExpressionAttributeValues": {":val":item.quantity},
               "ReturnValues": "UPDATED_NEW"
             }
+            // Do the update
+            updateResult = await db.update(params);
           }
-          // Do the update
-          updateResult = await db.update(params);
+
         }
         }
       }
@@ -312,7 +315,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
     res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
   }
 
-  //Items
+  // Parse the new items
   var itemList = [];
   var cost = 0;
   req.body.items.forEach((item, i) => {
@@ -338,6 +341,126 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
     }
   });
 
+  // Get the original order to compare products.
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var companyID = req.user.user;
+  var paramsOrder = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+  getOrder = await db.queryv2(paramsOrder);
+  var order = getOrder.Items[0];
+  var changes = []
+  // Check the original products and see if there are matches
+  order.items.forEach((item, i) => {
+    if (item.inventoryId) {
+      var updated = itemList.find(x => x.inventoryId === item.inventoryId);
+      var delta = 0;
+      if (updated !== undefined) {
+        if (updated.quantity != item.quantity) {
+          delta = -(updated.quantity - item.quantity)
+        }
+      }
+      else {
+        delta = item.quantity
+      }
+      var change = {
+        inventoryId: item.inventoryId,
+        delta: delta
+      }
+      changes.push(change)
+    }
+  });
+  // Check for new items that are not on the change list
+  itemList.forEach((item, i) => {
+    var inChanges = changes.find(x => x.inventoryId === item.inventoryId);
+    if (inChanges === undefined) {
+      var change = {
+        inventoryId: item.inventoryId,
+        delta: -item.quantity
+      }
+      changes.push(change)
+    }
+  });
+  console.log(changes);
+
+  for (var change of changes) {
+    // Get the product on DynamoDB
+    var paramsProduct = {
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
+      "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+      "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+      "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+change.inventoryId.substring(6,12)}
+    }
+    // Do the query
+    productQuery = await db.queryv2(paramsProduct);
+
+    //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
+    updateResult = await client.update({
+      index:'products',
+      id: change.inventoryId,
+      body: {
+        script: {
+          lang: "painless",
+          source: "if(ctx._source.stock != null){if(ctx._source.stock + params.count < 0){ctx._source.stock = 0}else{ctx._source.stock += params.count}}",
+          params: {
+            count: change.delta
+          }
+        }
+      }
+    })
+    if (change.inventoryId.length == 18) {
+      //Substract/add the delta to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+      updateResult = await client.update({
+        index:'products',
+        id: change.inventoryId.substring(0,12),
+        body: {
+          script: {
+            lang: "painless",
+            source: "if(ctx._source.stock != null){if(ctx._source.stock + params.count < 0){ctx._source.stock = 0}else{ctx._source.stock += params.count}}",
+            params: {
+              count: change.delta
+            }
+          }
+        }
+      })
+      if (productQuery.Items[0].stock != null) {
+        // Get the subproduct index
+        subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===change.inventoryId.substring(12,18))
+        // Set the parameters for updating the product
+        params = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "Key": {
+            "PK":req.user.user,
+            "SK": "PRODUCT#"+change.inventoryId.substring(6,12)
+          },
+          "UpdateExpression": "set stock = stock + :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock + :val",
+          "ExpressionAttributeValues": {":val":change.delta},
+          "ReturnValues": "UPDATED_NEW"
+        }
+        // Do the update
+        updateResult = await db.update(params);
+      }
+    }
+    else {
+      if (productQuery.Items[0].stock != null) {
+        params = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "Key": {
+            "PK":req.user.user,
+            "SK": "PRODUCT#"+change.inventoryId.substring(6,12)
+          },
+          "UpdateExpression": "set stock = stock + :val",
+          "ExpressionAttributeValues": {":val":change.delta},
+          "ReturnValues": "UPDATED_NEW"
+        }
+        // Do the update
+        updateResult = await db.update(params);
+      }
+    }
+  }
 
   var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
   var payment = 0;
