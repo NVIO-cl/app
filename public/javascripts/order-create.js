@@ -177,7 +177,7 @@ async function getProducts(name, location){
       msg.forEach((item, i) => {
         var stockColor = "badge-secondary"
         //If the stock is undefined, show N/A
-        if (item._source.stock === undefined) {
+        if (item._source.stock == null) {
           item._source.stock = "N/A"
         }
         //Stock amount cases

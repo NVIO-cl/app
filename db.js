@@ -43,7 +43,6 @@ module.exports = {
   },
 
   update: async function(params){
-    console.log("RUNNING UPDATE");
     try {
       var docClient = new aws.DynamoDB.DocumentClient();
       const updateOutput = await docClient.update(params).promise();
