@@ -186,7 +186,16 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
               }
             }
           })
-
+          // Get the product data in DynamoDB
+          var paramsProduct = {
+            "TableName": process.env.AWS_DYNAMODB_TABLE,
+            "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+            "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+            "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
+          }
+          // Do the query
+          productQuery = await db.queryv2(paramsProduct);
+          var params = {}
           // If it's a subproduct, we have to substract to the master product too
           if (item.inventoryId.length == 18) {
             //Substract the quantity to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
@@ -204,21 +213,12 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
               }
             })
             // Substract the quantity on the main and subproduct in DynamoDB
-            // Get the product data in DynamoDB
-            var paramsProduct = {
-              "TableName": process.env.AWS_DYNAMODB_TABLE,
-              "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
-              "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
-              "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
-            }
-            // Do the query
-            productQuery = await db.queryv2(paramsProduct);
             // If main product stock is not null, then it uses stock control
             if (productQuery.Items[0].stock != null) {
               // Get the subproduct index
               subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18))
               // Set the parameters for updating the product
-              var params = {
+              params = {
                 "TableName": process.env.AWS_DYNAMODB_TABLE,
                 "Key": {
                   "PK":req.user.user,
@@ -228,10 +228,24 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
                 "ExpressionAttributeValues": {":val":item.quantity},
                 "ReturnValues": "UPDATED_NEW"
               }
-              // Do the update
-              updateResult = await db.update(params);
             }
           }
+          else {
+            if (productQuery.Items[0].stock != null) {
+            params = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "Key": {
+                "PK":req.user.user,
+                "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+              },
+              "UpdateExpression": "set stock = stock - :val",
+              "ExpressionAttributeValues": {":val":item.quantity},
+              "ReturnValues": "UPDATED_NEW"
+            }
+          }
+          // Do the update
+          updateResult = await db.update(params);
+        }
         }
       }
       //Redirect back to order detail
@@ -397,6 +411,81 @@ router.post('/delete',passport.authenticate('jwt', {session: false, failureRedir
       "ExpressionAttributeValues": {":cd420": companyID ,":cd421": orderID}
     }
     deleteOrder = await db.delete(deleteParams);
+
+    for (var item of getOrder.Items[0].items) {
+      if (item.inventoryId) {
+        // Set the params variable for DynamoDB
+        var updateParams = {}
+        //Query the product on DynamoDB
+        var productParams = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+          "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+          "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
+        }
+        var productResult = await db.queryv2(productParams);
+        // Check if it has stock control
+        if (productResult.Items[0].stock != null) {
+          updateResult = await client.update({
+            index:'products',
+            id: item.inventoryId,
+            body: {
+              script: {
+                lang: "painless",
+                source: "if(ctx._source.stock != null){ctx._source.stock += params.count}",
+                params: {
+                  count: item.quantity
+                }
+              }
+            }
+          })
+          // It has stock control. Check if it's a subproduct
+          if (item.inventoryId.length == 18) {
+            updateResult = await client.update({
+              index:'products',
+              id: item.inventoryId.substring(0,12),
+              body: {
+                script: {
+                  lang: "painless",
+                  source: "if(ctx._source.stock != null){ctx._source.stock += params.count}",
+                  params: {
+                    count: item.quantity
+                  }
+                }
+              }
+            })
+            // It is a subproduct. Get the subproduct index.
+            var subproductIndex = productResult.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18))
+            // Generate the parameters for update
+            updateParams = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "Key": {
+                "PK":req.user.user,
+                "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+              },
+              "UpdateExpression": "set stock = stock + :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock + :val",
+              "ExpressionAttributeValues": {":val":item.quantity},
+              "ReturnValues": "UPDATED_NEW"
+            }
+          }
+          else {
+            // It is not a subproduct. Generate the parameters for update
+            updateParams = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "Key": {
+                "PK":req.user.user,
+                "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+              },
+              "UpdateExpression": "set stock = stock - :val",
+              "ExpressionAttributeValues": {":val":item.quantity},
+              "ReturnValues": "UPDATED_NEW"
+            }
+          }
+          // Do the update
+          updateResult = await db.update(updateParams);
+        }
+      }
+    }
     res.cookie('message', {type:'success', message:'Orden eliminada con éxito'});
     res.redirect("/historial")
     // delete (standby for backend help since this is a destructive operation)
