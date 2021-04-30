@@ -170,7 +170,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       // TODO: Save the order in Elasticsearch
 
       // Check if items are in the inventory and substract the quantity
-      console.log(itemList);
       for (var item of itemList) {
         if (item.inventoryId) {
           //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
@@ -273,7 +272,6 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
 
   var message
   if (req.cookies.message) {
-    console.log(message);
     message = req.cookies.message
     res.clearCookie('message');
   }
@@ -327,7 +325,6 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
   });
 
 
-  console.log(req.body);
   var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
   var payment = 0;
   if (req.body.payment == 'efectivo') {
@@ -400,7 +397,6 @@ router.post('/delete',passport.authenticate('jwt', {session: false, failureRedir
       "ExpressionAttributeValues": {":cd420": companyID ,":cd421": orderID}
     }
     deleteOrder = await db.delete(deleteParams);
-    console.log(deleteOrder);
     res.cookie('message', {type:'success', message:'Orden eliminada con éxito'});
     res.redirect("/historial")
     // delete (standby for backend help since this is a destructive operation)
