@@ -384,7 +384,6 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
       changes.push(change)
     }
   });
-  console.log(changes);
 
   for (var change of changes) {
     // Get the product on DynamoDB
