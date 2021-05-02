@@ -125,7 +125,7 @@ head
                                                     td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
                                                     td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
                                                     td(scope='row') 
-                                                      a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
+                                                      a.btn.btn-primary(href="/inventory/detail/"+product._id.substring(6)) Ver más
                                         .form-group
                                             button.btn.btn-primary.btn-sm#editProductsButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Editar productos
 

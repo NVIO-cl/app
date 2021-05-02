@@ -41,6 +41,32 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
   res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
 });
 
+
+
+
+router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Detalle del Producto";
+  var companyID = req.user.user;
+  console.log(companyID)
+  var productId = req.originalUrl.slice(req.originalUrl.length - 6);
+  var paramsProduct = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": "PRODUCT#" + productId}
+  }
+  getProduct = await db.queryv2(paramsProduct);
+  var product = getProduct.Items[0];
+
+  console.log(product)
+
+  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId});
+});
+
+
+
+
+
 router.post('/create', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
   //Data Parsing
   //Parse stock checking bool
