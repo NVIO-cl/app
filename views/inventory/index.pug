@@ -99,35 +99,100 @@ head
             nav.navbar(style='margin-top: 17px;')
             .container-fluid
                 h3.text-dark.mb-4 Inventario
-                .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
-                    .row
-                        .col
-                            .card.shadow.mb-3
-                                .card-header.py-3
-                                    p.text-primary.m-0.font-weight-bold Listado de productos
-                                .card-body
-                                    form#editProducts
-                                        table.table.table-striped
-                                            thead
-                                                tr
-                                                    th(scope='col') ID
-                                                    th(scope='col') Nombre
-                                                    th(scope='col') Subproductos?
-                                                    th(scope='col') Stock
-                                                    th(scope='col') Precio
-                                                    th(scope='col') Acciones
-                                            tbody
-                                              each product, index in results
-                                                tr
-                                                    th(scope='row') #{product._id}
-                                                    td(scope='row') #{product._source.productName}
-                                                    td(scope='row') #{product._source.attributesList ? 'Sí' : 'No'}
-                                                    td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
-                                                    td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
-                                                    td(scope='row') 
-                                                      a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
-                                        .form-group
-                                            button.btn.btn-primary.btn-sm#editProductsButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Editar productos
+                .card.shadow
+                    .card-header.py-3
+                        p.text-primary.m-0.font-weight-bold Listado de productos
+                    .card-body
+                        .col.col-sm-6.col-md-6.d-inline-flex.justify-content-center.justify-content-sm-start.justify-content-md-start.justify-content-lg-start(style='margin-bottom: 12px; padding-left: 0px; padding-right: 0px;')
+                            span Mostrando &nbsp
+                                select#paginationAmount.form-select(name='c')
+                                    if (c == '5')
+                                        option(value='5' selected='selected') 5
+                                    else
+                                        option(value='5') 5
+                                    if (c == '10')
+                                        option(value='10' selected='selected') 10
+                                    else
+                                        option(value='10') 10
+                                    if (c == '15')
+                                        option(value='15' selected='selected') 15
+                                    else
+                                        option(value='15') 15
+                                    if (c == '20')
+                                        option(value='20' selected='selected') 20
+                                    else
+                                        option(value='20') 20
+                                    if (c == '25')
+                                        option(value='25' selected='selected') 25
+                                    else
+                                        option(value='25') 25
+                            span &nbsp por página
+
+                        //form(action='/inventory', method='POST').form-inline.my-2.my-lg-0
+                        //    button#allProducts.btn.btn-primary(type='submit' name='allProducts') Hola
+
+                        .col.col-sm-6.col-md-6.d-inline-flex.justify-content-center.justify-content-sm-end.justify-content-md-end.justify-content-lg-end(style='margin-bottom: 12px; padding-left: 0px; padding-right: 0px;')
+                            if (s != "")
+                                input#searchProduct.form-control.mr-sm-2(type='search' name='s' value=s placeholder='Buscar' aria-label='Search')
+                                button.btn.btn-primary(type='submit' onclick='setUrl()')
+                                    i.fas.fa-search
+                            else
+                                input#searchProduct.form-control.mr-sm-2(type='search' name='s' placeholder='Buscar' aria-label='Search')
+                                button.btn.btn-primary(type='submit' onclick='setUrl()')
+                                    i.fas.fa-search
+
+                        .container-fluid(style="overflow-x:auto; padding-left: 0px; padding-right: 0px;")
+                            form#editProducts
+                                table.table.table-striped
+                                    thead
+                                        tr
+                                            //th(scope='col') ID
+                                            th(scope='col') Nombre
+                                            th(scope='col') Subproductos?
+                                            th(scope='col') Stock
+                                            th(scope='col') Precio
+                                            th(scope='col') Acciones
+                                    tbody
+                                      each product, index in results
+                                        tr
+                                            //th(scope='row') #{product._id}
+                                            td(scope='row') #{product._source.productName}
+                                            td(scope='row') #{product._source.attributesList ? 'Sí' : 'No'}
+                                            td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
+                                            td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
+                                            td(scope='row')
+                                              a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
+
+                        .col.col-sm-12.col-md-12.d-inline-flex.justify-content-center.justify-content-sm-end.justify-content-md-end.justify-content-lg-end
+                            nav(aria-label='...')
+                                ul.pagination
+                                    if(p > 1)
+                                        li.page-item
+                                            a.page-link(href='#' onclick='setUrl('+(p-1)+')')
+                                                i.fas.fa-arrow-left
+                                    else
+                                        li.page-item.disabled
+                                            a.page-link(href='#')
+                                                i.fas.fa-arrow-left
+
+
+                                    each page, index in pages
+                                        if(page == p)
+                                            li.page-item.active
+                                                a.page-link(href='#') #{page}
+                                        else
+                                            li.page-item
+                                                a.page-link(href='#' onclick='setUrl(' + page + ')') #{parseInt(page)}
+
+                                    if(p != pagesAmount)
+                                        li.page-item
+                                            a.page-link(href='#' onclick='setUrl('+(p+1)+')')
+                                                i.fas.fa-arrow-right
+                                    else
+                                        li.page-item.disabled
+                                            a.page-link(href='#')
+                                                i.fas.fa-arrow-right
+
 
         footer.bg-white.sticky-footer
             .container.my-auto
@@ -153,4 +218,5 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.m
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='/javascripts/theme.js')
 script(src='/javascripts/profile-saver.js')
+script(src='/javascripts/inventory.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')

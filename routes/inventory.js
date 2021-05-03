@@ -15,7 +15,9 @@ const client = new Client({
 
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Inventario";
-  const result = await client.search({
+
+  // Base query
+  var search = {
     index: 'products',
     body: {
       query: {
@@ -31,9 +33,64 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
         }
       }
     }
-  })
-  console.log(result.body.hits.hits);
-  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits});
+  }
+
+  // Query contains paginationAmount
+  var c = parseInt(req.query.c);
+  if(!req.query.c){
+    var c = 5
+    search['size'] = c;
+  } else {
+    search['size'] = c;
+  }
+
+  // Query contains product
+  if (req.query.s){
+    var s = req.query.s
+    let multi_match = {
+      multi_match: {
+        query: s,
+        type: "bool_prefix",
+        fields: [
+          "productName",
+          "productName._2gram",
+          "productName._3gram"
+        ]
+      }
+    };
+    search.body.query.bool.must.push(multi_match)
+  }
+
+  // Current page
+  var p = parseInt(req.query.p)
+  if(!req.query.p){
+    p = 1
+  }
+
+  // Elasticsearch pagination
+  search['from'] = c*(p-1);
+
+  // Query
+  var result = await client.search(search)
+
+  // Cálculo de páginas para frontend
+  var hitsAmount = result.body.hits.total.value
+  var pagesAmount = Math.ceil(hitsAmount/c)
+  var pages = [1, 2, 3]
+
+  if (pagesAmount >= 3){
+    if (p==pagesAmount){
+      pages = [p-2, p-1, p]
+    } else if (p >= 3) {
+      pages = [p-1, p, p+1]
+    }
+  } else if (pagesAmount == 2){
+    pages = [1, 2]
+  } else {
+    pages = [1]
+  }
+
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, base_url: req.url, pages: pages, pagesAmount:pagesAmount});
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -331,3 +388,4 @@ router.post('/searchProduct',passport.authenticate('jwt', {session: false, failu
 });
 
 module.exports = router;
+
