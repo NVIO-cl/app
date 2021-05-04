@@ -200,13 +200,58 @@ $(document).ready(function(){
     // Brutish solution: Once the button is clicked, clear subproducts, then generate, then hide the button
     // The cleaner way to do this is to check for differences, keep a list of the IDs that exist, then compare it to the list that would be generated and remove/add cards accordingly
     e.preventDefault();
-    $('#subproductForms').empty();
-    generateSubproducts();
-    $('#regenerateAttributes').remove();
-    $('#createSubproducts').remove();
-    $('br').remove();
-    regenExists = !regenExists;
-    // TODO: Implement a cleaner way to do this, as described at the beginning of this function
+    // validate form
+    var hasEmptyData = false;
+    if ($('#productName').val() == "") {
+      $('#productName').addClass("is-invalid")
+      hasEmptyData=true;
+    }
+    else {
+      $('#productName').removeClass("is-invalid")
+      $('#productName').addClass("is-valid")
+    }
+    if ($('#productPrice').val() == "") {
+      $('#productPrice').addClass("is-invalid")
+      hasEmptyData=true;
+    }
+    else {
+      $('#productPrice').removeClass("is-invalid")
+      $('#productPrice').addClass("is-valid")
+    }
+    if (subproducts) {
+      //Check if subproducts are filled with data
+      var $attributes = $("[id$=\\[name\\]]");
+      $attributes.each((index) => {
+        if ($('#attributes\\['+index+'\\]\\[name\\]').val()=="") {
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid')
+          hasEmptyData=true;
+        }
+        else {
+          $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid')
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid')
+        }
+        if ($('#attributes\\['+index+'\\]\\[values\\]').val()=="") {
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid')
+          hasEmptyData=true;
+        }
+        else {
+          $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid')
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid')
+        }
+      });
+    }
+    if (!hasEmptyData) {
+      // remove extraneous elements
+      $('#subproductForms').empty();
+      generateSubproducts();
+      $('#regenerateAttributes').remove();
+      $('#createSubproducts').remove();
+      $('br').remove();
+      regenExists = !regenExists;
+      // TODO: Implement a cleaner way to do this, as described at the beginning of this function
+    } else {
+      console.log("Something's empty");
+    }
   });
 
   function generateSubproducts(){
