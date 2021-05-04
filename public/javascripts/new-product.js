@@ -83,8 +83,7 @@ $(document).ready(function(){
   $('body').on('click', "[id^=delete]", function(){
     if ($(this).attr('id') == 'delete[0]') {
       alert("No puedes eliminar el primer atributo")
-    }
-    else {
+    } else {
       id = parseInt($(this).attr('id').replace("delete[", "").replace("]", ""))
       $('#attributes\\['+id+'\\]').fadeOut("fast",function(){
         $('#attributes\\['+id+'\\]').remove();
@@ -92,6 +91,14 @@ $(document).ready(function(){
         recalc();
         attributeCount--;
       });
+      // Make the "regen attributes" button exists, plain jquery can't handle 'on("remove")'
+      if($('#createProductButton').hasClass("d-none")){ // this means createProductButton is disabled
+        if(!regenExists){ // Check to see if the regenerate button exists
+          $("<br><button id='regenerateAttributes' class='btn btn-primary btn-sm' style='background: #12c4f2; border: #12c4f2; margin-top: 10px;'>Actualizar Atributos</button>").appendTo($('#createAttribute').parent());
+          regenExists = !regenExists;
+        }
+        // TODO: Notify the user that they have changes pending update if they click "submit" while the "regenerateAttributes" button still exists
+      }
     }
   })
 
@@ -239,7 +246,6 @@ $(document).ready(function(){
           value: item
         })
       });
-      console.log(attributes);
       var card = `
       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" id="subproductCard[${i}]">
         <div class="card shadow mb-3">
