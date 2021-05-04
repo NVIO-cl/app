@@ -203,40 +203,38 @@ $(document).ready(function(){
     // validate form
     var hasEmptyData = false;
     if ($('#productName').val() == "") {
-      $('#productName').addClass("is-invalid")
+      $('#productName').addClass("is-invalid");
       hasEmptyData=true;
-    }
-    else {
-      $('#productName').removeClass("is-invalid")
-      $('#productName').addClass("is-valid")
+    } else {
+      $('#productName').removeClass("is-invalid");
+      $('#productName').addClass("is-valid");
     }
     if ($('#productPrice').val() == "") {
-      $('#productPrice').addClass("is-invalid")
+      $('#productPrice').addClass("is-invalid");
       hasEmptyData=true;
-    }
-    else {
-      $('#productPrice').removeClass("is-invalid")
-      $('#productPrice').addClass("is-valid")
+    } else {
+      $('#productPrice').removeClass("is-invalid");
+      $('#productPrice').addClass("is-valid");
     }
     if (subproducts) {
       //Check if subproducts are filled with data
       var $attributes = $("[id$=\\[name\\]]");
       $attributes.each((index) => {
         if ($('#attributes\\['+index+'\\]\\[name\\]').val()=="") {
-          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid')
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid');
           hasEmptyData=true;
         }
         else {
-          $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid')
-          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid')
+          $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid');
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid');
         }
         if ($('#attributes\\['+index+'\\]\\[values\\]').val()=="") {
-          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid')
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid');
           hasEmptyData=true;
         }
         else {
-          $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid')
-          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid')
+          $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid');
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid');
         }
       });
     }
