@@ -248,7 +248,7 @@ $(document).ready(function(){
       regenExists = !regenExists;
       // TODO: Implement a cleaner way to do this, as described at the beginning of this function
     } else {
-      console.log("Something's empty");
+      // something's empty, do nothing
     }
   });
 
