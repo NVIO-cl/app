@@ -12,16 +12,41 @@ $(document).ready(function() {
 
     })
 
+    $( "#nameFilter" ).click(function(event) {
+        event.preventDefault();
+        var filtro = $('#nameFilter').val()
+        setUrl(1, filtro);
+    });
+
+    $( "#subproductsFilter" ).click(function(event) {
+        event.preventDefault();
+        var filtro = $('#subproductsFilter').val()
+        setUrl(1, filtro);
+    });
+
+    $( "#stockFilter" ).click(function(event) {
+        event.preventDefault();
+        var filtro = $('#stockFilter').val()
+        setUrl(1, filtro);
+    });
+
+    $( "#priceFilter" ).click(function(event) {
+        event.preventDefault();
+        var filtro = $('#priceFilter').val()
+        setUrl(1, filtro);
+    });
+
 });
 
-function setUrl(page){
-    console.log(page)
+function setUrl(page, filtro){
     var o = window.location.search
     var c = $('#paginationAmount').val()
     var s = $('#searchProduct').val()
     var p = page
     var newUrl = "c=" + c
     var params_list = o.split("&");
+    var f = filtro
+
     if (p === undefined){
         for (var i in params_list){
             if(params_list[i].includes("p=")){
@@ -58,6 +83,24 @@ function setUrl(page){
         newUrl = newUrl + "&s=" + s
     }
 
+    if (f == ''){
+        f = undefined
+    }
 
+    if (f === undefined){
+        for (var i in params_list){
+            if(params_list[i].includes("f=")){
+                var new_f = params_list[i].replace("f=","")
+                new_f = new_f.replace("?","")
+                if (new_f == 'price_asc' || new_f == 'stock_asc' || new_f == 'productType.keyword_asc' || new_f == 'productName.keyword_asc'){
+                    new_f = ''
+                } else{
+                    newUrl = newUrl + "&f=" + new_f
+                }
+            }
+        }
+    } else {
+        newUrl = newUrl + '&f=' + f
+    }
     location.search = newUrl
 }

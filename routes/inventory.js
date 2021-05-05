@@ -70,8 +70,20 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
   // Elasticsearch pagination
   search['from'] = c*(p-1);
 
+  // Query contains filter
+  var f = req.query.f
+  if (f != undefined){
+    var f_query = f.replace('_',':')
+    search['sort'] = f_query
+  }
+
   // Query
-  var result = await client.search(search)
+  try{
+    var result = await client.search(search)
+  } catch (e) {
+    console.log(e.meta.body.error.root_cause)
+  }
+
 
   // Cálculo de páginas para frontend
   var hitsAmount = result.body.hits.total.value
@@ -90,7 +102,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     pages = [1]
   }
 
-  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, base_url: req.url, pages: pages, pagesAmount:pagesAmount});
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, f:f, base_url: req.url, pages: pages, pagesAmount:pagesAmount});
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
