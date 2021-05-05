@@ -63,6 +63,9 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId});
 });
 
+router.post('/edit', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) =>{
+  console.log(req.body.subproduct[0]);
+})
 
 
 
