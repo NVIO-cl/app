@@ -64,7 +64,86 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 });
 
 router.post('/edit', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) =>{
-  console.log(req.body.subproduct[0]);
+  // Get the company ID
+  console.log(req.user.user.slice(-6));
+  // Get the product ID
+  console.log(req.headers.referer.slice(-6));
+  var params = {}
+  var isValid = true;
+  var totalStock = 0;
+  // If the stock is undefined, set it as null
+  if (req.body.productStock === undefined) {
+    req.body.productStock = null
+  }
+  else {
+    req.body.productStock = parseInt(req.body.productStock)
+  }
+  // Check if it's a product with subproducts or a single product
+  if (req.body.subproduct) {
+    // It is a product with subproducts.
+    // Check each subproduct price. If it's empty, set it to 0. If Stock exists, check it too.
+    req.body.subproduct.forEach((subproduct, i) => {
+      if (subproduct.price == '') {
+        subproduct.price = 0;
+      }
+      else {
+        subproduct.price = parseInt(subproduct.price)
+      }
+      if (subproduct.stock !== undefined) {
+        if (subproduct.stock == '') {
+          subproduct.stock = 0;
+        }
+        else {
+          subproduct.stock = parseInt(subproduct.stock);
+        }
+        totalStock += subproduct.stock
+        req.body.productStock = totalStock
+      }
+    });
+    console.log(req.body);
+  }
+  else {
+    // It is a single product
+    if (req.body.productName == '') {
+      isValid = false
+    }
+    if (isValid) {
+
+      // Update Dynamo
+      params = {
+        "TableName": process.env.AWS_DYNAMODB_TABLE,
+        "Key": {
+          "PK": req.user.user,
+          "SK": 'PRODUCT#'+req.headers.referer.slice(-6)
+        },
+        "UpdateExpression": "set #productName = :productName, #price = :price, #stock = :stock ",
+        "ExpressionAttributeNames": {
+          "#productName":"productName",
+          "#price":"price",
+          "#stock":"stock"
+        },
+        "ExpressionAttributeValues": {
+          ":productName": req.body.productName,
+          ":price": parseInt(req.body.productPrice),
+          ":stock": req.body.productStock
+        }
+      }
+      dynamoUpdateResult = await db.update(params);
+      // Update Elastic
+      elasticUpdateResult = await client.update({
+        index: 'products',
+        id: req.user.user.slice(-6) + req.headers.referer.slice(-6),
+        body: {
+          doc: {
+            productName: req.body.productName,
+            price: parseInt(req.body.productPrice),
+            stock: req.body.productStock
+          }
+        }
+      })
+      res.redirect('/inventory');
+    }
+  }
 })
 
 

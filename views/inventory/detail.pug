@@ -136,12 +136,13 @@ head
                                                         br
                                                     input.form-control#productName(type='text' value=''+product.productName+'' name='productName')
                                                     .invalid-feedback El nombre del producto no puede estar vacío
-                                            //.col-xs-2.col-md-4
-                                                .form-group
-                                                    label#priceLabel(for='productPrice')
-                                                        strong Precio
-                                                    input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice')
-                                                    .invalid-feedback El precio no puede estar vacío
+                                            if(product.productType == 'single')
+                                              .col-xs-2.col-md-4
+                                                  .form-group
+                                                      label#priceLabel(for='productPrice')
+                                                          strong Precio
+                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice')
+                                                      .invalid-feedback El precio no puede estar vacío
                                             if (product.stock)
                                                 .col-xs-2.col-md-4(id='stock')
                                                     .form-group
@@ -175,6 +176,9 @@ head
                                             .form-group(style='text-align: center;')
                                                 button.btn.btn-primary.btn-sm#saveChangesButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Guardar cambios
                                                 button.btn.btn-primary.btn-sm.d-none#createNewSubs(style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Generar nuevos subproductos
+                                        else
+                                          .form-group(style='text-align: center;')
+                                            button.btn.btn-primary.btn-sm#saveChangesButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Guardar cambios
 
             if(product.productType == 'main')
               .container-fluid
@@ -191,10 +195,11 @@ head
                                         input(type='hidden' name='subproduct['+index+'][attribute]['+attridx+'][name]' value=attribute.name)
                                         | 
                                         p.text-primary.m-0.font-weight-bold.d-inline(id='subproduct['+index+'][attribute]['+attridx+'][value]') #{attribute.value}
-                                        input(type='hidden' name='subproduct['+index+'][attribute]['+attridx+'][attribute]' value=attribute.value)
+                                        input(type='hidden' name='subproduct['+index+'][attribute]['+attridx+'][attribute]' id='subproduct['+index+'][attribute]['+attridx+'][attribute]' value=attribute.value)
                                           
                                     .card-body(id='subproduct['+index+']')
                                         input(type='hidden' id='subproduct['+index+'][name]' name='subproduct['+index+'][name]' value=subproduct.name)
+                                        input(type='hidden' id='subproduct['+index+'][id]' name='subproduct['+index+'][id]' value=subproduct.id)
                                         .form-row
                                             .col-xs-2.col-sm-12.col-md-12
                                                 .form-group
