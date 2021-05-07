@@ -114,9 +114,12 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       subproduct.attributes = subproduct.attribute
       delete subproduct.attribute
 
-      // Change variable name
+      // Change variable name and set new attribute names
+      var nameAssembly = ""
       subproduct.attributes.forEach((attribute, i) => {
+        attribute.name = req.body.attributesList[i].name
         attribute.value = attribute.attribute;
+        nameAssembly += attribute.name + " " + attribute.attribute
         delete attribute.attribute;
       });
 
@@ -139,6 +142,9 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         totalStock += subproduct.stock
         req.body.stock = totalStock
       }
+
+      // Configure new name
+      subproduct.name = req.body.productName + " " + nameAssembly
 
       //If the ID is not present, create it and append that subproduct to newSubproduct
       if (!subproduct.id) {
@@ -214,31 +220,42 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       })
     }
 
-    // Update the product
+    // Update the product in DynamoDB
     params = {
       "TableName": process.env.AWS_DYNAMODB_TABLE,
       "Key": {
         "PK": req.user.user,
         "SK": 'PRODUCT#'+req.headers.referer.slice(-6)
       },
-      "UpdateExpression": "set #productName = :productName, #price = :price, #stock = :stock, #subproduct = :subproduct, #attributesList = :attributesList",
+      "UpdateExpression": "set #productName = :productName, #stock = :stock, #subproduct = :subproduct, #attributesList = :attributesList",
       "ExpressionAttributeNames": {
         "#productName":"productName",
-        "#price":"price",
         "#stock":"stock",
         "#subproduct":"subproduct",
         "#attributesList":"attributesList"
       },
       "ExpressionAttributeValues": {
         ":productName": req.body.productName,
-        ":price": null,
         ":stock": req.body.stock,
         ":subproduct": req.body.subproduct,
         ":attributesList": req.body.attributesList
       }
     }
     updateProductResult = await db.update(params);
-    //res.redirect(req.headers.referer)
+
+    // Update the product in Elasticsearch
+    await client.update({
+      index: 'products',
+      id: req.user.user.slice(-6) + product.SK.slice(-6),
+      body: {
+        doc: {
+          productName: req.body.productName,
+          stock: req.body.stock,
+          attributesList: req.body.attributesList
+        }
+      }
+    })
+    res.redirect(req.headers.referer)
   }
 
 
