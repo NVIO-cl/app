@@ -64,10 +64,6 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
 });
 
 router.post('/edit', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) =>{
-  // Get the company ID
-  console.log(req.user.user.slice(-6));
-  // Get the product ID
-  console.log(req.headers.referer.slice(-6));
   var params = {}
   var isValid = true;
   var totalStock = 0;
@@ -80,7 +76,21 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
   }
   // Check if it's a product with subproducts or a single product
   if (req.body.subproduct) {
-    // It is a product with subproducts.
+    // It is a product with subproducts. We also need the OG product from DynamoDB.
+    params = {
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
+      "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+      "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+      "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#" + req.headers.referer.slice(-6)}
+    }
+    getProduct = await db.queryv2(params);
+    var product = getProduct.Items[0];
+    // Save the already used subproduct IDs.
+    var usedIDs = []
+    product.subproduct.forEach((subproduct, i) => {
+      usedIDs.push(subproduct.id)
+    });
+
     // Check each subproduct price. If it's empty, set it to 0. If Stock exists, check it too.
     req.body.subproduct.forEach((subproduct, i) => {
       if (subproduct.price == '') {
@@ -97,11 +107,56 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
           subproduct.stock = parseInt(subproduct.stock);
         }
         totalStock += subproduct.stock
-        req.body.productStock = totalStock
+        req.body.stock = totalStock
       }
     });
-    console.log(req.body);
+    delete req.body.productStock
+    req.body.attributesList = req.body.attributes
+    delete req.body.attributes
+    req.body.price = null;
+
+    // Check if there's any new subproduct. If there is, apend it to the product in Dynamo and create it in Elasticsearch
+    var newSubproducts = []
+    req.body.subproduct.forEach((subproduct, i) => {
+      if (!subproduct.id) {
+        var subID = nanoid(6);
+        while (usedIDs.includes(subID)) {
+          subID = nanoid(6);
+        }
+        usedIDs.push(subID);
+        subproduct.id = subID
+        subproduct.attributes = subproduct.attribute
+        delete subproduct.attribute
+        console.log(subproduct);
+        newSubproducts.push(subproduct)
+      }
+    });
+    console.log(newSubproducts);
+    if (newSubproducts.length > 0) {
+      var insertSubParams = {
+        "TableName": process.env.AWS_DYNAMODB_TABLE,
+        "Key": {
+          "PK": req.user.user,
+          "SK": "PRODUCT#" + req.headers.referer.slice(-6)
+        },
+        "UpdateExpression": "set #subproduct = list_append(#subproduct,:subproduct)",
+        "ExpressionAttributeNames": {
+          "#subproduct": "subproduct"
+        },
+        "ExpressionAttributeValues": {
+          ":subproduct": newSubproducts
+        }
+      }
+      insertSubResults = await db.update(insertSubParams);
+      console.log(insertSubParams);
+    }
   }
+
+
+
+
+
+
   else {
     // It is a single product
     if (req.body.productName == '') {
