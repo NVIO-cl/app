@@ -175,8 +175,6 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       });
       var body = elasticNewSubproducts.flatMap((doc,i) => [{ index: { _index: 'products', _id: elasticNewSubproducts[i].parent+newSubproducts[i].id } }, doc])
       const { body: bulkResponse } = await client.bulk({ refresh: true, body })
-      console.log("====BULK RESULT====");
-      console.log(bulkResponse);
     }
 
     // Delete duplicates of the disableSubproducts array
@@ -199,9 +197,22 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       }
     }
 
-
-
-
+    // Update all the subproducts in Elasticsearch
+    for (var subproduct of req.body.subproduct) {
+      var updateID = req.user.user.slice(-6) + product.SK.slice(-6) + subproduct.id;
+      await client.update({
+        index: 'products',
+        id: updateID,
+        body: {
+          doc: {
+            productName: subproduct.name,
+            price: subproduct.price,
+            stock: subproduct.stock,
+            attributes: subproduct.attributes
+          }
+        }
+      })
+    }
 
     // Update the product
     params = {
