@@ -186,7 +186,7 @@ head
                     .row#subproductForms
                         each subproduct, index in product.subproduct
                             .col-xs-4.col-sm-4.col-md-4.col-lg-4(id='subproductCard['+index+']')
-                                .card.shadow.mb-3
+                                .card.shadow.mb-3(style="transition: opacity .25s ease-out;")
                                     .card-header.py-3
                                       p.text-primary.m-0.font-weight-bold.d-inline(id='subproduct['+index+'][mainName]') #{product.productName}
                                       each attribute, attridx in subproduct.attributes

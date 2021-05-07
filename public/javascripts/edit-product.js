@@ -21,7 +21,7 @@ $(document).ready(function(){
       //Check for each attribute
       if (!attributes[i].attributes.includes($(item).val())) {
         $(value).children().css("opacity","0.5")
-        $(value).find('input').attr('disabled', true)
+        $(value).find('input').attr('readonly', true)
       }
     })
   })
@@ -30,11 +30,11 @@ $(document).ready(function(){
   $("#productName").on('input',function(e){
     if ($(this).val() == "") {
       $(this).addClass('is-invalid')
-      $("#saveChangesButton").attr('disabled','disabled')
+      $("#saveChangesButton").attr('readonly','readonly')
     }
     else {
       $(this).removeClass('is-invalid')
-      $("#saveChangesButton").attr('disabled',false)
+      $("#saveChangesButton").attr('readonly',false)
     }
     $("[id*='mainName']").text($("#productName").val())
   })
@@ -64,12 +64,12 @@ $(document).ready(function(){
     if (findDuplicates(newAttributes).length > 0) {
       $(this).addClass('is-invalid')
       $(this).next().text("No pueden existir atributos duplicados")
-      $("#saveChangesButton").attr('disabled','disabled')
+      $("#saveChangesButton").attr('readonly','readonly')
     }
     else{
       $(this).removeClass('is-invalid')
       $(this).next().text("")
-      $("#saveChangesButton").attr('disabled',false)
+      $("#saveChangesButton").attr('readonly',false)
     }
     //Compare with existing attributes
     var attrid = parseInt($(this).attr('id').replace('][values]','').replace('attributes[',''))
@@ -81,12 +81,12 @@ $(document).ready(function(){
     });
     $.each($("[id^=subproductCard]"), function(key,value){
       $(value).children().css("opacity","1")
-      $(value).find('input').attr('disabled', false)
+      $(value).find('input').attr('readonly', false)
       $.each($(value).find($('[id$=\\[attribute\\]]')), function(i,item){
         //Check for each attribute
         if (!attributes[i].attributes.includes($(item).val())) {
           $(value).children().css("opacity","0.5")
-          $(value).find('input').attr('disabled', true)
+          $(value).find('input').attr('readonly', true)
         }
       })
     })
@@ -94,7 +94,7 @@ $(document).ready(function(){
         missingList.forEach((item, i) => {
           $.each($('[id$=\\[attribute\\]\\['+attrid+'\\]\\[value\\]]:contains("'+item+'")'),function(key,value){
             card = $(value).parent().parent()
-            $(card).find('input').attr('disabled', true)
+            $(card).find('input').attr('readonly', true)
             $(card).css("opacity","0.5")
           })
         });
@@ -106,7 +106,7 @@ $(document).ready(function(){
         //Check for each attribute
         if (newAttributes.includes($(item).val())) {
           $(value).children().css("opacity","1")
-          $(value).find('input').attr('disabled', false)
+          $(value).find('input').attr('readonly', false)
           if (!attributes[i].attributes.includes($(item).val())) {
             newList = newList.filter(val=> val !== $(item).val())
             if(oldReturning.indexOf($(item).val()) === -1) {
@@ -142,18 +142,18 @@ $(document).ready(function(){
     if (findDuplicates(attributes).length > 0) {
       $(this).addClass('is-invalid')
       $(this).next().text("No pueden existir nombres de atributos duplicados")
-      $("#saveChangesButton").attr('disabled','disabled')
+      $("#saveChangesButton").attr('readonly','readonly')
 
     }
     else if($(this).val()==""){
       $(this).addClass('is-invalid')
       $(this).next().text("El nombre de atributo no puede estar vacío")
-      $("#saveChangesButton").attr('disabled','disabled')
+      $("#saveChangesButton").attr('readonly','readonly')
     }
     else {
       $(this).removeClass('is-invalid')
       $(this).next().text("")
-      $("#saveChangesButton").attr('disabled',false)
+      $("#saveChangesButton").attr('readonly',false)
     }
   });
 
@@ -178,7 +178,7 @@ $(document).ready(function(){
     });
     console.log("NEW LIST:");
     console.log(newList);
-    // Check if any new value is already a disabled subproduct
+    // Check if any new value is already a readonly subproduct
 
 
     newList.forEach((listItem, listKey) => {

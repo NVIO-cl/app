@@ -74,6 +74,9 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
   else {
     req.body.productStock = parseInt(req.body.productStock)
   }
+  req.body.stock = req.body.productStock
+  delete req.body.productStock
+
   // Check if it's a product with subproducts or a single product
   if (req.body.subproduct) {
     // It is a product with subproducts. We also need the OG product from DynamoDB.
@@ -85,20 +88,37 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     }
     getProduct = await db.queryv2(params);
     var product = getProduct.Items[0];
+
     // Save the already used subproduct IDs.
     var usedIDs = []
     product.subproduct.forEach((subproduct, i) => {
       usedIDs.push(subproduct.id)
     });
 
-    // Check each subproduct price. If it's empty, set it to 0. If Stock exists, check it too.
+    // Define an array for new subproducts
+    var newSubproducts = []
+
+    // Check each subproduct
     req.body.subproduct.forEach((subproduct, i) => {
+      // Change variable name
+      subproduct.attributes = subproduct.attribute
+      delete subproduct.attribute
+
+      // Change variable name
+      subproduct.attributes.forEach((attribute, i) => {
+        attribute.value = attribute.attribute;
+        delete attribute.attribute;
+      });
+
+      // If price is '', set it as 0. If not, parse it
       if (subproduct.price == '') {
         subproduct.price = 0;
       }
       else {
         subproduct.price = parseInt(subproduct.price)
       }
+
+      // If stock is not undefined and it's '', set it as 0. If not undefined and not '', parse it
       if (subproduct.stock !== undefined) {
         if (subproduct.stock == '') {
           subproduct.stock = 0;
@@ -109,15 +129,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         totalStock += subproduct.stock
         req.body.stock = totalStock
       }
-    });
-    delete req.body.productStock
-    req.body.attributesList = req.body.attributes
-    delete req.body.attributes
-    req.body.price = null;
 
-    // Check if there's any new subproduct. If there is, apend it to the product in Dynamo and create it in Elasticsearch
-    var newSubproducts = []
-    req.body.subproduct.forEach((subproduct, i) => {
+      //If the ID is not present, create it and append that subproduct to a special array
       if (!subproduct.id) {
         var subID = nanoid(6);
         while (usedIDs.includes(subID)) {
@@ -125,35 +138,54 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         }
         usedIDs.push(subID);
         subproduct.id = subID
-        subproduct.attributes = subproduct.attribute
-        delete subproduct.attribute
-        console.log(subproduct);
         newSubproducts.push(subproduct)
       }
     });
-    console.log(newSubproducts);
-    if (newSubproducts.length > 0) {
-      var insertSubParams = {
-        "TableName": process.env.AWS_DYNAMODB_TABLE,
-        "Key": {
-          "PK": req.user.user,
-          "SK": "PRODUCT#" + req.headers.referer.slice(-6)
-        },
-        "UpdateExpression": "set #subproduct = list_append(#subproduct,:subproduct)",
-        "ExpressionAttributeNames": {
-          "#subproduct": "subproduct"
-        },
-        "ExpressionAttributeValues": {
-          ":subproduct": newSubproducts
-        }
+
+    delete req.body.productStock
+    req.body.attributesList = req.body.attributes
+    delete req.body.attributes
+    req.body.price = null;
+
+    // Parse the attributes
+
+    req.body.attributesList.forEach((attribute, i) => {
+
+      attribute.values = attribute.values.split(",")
+
+      attribute.values.forEach((value, n) => {
+        attribute.values[n] = value.trim()
+      });
+    });
+
+
+    // Update the product
+    params = {
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
+      "Key": {
+        "PK": req.user.user,
+        "SK": 'PRODUCT#'+req.headers.referer.slice(-6)
+      },
+      "UpdateExpression": "set #productName = :productName, #price = :price, #stock = :stock, #subproduct = :subproduct, #attributesList = :attributesList",
+      "ExpressionAttributeNames": {
+        "#productName":"productName",
+        "#price":"price",
+        "#stock":"stock",
+        "#subproduct":"subproduct",
+        "#attributesList":"attributesList"
+      },
+      "ExpressionAttributeValues": {
+        ":productName": req.body.productName,
+        ":price": null,
+        ":stock": req.body.stock,
+        ":subproduct": req.body.subproduct,
+        ":attributesList": req.body.attributesList
       }
-      insertSubResults = await db.update(insertSubParams);
-      console.log(insertSubParams);
     }
+    console.log(req.body);
+    updateProductResult = await db.update(params);
+    console.log(updateProductResult);
   }
-
-
-
 
 
 
