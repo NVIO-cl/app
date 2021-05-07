@@ -32,7 +32,6 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
       }
     }
   })
-  console.log(result.body.hits.hits);
   res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits});
 });
 
@@ -44,7 +43,6 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Detalle del Producto";
   var companyID = req.user.user;
-  console.log(companyID)
   var productId = req.originalUrl.slice(req.originalUrl.length - 6);
   var paramsProduct = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
@@ -157,10 +155,14 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         newSubproducts.push(subproduct)
       }
 
-      //Check if attributes values are present in the list. If not, the product must be disabled
+      //Check if attribute values are not present, disable it. If they are, enable it.
       subproduct.attributes.forEach((attribute, i) => {
         if (!req.body.attributesList[i].values.includes(attribute.value)) {
           disableSubproducts.push(subproduct)
+          subproduct.available = false;
+        }
+        else {
+          subproduct.available = true;
         }
       });
     });
@@ -214,7 +216,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
             productName: subproduct.name,
             price: subproduct.price,
             stock: subproduct.stock,
-            attributes: subproduct.attributes
+            attributes: subproduct.attributes,
+            available: subproduct.available
           }
         }
       })
@@ -303,9 +306,6 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     }
   }
 })
-
-
-
 
 router.post('/create', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
   //Data Parsing
@@ -466,7 +466,6 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
       colcheck();
     }
   }
-  console.log(productID);
   // DynamoDB insertion finished
 
   // Elasticsearch Section
@@ -532,8 +531,6 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     id: elasticID,
     body: elasticProduct
   })
-  console.log("=====MAIN RESULT====");
-  console.log(result);
 
   // If there are attributes, create the subproducts independently
   if (req.body.checkAttributes) {
@@ -551,15 +548,11 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     });
     var body = elasticSubproducts.flatMap((doc,i) => [{ index: { _index: 'products', _id: elasticSubproducts[i].parent+req.body.subproduct[i].id } }, doc])
     const { body: bulkResponse } = await client.bulk({ refresh: true, body })
-    console.log("====BULK RESULT====");
-    console.log(bulkResponse);
   }
   res.redirect('/inventory');
 });
 
 router.post('/searchProduct',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req.body.name);
-  console.log(req.user.user.replace("COMPANY#",""));
   const result = await client.search({
     index: 'products',
     size: 5,
@@ -592,11 +585,14 @@ router.post('/searchProduct',passport.authenticate('jwt', {session: false, failu
       }
     }
   })
-  console.log(result.body.hits.hits);
   //Get only those with score >= 1
   result.body.hits.hits = result.body.hits.hits.filter(item=>(item._score>=1))
   res.status(200).json(result.body.hits.hits)
-
 });
+
+router.get('/disable/:id', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  console.log(req);
+  console.log(req.user.user);
+})
 
 module.exports = router;

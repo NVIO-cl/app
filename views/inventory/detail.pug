@@ -107,11 +107,7 @@ head
 
                 .col.col-sm-6.col-md-6.d-inline-flex.justify-content-center.justify-content-sm-end.justify-content-md-end.justify-content-lg-end(style='margin-bottom: 12px; padding-left: 0px; padding-right: 0px;')
                     .btn-group(role='group' style='float: right;')
-                        a#edit.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #0d87f0; z-index: 0')
-                            i.fa.fa-pencil
-                            | &nbsp;Editar
-
-                        a#deshabilitar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-deshabilitar' style='background: #0d87f0; border: #0d87f0; margin-bottom: 10px;')
+                        a#deshabilitar.btn.btn-primary(style='background: #0d87f0; border: #0d87f0; margin-bottom: 10px;' href="/inventory/disable/"+productId)
                             i.fa.fa-pause-circle
                             | &nbsp;Deshabilitar
 
