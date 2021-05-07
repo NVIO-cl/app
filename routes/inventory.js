@@ -582,6 +582,9 @@ router.post('/searchProduct',passport.authenticate('jwt', {session: false, failu
               terms: {"productType": ["sub","single"]}
             },
             {
+              term: {"available": true}
+            },
+            {
               match: {"owner": req.user.user.replace("COMPANY#","")}
             }
           ]
