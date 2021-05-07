@@ -58,8 +58,6 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   getProduct = await db.queryv2(paramsProduct);
   var product = getProduct.Items[0];
 
-  console.log(product)
-
   res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId});
 });
 
@@ -97,6 +95,21 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
 
     // Define an array for new subproducts
     var newSubproducts = []
+    var disableSubproducts = []
+
+    // Change variable name
+    delete req.body.productStock
+    req.body.attributesList = req.body.attributes
+    delete req.body.attributes
+    req.body.price = null;
+
+    // Parse the attributes
+    req.body.attributesList.forEach((attribute, i) => {
+      attribute.values = attribute.values.split(",")
+      attribute.values.forEach((value, n) => {
+        attribute.values[n] = value.trim()
+      });
+    });
 
     // Check each subproduct
     req.body.subproduct.forEach((subproduct, i) => {
@@ -130,7 +143,7 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         req.body.stock = totalStock
       }
 
-      //If the ID is not present, create it and append that subproduct to a special array
+      //If the ID is not present, create it and append that subproduct to newSubproduct
       if (!subproduct.id) {
         var subID = nanoid(6);
         while (usedIDs.includes(subID)) {
@@ -140,23 +153,38 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         subproduct.id = subID
         newSubproducts.push(subproduct)
       }
-    });
 
-    delete req.body.productStock
-    req.body.attributesList = req.body.attributes
-    delete req.body.attributes
-    req.body.price = null;
-
-    // Parse the attributes
-
-    req.body.attributesList.forEach((attribute, i) => {
-
-      attribute.values = attribute.values.split(",")
-
-      attribute.values.forEach((value, n) => {
-        attribute.values[n] = value.trim()
+      //Check if attributes values are present in the list. If not, the product must be disabled
+      subproduct.attributes.forEach((attribute, i) => {
+        if (!req.body.attributesList[i].values.includes(attribute.value)) {
+          disableSubproducts.push(subproduct)
+        }
       });
     });
+
+    // Delete duplicates of the disableSubproducts array
+    var uniqueDisableSubproducts = new Set(disableSubproducts);
+    disableSubproducts = Array.from(uniqueDisableSubproducts)
+
+    // If there are subproducts to be disabled, do it.
+    if (disableSubproducts.length > 0) {
+      for (var subproduct of disableSubproducts) {
+        var getID = req.user.user.slice(-6) + product.SK.slice(-6) + subproduct.id
+        console.log(getID);
+        var body = await client.update({
+          index: 'products',
+          id: getID,
+          body: {
+            doc: {
+              available: false
+            }
+          }
+        })
+      }
+    }
+
+
+
 
 
     // Update the product
@@ -182,9 +210,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         ":attributesList": req.body.attributesList
       }
     }
-    console.log(req.body);
     updateProductResult = await db.update(params);
-    console.log(updateProductResult);
+    //res.redirect(req.headers.referer)
   }
 
 
