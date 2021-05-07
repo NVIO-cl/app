@@ -41,9 +41,6 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
   res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
 });
 
-
-
-
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Detalle del Producto";
   var companyID = req.user.user;
@@ -162,6 +159,26 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       });
     });
 
+    // If there are new subproducts to be created, do it.
+    if (newSubproducts.length > 0) {
+      elasticNewSubproducts = []
+      newSubproducts.forEach((item, i) => {
+        elasticNewSubproducts[i] = {};
+        elasticNewSubproducts[i].attributes = item.attributes;
+        elasticNewSubproducts[i].available = true;
+        elasticNewSubproducts[i].owner = req.user.user.replace("COMPANY#", "");
+        elasticNewSubproducts[i].parent = req.user.user.slice(-6)+product.SK.slice(-6);
+        elasticNewSubproducts[i].price = item.price;
+        elasticNewSubproducts[i].productName = item.name;
+        elasticNewSubproducts[i].productType = "sub";
+        elasticNewSubproducts[i].stock = item.stock;
+      });
+      var body = elasticNewSubproducts.flatMap((doc,i) => [{ index: { _index: 'products', _id: elasticNewSubproducts[i].parent+newSubproducts[i].id } }, doc])
+      const { body: bulkResponse } = await client.bulk({ refresh: true, body })
+      console.log("====BULK RESULT====");
+      console.log(bulkResponse);
+    }
+
     // Delete duplicates of the disableSubproducts array
     var uniqueDisableSubproducts = new Set(disableSubproducts);
     disableSubproducts = Array.from(uniqueDisableSubproducts)
@@ -170,7 +187,6 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     if (disableSubproducts.length > 0) {
       for (var subproduct of disableSubproducts) {
         var getID = req.user.user.slice(-6) + product.SK.slice(-6) + subproduct.id
-        console.log(getID);
         var body = await client.update({
           index: 'products',
           id: getID,
