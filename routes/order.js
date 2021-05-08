@@ -164,7 +164,93 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           "pickupDate": req.body.pickupDate
         }
       };
+      //Save the order in DynamoDB
       putItem = await db.put(params);
+
+      // TODO: Save the order in Elasticsearch
+
+      // Check if items are in the inventory and substract the quantity
+      for (var item of itemList) {
+        if (item.inventoryId) {
+          //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
+          updateResult = await client.update({
+            index:'products',
+            id: item.inventoryId,
+            body: {
+              script: {
+                lang: "painless",
+                source: "if(ctx._source.stock != null){if(ctx._source.stock - params.count < 0){ctx._source.stock = 0}else{ctx._source.stock -= params.count}}",
+                params: {
+                  count: item.quantity
+                }
+              }
+            }
+          })
+          // Get the product data in DynamoDB
+          var paramsProduct = {
+            "TableName": process.env.AWS_DYNAMODB_TABLE,
+            "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+            "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+            "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
+          }
+          // Do the query
+          productQuery = await db.queryv2(paramsProduct);
+          var params = {}
+          // If it's a subproduct, we have to substract to the master product too
+          if (item.inventoryId.length == 18) {
+            //Substract the quantity to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+            updateResult = await client.update({
+              index:'products',
+              id: item.inventoryId.substring(0,12),
+              body: {
+                script: {
+                  lang: "painless",
+                  source: "if(ctx._source.stock != null){if(ctx._source.stock - params.count < 0){ctx._source.stock = 0}else{ctx._source.stock -= params.count}}",
+                  params: {
+                    count: item.quantity
+                  }
+                }
+              }
+            })
+            // Substract the quantity on the main and subproduct in DynamoDB
+            // If main product stock is not null, then it uses stock control
+            if (productQuery.Items[0].stock != null) {
+              // Get the subproduct index
+              subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18))
+              // Set the parameters for updating the product
+              params = {
+                "TableName": process.env.AWS_DYNAMODB_TABLE,
+                "Key": {
+                  "PK":req.user.user,
+                  "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+                },
+                "UpdateExpression": "set stock = stock - :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock - :val",
+                "ExpressionAttributeValues": {":val":item.quantity},
+                "ReturnValues": "UPDATED_NEW"
+              }
+              // Do the update
+              updateResult = await db.update(params);
+            }
+          }
+          else {
+            if (productQuery.Items[0].stock != null) {
+            params = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "Key": {
+                "PK":req.user.user,
+                "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+              },
+              "UpdateExpression": "set stock = stock - :val",
+              "ExpressionAttributeValues": {":val":item.quantity},
+              "ReturnValues": "UPDATED_NEW"
+            }
+            // Do the update
+            updateResult = await db.update(params);
+          }
+
+        }
+        }
+      }
       //Redirect back to order detail
       res.redirect('/detail/' + orderID);
     }
@@ -203,7 +289,6 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
 
   var message
   if (req.cookies.message) {
-    console.log(message);
     message = req.cookies.message
     res.clearCookie('message');
   }
@@ -230,7 +315,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
     res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
   }
 
-  //Items
+  // Parse the new items
   var itemList = [];
   var cost = 0;
   req.body.items.forEach((item, i) => {
@@ -256,8 +341,126 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
     }
   });
 
+  // Get the original order to compare products.
+  var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
+  var companyID = req.user.user;
+  var paramsOrder = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+    "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
+  }
+  getOrder = await db.queryv2(paramsOrder);
+  var order = getOrder.Items[0];
+  var changes = []
+  // Check the original products and see if there are matches
+  order.items.forEach((item, i) => {
+    if (item.inventoryId) {
+      var updated = itemList.find(x => x.inventoryId === item.inventoryId);
+      var delta = 0;
+      if (updated !== undefined) {
+        if (updated.quantity != item.quantity) {
+          delta = -(updated.quantity - item.quantity)
+        }
+      }
+      else {
+        delta = item.quantity
+      }
+      var change = {
+        inventoryId: item.inventoryId,
+        delta: delta
+      }
+      changes.push(change)
+    }
+  });
+  // Check for new items that are not on the change list
+  itemList.forEach((item, i) => {
+    var inChanges = changes.find(x => x.inventoryId === item.inventoryId);
+    if (inChanges === undefined) {
+      var change = {
+        inventoryId: item.inventoryId,
+        delta: -item.quantity
+      }
+      changes.push(change)
+    }
+  });
 
-  console.log(req.body);
+  for (var change of changes) {
+    // Get the product on DynamoDB
+    var paramsProduct = {
+      "TableName": process.env.AWS_DYNAMODB_TABLE,
+      "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+      "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+      "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+change.inventoryId.substring(6,12)}
+    }
+    // Do the query
+    productQuery = await db.queryv2(paramsProduct);
+
+    //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
+    updateResult = await client.update({
+      index:'products',
+      id: change.inventoryId,
+      body: {
+        script: {
+          lang: "painless",
+          source: "if(ctx._source.stock != null){if(ctx._source.stock + params.count < 0){ctx._source.stock = 0}else{ctx._source.stock += params.count}}",
+          params: {
+            count: change.delta
+          }
+        }
+      }
+    })
+    if (change.inventoryId.length == 18) {
+      //Substract/add the delta to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+      updateResult = await client.update({
+        index:'products',
+        id: change.inventoryId.substring(0,12),
+        body: {
+          script: {
+            lang: "painless",
+            source: "if(ctx._source.stock != null){if(ctx._source.stock + params.count < 0){ctx._source.stock = 0}else{ctx._source.stock += params.count}}",
+            params: {
+              count: change.delta
+            }
+          }
+        }
+      })
+      if (productQuery.Items[0].stock != null) {
+        // Get the subproduct index
+        subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===change.inventoryId.substring(12,18))
+        // Set the parameters for updating the product
+        params = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "Key": {
+            "PK":req.user.user,
+            "SK": "PRODUCT#"+change.inventoryId.substring(6,12)
+          },
+          "UpdateExpression": "set stock = stock + :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock + :val",
+          "ExpressionAttributeValues": {":val":change.delta},
+          "ReturnValues": "UPDATED_NEW"
+        }
+        // Do the update
+        updateResult = await db.update(params);
+      }
+    }
+    else {
+      if (productQuery.Items[0].stock != null) {
+        params = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "Key": {
+            "PK":req.user.user,
+            "SK": "PRODUCT#"+change.inventoryId.substring(6,12)
+          },
+          "UpdateExpression": "set stock = stock + :val",
+          "ExpressionAttributeValues": {":val":change.delta},
+          "ReturnValues": "UPDATED_NEW"
+        }
+        // Do the update
+        updateResult = await db.update(params);
+      }
+    }
+  }
+
   var orderID = "ORDER#" + req.headers.referer.slice(req.headers.referer.length - 6);
   var payment = 0;
   if (req.body.payment == 'efectivo') {
@@ -330,7 +533,81 @@ router.post('/delete',passport.authenticate('jwt', {session: false, failureRedir
       "ExpressionAttributeValues": {":cd420": companyID ,":cd421": orderID}
     }
     deleteOrder = await db.delete(deleteParams);
-    console.log(deleteOrder);
+
+    for (var item of getOrder.Items[0].items) {
+      if (item.inventoryId) {
+        // Set the params variable for DynamoDB
+        var updateParams = {}
+        //Query the product on DynamoDB
+        var productParams = {
+          "TableName": process.env.AWS_DYNAMODB_TABLE,
+          "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
+          "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
+          "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
+        }
+        var productResult = await db.queryv2(productParams);
+        // Check if it has stock control
+        if (productResult.Items[0].stock != null) {
+          updateResult = await client.update({
+            index:'products',
+            id: item.inventoryId,
+            body: {
+              script: {
+                lang: "painless",
+                source: "if(ctx._source.stock != null){ctx._source.stock += params.count}",
+                params: {
+                  count: item.quantity
+                }
+              }
+            }
+          })
+          // It has stock control. Check if it's a subproduct
+          if (item.inventoryId.length == 18) {
+            updateResult = await client.update({
+              index:'products',
+              id: item.inventoryId.substring(0,12),
+              body: {
+                script: {
+                  lang: "painless",
+                  source: "if(ctx._source.stock != null){ctx._source.stock += params.count}",
+                  params: {
+                    count: item.quantity
+                  }
+                }
+              }
+            })
+            // It is a subproduct. Get the subproduct index.
+            var subproductIndex = productResult.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18))
+            // Generate the parameters for update
+            updateParams = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "Key": {
+                "PK":req.user.user,
+                "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+              },
+              "UpdateExpression": "set stock = stock + :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock + :val",
+              "ExpressionAttributeValues": {":val":item.quantity},
+              "ReturnValues": "UPDATED_NEW"
+            }
+          }
+          else {
+            // It is not a subproduct. Generate the parameters for update
+            updateParams = {
+              "TableName": process.env.AWS_DYNAMODB_TABLE,
+              "Key": {
+                "PK":req.user.user,
+                "SK": "PRODUCT#"+item.inventoryId.substring(6,12)
+              },
+              "UpdateExpression": "set stock = stock - :val",
+              "ExpressionAttributeValues": {":val":item.quantity},
+              "ReturnValues": "UPDATED_NEW"
+            }
+          }
+          // Do the update
+          updateResult = await db.update(updateParams);
+        }
+      }
+    }
     res.cookie('message', {type:'success', message:'Orden eliminada con éxito'});
     res.redirect("/historial")
     // delete (standby for backend help since this is a destructive operation)
@@ -473,39 +750,6 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       req.body.direccion= "";
     }
 
-    // Check each item for stock reduction
-    for (var item of getOrder.Items[0].items) {
-      var result = await client.search({
-        index: '*products',
-        body: {
-          query: {
-            ids: {
-              values: [item.inventoryId]
-            }
-          }
-        }
-      })
-
-      //If the item has stock control, reduce stock of each product
-      if (result.body.hits.hits[0]._source.stock) {
-        var newStock = result.body.hits.hits[0]._source.stock - item.quantity;
-        //If the quantity exceeds stock, just set it at 0 for now. (it should alert when creating it!)
-        if (newStock < 0) {
-          newStock = 0;
-        }
-        updateResult = await client.update({
-          index: result.body.hits.hits[0]._index,
-          id: result.body.hits.hits[0]._id,
-          body: {
-            doc: {
-              stock: newStock
-            }
-          }
-        })
-        
-        // TODO: IF IT IS A SUBPRODUCT, REDUCE GENERAL STOCK TOO
-      }
-    }
     //Save the order data
 
     var params = {
