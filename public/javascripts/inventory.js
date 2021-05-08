@@ -36,6 +36,12 @@ $(document).ready(function() {
         setUrl(1, filtro);
     });
 
+    $( "#availableFilter" ).click(function(event) {
+        event.preventDefault();
+        var filtro = $('#availableFilter').val()
+        setUrl(1, filtro);
+    });
+
 });
 
 function setUrl(page, filtro){
@@ -92,7 +98,7 @@ function setUrl(page, filtro){
             if(params_list[i].includes("f=")){
                 var new_f = params_list[i].replace("f=","")
                 new_f = new_f.replace("?","")
-                if (new_f == 'price_asc' || new_f == 'stock_asc' || new_f == 'productType.keyword_asc' || new_f == 'productName.keyword_asc'){
+                if (new_f == 'price_asc' || new_f == 'stock_asc' || new_f == 'productType.keyword_desc' || new_f == 'productName.keyword_desc' || new_f == 'available_desc'){
                     new_f = ''
                 } else{
                     newUrl = newUrl + "&f=" + new_f

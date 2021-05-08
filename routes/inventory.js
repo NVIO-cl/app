@@ -73,8 +73,10 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
   // Query contains filter
   var f = req.query.f
   if (f != undefined){
-    var f_query = f.replace('_',':')
-    search['sort'] = f_query
+    var f_query = f.split('_')
+    var variable = f_query[0]
+    var order = f_query[1]
+    search['sort'] = variable + ':' + order
   }
 
   // Query
@@ -332,6 +334,7 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
   // Save the main product to get the ID.
   result = await client.index({
     index: 'products',
+    refresh: true,
     id: elasticID,
     body: elasticProduct
   })
