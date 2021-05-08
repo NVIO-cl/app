@@ -331,8 +331,6 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     res.redirect(req.headers.referer)
   }
 
-
-
   else {
     // It is a single product
     if (req.body.productName == '') {
@@ -356,7 +354,7 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         "ExpressionAttributeValues": {
           ":productName": req.body.productName,
           ":price": parseInt(req.body.productPrice),
-          ":stock": req.body.productStock
+          ":stock": req.body.stock
         }
       }
       dynamoUpdateResult = await db.update(params);
@@ -368,7 +366,7 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
           doc: {
             productName: req.body.productName,
             price: parseInt(req.body.productPrice),
-            stock: req.body.productStock
+            stock: req.body.stock
           }
         }
       })
@@ -755,4 +753,3 @@ router.get('/enable/:id', passport.authenticate('jwt', {session: false, failureR
 })
 
 module.exports = router;
-
