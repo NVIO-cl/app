@@ -144,7 +144,7 @@ head
                                                           strong Precio
                                                       input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice')
                                                       .invalid-feedback El precio no puede estar vacío
-                                            if (product.stock)
+                                            if (product.stock !== null)
                                                 .col-xs-2.col-md-4(id='stock')
                                                     .form-group
                                                         label(for='productStock')

@@ -221,7 +221,7 @@ head
                                             //th(scope='row') #{product._id}
                                             td(scope='row') #{product._source.productName}
                                             td(scope='row') #{product._source.attributesList ? 'Sí' : 'No'}
-                                            td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
+                                            td(scope='row') #{(product._source.stock !== null) ? product._source.stock : 'N/A'}
                                             td(scope='row') #{product._source.price ? product._source.price : 'Variable'}
                                             td(scope='row') #{product._source.available ? 'Sí' : 'No'}
                                             td(scope='row')
