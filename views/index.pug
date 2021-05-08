@@ -8,6 +8,7 @@ head
     meta(name='apple-touch-fullscreen' content='yes')
     title Dashboard - Alia
     script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+    script(src='https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js')
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -195,18 +196,65 @@ head
                                             a.dropdown-item(href='#')
                                                 i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                                 | &nbsp;Logout
-            .container-fluid
-                .d-sm-flex.justify-content-between.align-items-center.mb-4
-                    h3.text-dark.mb-0 Bienvenido a Alia
-                //-
-                    a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='#' style='background: #6e3c8e;')
-                        i.fas.fa-download.fa-sm.text-white-50
-                        | &nbsp;Descargar Plantilla
-                .row.justify-content-md-center
-                  .col-md-8
-                    .h4.text-center Aprende a usar la plataforma en 3 minutos:
-                    .embed-responsive.embed-responsive-16by9
-                      iframe(src="https://www.youtube.com/embed/ty2PzG1Lps8?modestbranding=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+            .container-fluid.text-center
+                .row
+                  .col-md
+                    .card.shadow.mb-3
+                      .card-header
+                        .text-primary
+                          | Productos Más Vendidos
+                      .card-body
+                  .col-md
+                    .card.shadow.mb-3
+                      .card-header
+                        .text-primary
+                          | Ventas de la Semana/Mes
+                      .card-body  
+                .row
+                  .col-md-6
+                    .card.shadow.mb-3
+                      .card-header
+                        .text-primary
+                          | Tracking ventas por Mes
+                      .card-body  
+                        canvas#myChart(style='position: relative; height:1vh; width:1vw')
+                        script.
+                          const ctx = document.getElementById('myChart').getContext('2d');
+                          const myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                                datasets: [{
+                                    label: '# of Sales',
+                                    data: [12, 19, 3, 5, 2, 3],
+                                    backgroundColor: 'rgba(8, 97, 255, 0.2)',
+                                    borderColor: 'rgb(8, 97, 255)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                            }
+                          });
+                  .col-md
+                    .card.shadow.mb-3
+                      .card-header
+                        .text-primary
+                          | Cantidad de pedidos por comunas
+                      .card-body 
+                .row 
+                  .col-md
+                    .card.shadow.mb-3
+                      .card-header
+                        .text-primary
+                          | Cantidad de pedidos de la Semana/Mes
+                      .card-body 
+                  .col-md
+                    .card.shadow.mb-3
+                      .card-header
+                        .text-primary
+                          | Tracking cantidad de pedidos por Mes
+                      .card-body 
             //-
                 .row
                     .col-md-6.col-xl-3.mb-4
