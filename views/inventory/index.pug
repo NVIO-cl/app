@@ -201,16 +201,16 @@ head
                                                         i.fas.fa-sort
                                             th(scope='col') ¿Habilitado?
                                                 if(f === undefined)
-                                                    button#availableFilter.btn(value='available_asc' name='f')
-                                                        i.fas.fa-sort
-                                                else if (f == 'available_asc')
                                                     button#availableFilter.btn(value='available_desc' name='f')
-                                                        i.fas.fa-sort-up
+                                                        i.fas.fa-sort
                                                 else if (f == 'available_desc')
+                                                    button#availableFilter.btn(value='available_asc' name='f')
+                                                        i.fas.fa-sort-up
+                                                else if (f == 'available_asc')
                                                     button#availableFilter.btn(value='' name='f')
                                                         i.fas.fa-sort-down
                                                 else
-                                                    button#availableFilter.btn(value='available_asc' name='f')
+                                                    button#availableFilter.btn(value='available_desc' name='f')
                                                         i.fas.fa-sort
                                             th(scope='col') Acciones
                                                 button.btn.invisible
