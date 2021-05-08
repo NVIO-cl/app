@@ -211,7 +211,7 @@ head
                                             td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
                                             td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
                                             td(scope='row')
-                                              a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
+                                              a.btn.btn-primary(href="/inventory/detail/"+product._id.substring(6)) Ver más
 
                         .col.col-sm-12.col-md-12.d-inline-flex.justify-content-center.justify-content-sm-end.justify-content-md-end.justify-content-lg-end
                             nav(aria-label='...')
