@@ -15,6 +15,9 @@ head
         gtag('config', 'G-SJETCMY2EN', {
             'user_id': '#{userID}'
         });
+        
+    script.
+      var available = #{product.available}
     link(rel='icon' type='image/png' href='https://alia.s3.amazonaws.com/assets/img/favicon.png')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
@@ -107,22 +110,24 @@ head
 
                 .col.col-sm-6.col-md-6.d-inline-flex.justify-content-center.justify-content-sm-end.justify-content-md-end.justify-content-lg-end(style='margin-bottom: 12px; padding-left: 0px; padding-right: 0px;')
                     .btn-group(role='group' style='float: right;')
+                      if(product.available)
                         a#deshabilitar.btn.btn-primary(style='background: #0d87f0; border: #0d87f0; margin-bottom: 10px;' href="/inventory/disable/"+productId)
                             i.fa.fa-pause-circle
                             | &nbsp;Deshabilitar
-
-                        // Modal para borrar?
-                        a#borrar.btn.btn-primary(type='button' data-toggle='modal' data-target='#modal-borrar' style='background: #0861ff; border: #0d87f0; margin-bottom: 10px;')
-                            i.fa.fa-trash
-                            | &nbsp;Borrar
-
+                      else
+                        a#habilitar.btn.btn-primary(style='background: #0d87f0; border: #0d87f0; margin-bottom: 10px;' href="/inventory/enable/"+productId)
+                            i.fa.fa-play-circle
+                            | &nbsp;Habilitar
 
                 .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
                     .row
                         .col
                             .card.shadow.mb-3
                                 .card-header.py-3
+                                  if(product.available)
                                     p.text-primary.m-0.font-weight-bold Producto ##{productId}
+                                  else
+                                    p.text-primary.m-0.font-weight-bold Producto ##{productId} (DESHABILITADO)
                                 .card-body
                                         .form-row
                                             .col-xs-2.col-md-4
@@ -170,11 +175,13 @@ head
                                                             input.form-control(type='text' value=''+attribute.values+'' name='attributes['+index+'][values]' id='attributes['+index+'][values]')
                                                             .invalid-feedback El atributo debe tener al menos un valor
                                             .form-group(style='text-align: center;')
+                                              if(product.available)
                                                 button.btn.btn-primary.btn-sm#saveChangesButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Guardar cambios
                                                 button.btn.btn-primary.btn-sm.d-none#createNewSubs(style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Generar nuevos subproductos
                                         else
                                           .form-group(style='text-align: center;')
-                                            button.btn.btn-primary.btn-sm#saveChangesButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Guardar cambios
+                                            if(product.available)
+                                              button.btn.btn-primary.btn-sm#saveChangesButton(type='submit' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Guardar cambios
 
             if(product.productType == 'main')
               .container-fluid

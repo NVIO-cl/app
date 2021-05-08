@@ -591,8 +591,97 @@ router.post('/searchProduct',passport.authenticate('jwt', {session: false, failu
 });
 
 router.get('/disable/:id', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  console.log(req);
-  console.log(req.user.user);
+  // Disable the product on DynamoDB
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK": req.user.user,
+      "SK": 'PRODUCT#'+req.params.id
+    },
+    "UpdateExpression": "set #available = :available",
+    "ExpressionAttributeNames": {
+      "#available":"available"
+    },
+    "ExpressionAttributeValues": {
+      ":available": false
+    }
+  }
+  updateProductResult = await db.update(params);
+
+  // Disable the product (and potentially subproducts) in Elasticsearch
+
+  await client.updateByQuery({
+    index: 'products',
+    refresh: true,
+    body: {
+      script: {
+        lang: 'painless',
+        source: 'ctx._source["available"] = false'
+      },
+      query: {
+        match: {
+          parent: req.user.user.slice(-6) + req.params.id
+        }
+      }
+    }
+  })
+  await client.update({
+    index: 'products',
+    id: req.user.user.slice(-6) + req.params.id,
+    body: {
+      doc: {
+        available: false
+      }
+    }
+  })
+  res.redirect(req.headers.referer)
+})
+
+router.get('/enable/:id', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  // Enable the product on DynamoDB
+  var params = {
+    "TableName": process.env.AWS_DYNAMODB_TABLE,
+    "Key": {
+      "PK": req.user.user,
+      "SK": 'PRODUCT#'+req.params.id
+    },
+    "UpdateExpression": "set #available = :available",
+    "ExpressionAttributeNames": {
+      "#available":"available"
+    },
+    "ExpressionAttributeValues": {
+      ":available": true
+    }
+  }
+  updateProductResult = await db.update(params);
+
+  // Enable the product (and potentially subproducts) in Elasticsearch
+
+  await client.updateByQuery({
+    index: 'products',
+    refresh: true,
+    body: {
+      script: {
+        lang: 'painless',
+        source: 'ctx._source["available"] = true'
+      },
+      query: {
+        match: {
+          parent: req.user.user.slice(-6) + req.params.id
+        }
+      }
+    }
+  })
+  await client.update({
+    index: 'products',
+    id: req.user.user.slice(-6) + req.params.id,
+    body: {
+      doc: {
+        available: true
+      }
+    }
+  })
+  res.redirect(req.headers.referer)
 })
 
 module.exports = router;

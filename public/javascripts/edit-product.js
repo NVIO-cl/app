@@ -5,6 +5,7 @@ var oldReturning = []
 let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
 $(document).ready(function(){
 
+
   //Get the original attributes, values and product name
   $.each($('[id^=attributes][id $=\\[name\\]]'), function(key,value){
     attributes[key] = {
@@ -25,6 +26,10 @@ $(document).ready(function(){
       }
     })
   })
+
+  if (!available) {
+    $(':input').attr('disabled','disabled')
+  }
 
   // If the product name is changed
   $("#productName").on('input',function(e){
