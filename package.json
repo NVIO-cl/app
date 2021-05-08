@@ -29,7 +29,7 @@
     "rut.js": "^1.0.2",
     "validator": "^13.5.2"
   },
-  "description": "NVIO App",
+  "description": "Alia App",
   "main": "app.js",
   "repository": {
     "type": "git",

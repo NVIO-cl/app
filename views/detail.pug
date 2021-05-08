@@ -311,6 +311,7 @@ head
                                 .card-header.py-3.d-flex.justify-content-between.align-items-center
                                     h6.text-primary.font-weight-bold.m-0 Estado de Pago
                                 .card-body
+                                  if (order[0].status.M.payment.N != 0)
                                     strong Comprobante de Pago
                                     br
                                     small Haz click en la imagen para ver el tamaño completo
@@ -321,6 +322,10 @@ head
                                     button#comprobante.mb-1.btn.btn-primary(type='button' style='display: block;background: #12c4f2;border: #12c4f2;margin: auto;width: 50%;') Descargar Comprobante
                                     if (order[0].status.M.payment.N != 2)
                                         button#validarPago.btn.btn-primary(type='button' style='display: block;background: #12c4f2; border: #12c4f2;margin: auto;width: 50%;') Validar Pago
+                                  else
+                                    strong El comprobante aún no ha sido subido por tu cliente
+                                    br
+                                    small Una vez que tu cliente suba su comprobante podrás revisarlo y validar el pago de este pedido
                     .col
                         .card.shadow.mb-4
                             .card-header.py-3.d-flex.justify-content-between.align-items-center
