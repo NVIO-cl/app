@@ -209,11 +209,12 @@ head
                                                     label(for='productPrice')
                                                         strong Precio
                                                     input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'')
-                                                .form-group(id='subproduct['+index+'][stockGroup]')
-                                                    label(for='productStock')
-                                                        strong Stock
-                                                        br
-                                                    input.form-control(id='subproduct['+index+'][stock]' name='subproduct['+index+'][stock]' type='number' value=''+subproduct.stock+'')
+                                                if(subproduct.stock != null)
+                                                  .form-group(id='subproduct['+index+'][stockGroup]')
+                                                      label(for='productStock')
+                                                          strong Stock
+                                                          br
+                                                      input.form-control(id='subproduct['+index+'][stock]' name='subproduct['+index+'][stock]' type='number' value=''+subproduct.stock+'')
 
 
 
