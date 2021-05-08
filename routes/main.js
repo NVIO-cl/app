@@ -2,10 +2,19 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const validator = require('validator');
-const {Client, Status} = require("@googlemaps/google-maps-services-js");
+// const {Client, Status} = require("@googlemaps/google-maps-services-js");
 var multer  = require('multer');
 var upload = multer();
 const { nanoid } = require("nanoid");
+const { Client } = require('@elastic/elasticsearch')
+var db = require("../db");
+const client = new Client({
+  node: process.env.ELASTIC_ENDPOINT,
+  auth: {
+    username: process.env.ELASTIC_USERNAME,
+    password: process.env.ELASTIC_PASSWORD
+  }
+})
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -23,7 +32,95 @@ var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  const title = 'Dashboard'
+
+  // Amount of orders per locality
+  // var localityOrders = {
+  //   index: 'orders',
+  //   body: {
+  //     query: {
+  //       bool: {
+  //         must: [
+  //           {
+  //             match: {"owner": req.user.user.replace("COMPANY#","")}
+  //           }
+  //         ]
+  //       }
+  //     },
+  //     aggs: {
+  //       Comunas: {
+  //         terms: { "field": "locality.keyword" }
+  //       }
+  //     }
+  //   }
+  // }
+  // var result_localityOrders = await client.search(localityOrders)
+  // console.log(result_localityOrders.body.aggregations.Comunas.buckets)
+
+
+  // Base query
+  // var search = {
+  //   index: 'orders',
+  //   body: {
+  //     query: {
+  //       bool: {
+  //         must: [
+  //           {
+  //             match: {"owner": req.user.user.replace("COMPANY#","")}
+  //           }
+  //         ]
+  //       }
+  //     },
+  //     aggs: {
+  //       Comunas: {
+  //         terms: { "field": "locality.keyword" }
+  //       },
+  //       Courriers: {
+  //         terms: { "field": "shippingMethod.keyword"}
+  //       },
+  //       Productos: {
+  //         terms: { "field": 'items.product.keyword'}
+  //       },
+  //       Items: {
+  //         terms: { "field": 'items.quantity'}
+  //       }
+  //     }
+  //   }
+  // }
+
+
+  var search = {
+    index: 'orders',
+    body: {
+      query: {
+        bool: {
+          must: [
+            {
+              match: {"owner": req.user.user.replace("COMPANY#", "")}
+            }
+          ]
+        }
+      },
+      aggs: {
+        suma_costOrder: {
+            sum: {
+              "field": "cost.order"
+            }
+        },
+        suma_costShipping: {
+          sum: {
+            "field": "cost.shipping"
+          }
+        }
+      }
+    }
+  }
+
+  var result = await client.search(search)
+
+  console.log(result.body.aggregations)
+
+  res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", "") });
 });
 
 router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

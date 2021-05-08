@@ -214,7 +214,7 @@ head
                         tbody#tableBody
                           tr(id='items[0]')
                             td
-                              input.form-control(type='text' id='items[0][product]' name='items[0][product]' required onfocus='focusItem(this)')
+                              input.form-control(type='text' id='items[0][product]' name='items[0][product]' required onfocus='focusItem(this)' autocomplete='off')
                               .invalid-feedback 
                                 | Este producto se encuentra sin stock. 
                                 a(href="/inventory") Ir al inventario
