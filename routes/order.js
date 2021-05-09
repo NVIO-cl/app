@@ -46,7 +46,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
     noTransfer = true;
   }
 
-  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer });
+  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, userPlanID: req.user['custom:plan_id'] });
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -310,7 +310,7 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
     res.clearCookie('message');
   }
 
-  res.render('order/edit', { title: 'Alia', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message});
+  res.render('order/edit', { title: 'Alia', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message, userPlanID: req.user['custom:plan_id']});
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

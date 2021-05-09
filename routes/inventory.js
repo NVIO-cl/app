@@ -13,6 +13,16 @@ const client = new Client({
   }
 })
 
+// If the plan ID is lower than 1, redirect the user to the billing page
+router.use(passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),async (req,res,next)=>{
+  if (req.user['custom:plan_id'] >= 1) {
+    next();
+  }
+  else {
+    res.redirect('/billing')
+  }
+})
+
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Inventario";
 
