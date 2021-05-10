@@ -155,7 +155,7 @@ router.post('/register', upload.none(), async(req, res) => {
   var company_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(company_idData);
   var plan_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(plan_idData);
 
-  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData, plan_idData], null, (err, data)=>{
+  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData, plan_idData], null, async (err, data)=>{
     if (err) {
       console.log(err);
       res.cookie('message', {type:'danger', content:err.message});
