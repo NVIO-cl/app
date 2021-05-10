@@ -170,7 +170,7 @@ router.post('/register', upload.none(), async(req, res) => {
     }
     else {
       profilePut = await db.put(params_profile);
-      res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico'});
+      res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico. Si no lo encuentras, revisa tu carpeta de correo no deseado.'});
       return res.redirect('/login');
     }
   })
