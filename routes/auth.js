@@ -148,14 +148,13 @@ router.post('/register', upload.none(), async(req, res) => {
       "createdAt": Date.now()
     }
   };
-  profilePut = await db.put(params_profile);
   var emailAttribute = AmazonCognitoIdentity.CognitoUserAttribute(emailData);
   var updated_atAttribute = AmazonCognitoIdentity.CognitoUserAttribute(updated_atData);
   var first_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(first_nameData);
   var last_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(last_nameData);
   var company_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(company_idData);
   var plan_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(plan_idData);
-  
+
   userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData, plan_idData], null, (err, data)=>{
     if (err) {
       console.log(err);
@@ -163,7 +162,8 @@ router.post('/register', upload.none(), async(req, res) => {
       return res.redirect('/register');
     }
     else {
-      //Do something with the data!
+      // Put the user in DynamoDB AFTER singning up in Cognito
+      profilePut = await db.put(params_profile);
       res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico'});
       return res.redirect('/login');
     }
