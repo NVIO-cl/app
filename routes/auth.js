@@ -88,7 +88,6 @@ router.get('/register', (req, res) => {
 
 // Register POST route
 router.post('/register', upload.none(), async(req, res) => {
-
   if (!validator.isEmail(req.body.email)){
     return res.redirect('/register');
   }
@@ -158,11 +157,18 @@ router.post('/register', upload.none(), async(req, res) => {
   userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData, plan_idData], null, async (err, data)=>{
     if (err) {
       console.log(err);
-      res.cookie('message', {type:'danger', content:err.message});
+      if (err.message == "1 validation error detected: Value at 'password' failed to satisfy constraint: Member must have length greater than or equal to 6") {
+        res.cookie('message', {type:'danger', content:'La contraseña debe tener 6 o más caracteres'});
+      }
+      else if (err.message == "An account with the given email already exists."){
+        res.cookie('message', {type:'danger', content:'Ya existe una cuenta con este correo.'});
+      }
+      else {
+        res.cookie('message', {type:'danger', content:"Error: " + err.message + ". Por favor contactar a soporte@aliachile.com"});
+      }
       return res.redirect('/register');
     }
     else {
-      // Put the user in DynamoDB AFTER singning up in Cognito
       profilePut = await db.put(params_profile);
       res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico'});
       return res.redirect('/login');
