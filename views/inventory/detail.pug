@@ -99,6 +99,12 @@ head
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
+        if (message)
+          .alert.alert-dismissable.fade.show.m-2(role='alert', class='alert-'+message.type)
+            | #{message.content}
+            button.close(type='button' data-dismiss='alert' aria-label='Close')
+              span(aria-hidden='true')
+                |  &times;
         #content
           form#createProduct(action="/inventory/edit" method="POST")
             nav.navbar(style='margin-top: 17px;')

@@ -124,6 +124,11 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Detalle del Producto";
+  var message;
+  if (req.cookies.message != '') {
+    message = req.cookies.message
+    res.clearCookie('message');
+  }
   var companyID = req.user.user;
   var productId = req.originalUrl.slice(req.originalUrl.length - 6);
   var paramsProduct = {
@@ -135,7 +140,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   getProduct = await db.queryv2(paramsProduct);
   var product = getProduct.Items[0];
 
-  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId});
+  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId, message:message});
 });
 
 router.post('/edit', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) =>{
@@ -340,6 +345,7 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         }
       }
     })
+    res.cookie('message', {type:'success', content:'Producto editado con éxito'});
     res.redirect(req.headers.referer)
   }
 
@@ -382,7 +388,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
           }
         }
       })
-      res.redirect('/inventory');
+      res.cookie('message', {type:'success', content:'Producto editado con éxito'});
+      res.redirect(req.headers.referer)
     }
   }
 })
