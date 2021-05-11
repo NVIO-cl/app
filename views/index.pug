@@ -19,6 +19,7 @@ head
     link(rel='icon' type='image/png' href='https://alia.s3.amazonaws.com/assets/img/favicon.png')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='manifest' href='/manifest.json')
 .d-lg-flex.d-sm-block
@@ -81,180 +82,52 @@ head
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
         #content
-            nav.navbar(style='margin-top: 17px;')
-                //-
-                    .container-fluid
-                        button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
-                            i.fas.fa-bars
-                        form.form-inline.d-none.d-sm-inline-block.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search
-                            .input-group
-                                input.bg-light.form-control.border-0.small(type='text' placeholder='Buscar...')
-                                .input-group-append
-                                    button.btn.btn-primary.py-0(type='button' style='background: #6e3c8e;')
-                                        i.fas.fa-search
-                        //-
-                            ul.nav.navbar-nav.flex-nowrap.ml-auto
-                                li.nav-item.dropdown.d-sm-none.no-arrow
-                                    a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                        i.fas.fa-search
-                                    .dropdown-menu.dropdown-menu-right.p-3.animated--grow-in(aria-labelledby='searchDropdown')
-                                        form.form-inline.mr-auto.navbar-search.w-100
-                                            .input-group
-                                                input.bg-light.form-control.border-0.small(type='text' placeholder='Search for ...')
-                                                .input-group-append
-                                                    button.btn.btn-primary.py-0(type='button')
-                                                        i.fas.fa-search
-                                li.nav-item.dropdown.no-arrow.mx-1
-                                    .nav-item.dropdown.no-arrow
-                                        a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                            span.badge.badge-danger.badge-counter 3+
-                                            i.fas.fa-bell.fa-fw
-                                        .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
-                                            h6.dropdown-header alerts center
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .mr-3
-                                                    .bg-primary.icon-circle
-                                                        i.fas.fa-file-alt.text-white
-                                                div
-                                                    span.small.text-gray-500 December 12, 2019
-                                                    p A new monthly report is ready to download!
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .mr-3
-                                                    .bg-success.icon-circle
-                                                        i.fas.fa-donate.text-white
-                                                div
-                                                    span.small.text-gray-500 December 7, 2019
-                                                    p $290.29 has been deposited into your account!
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .mr-3
-                                                    .bg-warning.icon-circle
-                                                        i.fas.fa-exclamation-triangle.text-white
-                                                div
-                                                    span.small.text-gray-500 December 2, 2019
-                                                    p Spending Alert: We&apos;ve noticed unusually high spending for your account.
-                                            a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
-                                li.nav-item.dropdown.no-arrow.mx-1
-                                    .nav-item.dropdown.no-arrow
-                                        a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                            i.fas.fa-envelope.fa-fw
-                                            span.badge.badge-danger.badge-counter 7
-                                        .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
-                                            h6.dropdown-header alerts center
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar4.jpeg')
-                                                    .bg-success.status-indicator
-                                                .font-weight-bold
-                                                    .text-truncate
-                                                        span Hi there! I am wondering if you can help me with a problem I&apos;ve been having.
-                                                    p.small.text-gray-500.mb-0 Emily Fowler - 58m
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar2.jpeg')
-                                                    .status-indicator
-                                                .font-weight-bold
-                                                    .text-truncate
-                                                        span I have the photos that you ordered last month!
-                                                    p.small.text-gray-500.mb-0 Jae Chun - 1d
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar3.jpeg')
-                                                    .bg-warning.status-indicator
-                                                .font-weight-bold
-                                                    .text-truncate
-                                                        span
-                                                            | Last month&apos;s report looks great, I am very happy with the progress so far, keep up the good work!
-                                                    p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
-                                            a.d-flex.align-items-center.dropdown-item(href='#')
-                                                .dropdown-list-image.mr-3
-                                                    img.rounded-circle(src='/images/avatars/avatar5.jpeg')
-                                                    .bg-success.status-indicator
-                                                .font-weight-bold
-                                                    .text-truncate
-                                                        span
-                                                            | Am I a good boy? The reason I ask is because someone told me that people say this to all dogs, even if they aren&apos;t good...
-                                                    p.small.text-gray-500.mb-0 Chicken the Dog &middot; 2w
-                                            a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
-                                    .shadow.dropdown-list.dropdown-menu.dropdown-menu-right(aria-labelledby='alertsDropdown')
-                                .d-none.d-sm-block.topbar-divider
-                                li.nav-item.dropdown.no-arrow
-                                    .nav-item.dropdown.no-arrow
-                                        a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                            span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
-                                            img.border.rounded-circle.img-profile(src='/images/dogs/image3.jpeg' style='width: 50px; height: 50px;')
-                                        .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
-                                            a.dropdown-item(href='#')
-                                                i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
-                                                | &nbsp;Profile
-                                            a.dropdown-item(href='#')
-                                                i.fas.fa-cogs.fa-sm.fa-fw.mr-2.text-gray-400
-                                                | &nbsp;Settings
-                                            a.dropdown-item(href='#')
-                                                i.fas.fa-list.fa-sm.fa-fw.mr-2.text-gray-400
-                                                | &nbsp;Activity log
-                                            .dropdown-divider
-                                            a.dropdown-item(href='#')
-                                                i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
-                                                | &nbsp;Logout
-            .container-fluid.text-center
+            .container-fluid.text-center(style='margin-top: 25px;')
                 .row
                   .col-md
                     .card.shadow.mb-3
                       .card-header
                         .text-primary
                           | Productos Más Vendidos
-                      .card-body
+                      .card-body(style='max-width: 800px')
+                        canvas#topSellers
                   .col-md
                     .card.shadow.mb-3
                       .card-header
                         .text-primary
                           | Ventas de la Semana/Mes
-                      .card-body  
+                      .card-body(style='max-width: 800px')
+                        canvas#salesPeriod
                 .row
                   .col-md-6
                     .card.shadow.mb-3
                       .card-header
                         .text-primary
                           | Tracking ventas por Mes
-                      .card-body  
-                        canvas#myChart(style='position: relative; height:1vh; width:1vw')
-                        script.
-                          const ctx = document.getElementById('myChart').getContext('2d');
-                          const myChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                                datasets: [{
-                                    label: '# of Sales',
-                                    data: [12, 19, 3, 5, 2, 3],
-                                    backgroundColor: 'rgba(8, 97, 255, 0.2)',
-                                    borderColor: 'rgb(8, 97, 255)',
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                            }
-                          });
+                      .card-body(style='max-width: 800px')
+                        canvas#salesBreakdown
                   .col-md
                     .card.shadow.mb-3
                       .card-header
                         .text-primary
                           | Cantidad de pedidos por comunas
-                      .card-body 
+                      .card-body(style='max-width: 800px')
+                        canvas#perLocality
                 .row 
                   .col-md
                     .card.shadow.mb-3
                       .card-header
                         .text-primary
                           | Cantidad de pedidos de la Semana/Mes
-                      .card-body 
+                      .card-body(style='max-width: 800px')
+                        canvas#totalPeriod
                   .col-md
                     .card.shadow.mb-3
                       .card-header
                         .text-primary
                           | Tracking cantidad de pedidos por Mes
-                      .card-body 
+                      .card-body(style='max-width: 800px')
+                        canvas#ordersBreakdown
             //-
                 .row
                     .col-md-6.col-xl-3.mb-4
@@ -386,3 +259,4 @@ script(src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundl
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
+script(src='/javascripts/dash-charts.js')
