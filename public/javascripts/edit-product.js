@@ -243,11 +243,11 @@ $(document).ready(function(){
               <div class="col-xs-2 col-sm-12 col-md-12">
                 <div class="form-group">
                   <label for="productPrice"><strong>Precio</strong></label>
-                  <input class="form-control" id="subproduct[${sp}][price]" name="subproduct[${sp}][price]" type="number">
+                  <input class="form-control" id="subproduct[${sp}][price]" name="subproduct[${sp}][price]" type="number" min=0>
                 </div>
                 <div class="form-group" id="subproduct[${sp}][stockGroup]">
                   <label for="productStock"><strong>Stock</strong><br></label>
-                  <input class="form-control" id="subproduct[${sp}][stock]" name="subproduct[${sp}][stock]" type="number">
+                  <input class="form-control" id="subproduct[${sp}][stock]" name="subproduct[${sp}][stock]" type="number" min=0>
                 </div>
               </div>
             </div>

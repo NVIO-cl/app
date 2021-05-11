@@ -148,7 +148,7 @@ head
                                                   .form-group
                                                       label#priceLabel(for='productPrice')
                                                           strong Precio
-                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice')
+                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice' min=0)
                                                       .invalid-feedback El precio no puede estar vacío
                                             if (product.stock !== null)
                                                 .col-xs-2.col-md-4(id='stock')
@@ -159,7 +159,7 @@ head
                                                         if(product.productType == "main")
                                                           input.form-control#productStock(type='number' value=''+product.stock+'' name='productStock' disabled)
                                                         else
-                                                          input.form-control#productStock(type='number' value=''+product.stock+'' name='productStock')
+                                                          input.form-control#productStock(type='number' value=''+product.stock+'' name='productStock' min=0)
                                         if (product.productType == "main")
                                             each attribute, index in product.attributesList
                                                 hr
@@ -214,13 +214,13 @@ head
                                                 .form-group
                                                     label(for='productPrice')
                                                         strong Precio
-                                                    input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'')
+                                                    input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'' min=0)
                                                 if(subproduct.stock != null)
                                                   .form-group(id='subproduct['+index+'][stockGroup]')
                                                       label(for='productStock')
                                                           strong Stock
                                                           br
-                                                      input.form-control(id='subproduct['+index+'][stock]' name='subproduct['+index+'][stock]' type='number' value=''+subproduct.stock+'')
+                                                      input.form-control(id='subproduct['+index+'][stock]' name='subproduct['+index+'][stock]' type='number' value=''+subproduct.stock+'' min=0)
 
 
 

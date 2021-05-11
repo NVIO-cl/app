@@ -301,11 +301,11 @@ $(document).ready(function(){
                 <div class="col-xs-2 col-sm-12 col-md-12">
                   <div class="form-group">
                     <label for="productPrice"><strong>Precio</strong></label>
-                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}">
+                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}" min=0>
                   </div>
                   <div class="form-group" id="subproduct[${i}][stockGroup]">
                     <label for="productStock"><strong>Stock</strong><br></label>
-                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25">
+                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25" min=0>
                   </div>
                 </div>
               </div>

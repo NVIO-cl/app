@@ -119,14 +119,14 @@ head
                                                 .form-group
                                                     label#priceLabel(for='productPrice')
                                                         strong Precio
-                                                    input.form-control#productPrice(type='number' placeholder='Ej: 8000' name='productPrice')
+                                                    input.form-control#productPrice(type='number' placeholder='Ej: 8000' name='productPrice' min=0)
                                                     .invalid-feedback El precio no puede estar vacío
                                             .col-xs-2.col-md-4.d-none(id='stock')
                                                 .form-group
                                                     label(for='productStock')
                                                         strong Stock
                                                         br
-                                                    input.form-control#productStock(type='number' placeholder='Ej: 25' name='productStock')
+                                                    input.form-control#productStock(type='number' placeholder='Ej: 25' name='productStock' min=0)
                                         .form-row
                                             .col-xs-2.col-md-4(style='height: 25px')
                                                 .form-group
