@@ -81,53 +81,120 @@ head
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
-        #content
-            .container-fluid.text-center(style='margin-top: 25px;')
-                .row
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Productos Más Vendidos
-                      .card-body(style='max-width: 800px')
-                        canvas#topSellers
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Ventas de la Semana/Mes
-                      .card-body(style='max-width: 800px')
-                        canvas#salesPeriod
-                .row
-                  .col-md-6
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Tracking ventas por Mes
-                      .card-body(style='max-width: 800px')
-                        canvas#salesBreakdown
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Cantidad de pedidos por comunas
-                      .card-body(style='max-width: 800px')
-                        canvas#perLocality
-                .row 
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Cantidad de pedidos de la Semana/Mes
-                      .card-body(style='max-width: 800px')
-                        canvas#totalPeriod
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Tracking cantidad de pedidos por Mes
-                      .card-body(style='max-width: 800px')
-                        canvas#ordersBreakdown
+        #content.container-fluid(style='margin-top: 32px;')
+            .d-sm-flex.justify-content-between.align-items-center.mb-4
+                h3.text-dark.mb-0 Dashboard
+            .row
+                .col-md-3.col-xl-3.col-sm-6.mb-4
+                    .card.shadow.border-left-primary.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                        span Ventas Semanal
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span $178,000
+                                .col-auto.d-md-none.d-xl-block
+                                    i.fas.fa-coins.fa-2x.text-gray-300
+                .col-md-3.col-xl-3.col-sm-6.mb-4
+                    .card.shadow.border-left-info.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                        span Ventas Mensual
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span $615,000
+                                .col-auto.d-md-none.d-xl-block
+                                    i.fas.fa-money-bill-wave.fa-2x.text-gray-300
+                .col-md-3.col-xl-3.col-sm-6.mb-4
+                    .card.shadow.border-left-primary.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                        span Pedidos Semanal
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span $178,000
+                                .col-auto.d-md-none.d-xl-block
+                                    i.fas.fa-boxes.fa-2x.text-gray-300
+                .col-md-3.col-xl-3.col-sm-6.mb-4
+                    .card.shadow.border-left-info.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                        span Pedidos Mensual
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span $615,000
+                                .col-auto.d-md-none.d-xl-block
+                                    i.fas.fa-box.fa-2x.text-gray-300
+            .row
+                .col-lg-7.col-xl-8
+                    .card.shadow.mb-4
+                        .card-header.d-flex.justify-content-between.align-items-center
+                            h6.text-primary.font-weight-bold.m-0 Productos Más Vendidos
+                            .dropdown.no-arrow
+                                button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                    i.fas.fa-ellipsis-v.text-gray-400
+                                .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                    p.text-center.dropdown-header dropdown header:
+                                    a.dropdown-item(href='#') &nbsp;Action
+                                    a.dropdown-item(href='#') &nbsp;Another action
+                                    .dropdown-divider
+                                    a.dropdown-item(href='#') &nbsp;Something else here
+                        .card-body
+                            .chart-area
+                                canvas#topSellers
+                .col-lg-5.col-xl-4
+                    .card.shadow.mb-4
+                        .card-header.d-flex.justify-content-between.align-items-center
+                            h6.text-primary.font-weight-bold.m-0 Pedidos por Comuna
+                            .dropdown.no-arrow
+                                button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                    i.fas.fa-ellipsis-v.text-gray-400
+                                .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                    p.text-center.dropdown-header dropdown header:
+                                    a.dropdown-item(href='#') &nbsp;Action
+                                    a.dropdown-item(href='#') &nbsp;Another action
+                                    .dropdown-divider
+                                    a.dropdown-item(href='#') &nbsp;Something else here
+                        .card-body
+                            .chart-area
+                                canvas#perLocality
+            .row
+                .col-lg-6.col-xl-6
+                    .card.shadow.mb-4
+                        .card-header.d-flex.justify-content-between.align-items-center
+                            h6.text-primary.font-weight-bold.m-0 Tracking Pedidos por Mes
+                            .dropdown.no-arrow
+                                button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                    i.fas.fa-ellipsis-v.text-gray-400
+                                .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                    p.text-center.dropdown-header dropdown header:
+                                    a.dropdown-item(href='#') &nbsp;Action
+                                    a.dropdown-item(href='#') &nbsp;Another action
+                                    .dropdown-divider
+                                    a.dropdown-item(href='#') &nbsp;Something else here
+                        .card-body
+                            .chart-area
+                                canvas#perPeriod
+                .col-lg-6.col-xl-6
+                    .card.shadow.mb-4
+                        .card-header.d-flex.justify-content-between.align-items-center
+                            h6.text-primary.font-weight-bold.m-0 Tracking Ventas por Mes
+                            .dropdown.no-arrow
+                                button.btn.btn-link.btn-sm.dropdown-toggle(data-toggle='dropdown' aria-expanded='false' type='button')
+                                    i.fas.fa-ellipsis-v.text-gray-400
+                                .dropdown-menu.shadow.dropdown-menu-right.animated--fade-in
+                                    p.text-center.dropdown-header dropdown header:
+                                    a.dropdown-item(href='#') &nbsp;Action
+                                    a.dropdown-item(href='#') &nbsp;Another action
+                                    .dropdown-divider
+                                    a.dropdown-item(href='#') &nbsp;Something else here
+                        .card-body
+                            .chart-area
+                                canvas#trackMonth
             //-
                 .row
                     .col-md-6.col-xl-3.mb-4
@@ -142,11 +209,11 @@ head
                                     .col-auto
                                         i.fas.fa-calendar.fa-2x.text-gray-300
                     .col-md-6.col-xl-3.mb-4
-                        .card.shadow.border-left-success.py-2
+                        .card.shadow.border-left-info.py-2
                             .card-body
                                 .row.align-items-center.no-gutters
                                     .col.mr-2
-                                        .text-uppercase.text-success.font-weight-bold.text-xs.mb-1
+                                        .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
                                             span Ventas Mensual
                                         .text-dark.font-weight-bold.h5.mb-0
                                             span $615,000
@@ -201,7 +268,7 @@ head
                                         i.fas.fa-circle.text-primary
                                         | &nbsp;Instagram
                                     span.mr-2
-                                        i.fas.fa-circle.text-success
+                                        i.fas.fa-circle.text-info
                                         | &nbsp;Tienda Web
                                     span.mr-2
                                         i.fas.fa-circle.text-info
