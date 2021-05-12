@@ -124,53 +124,53 @@ const topSellers = new Chart(topSellersCtx, {
       }
     });
 
-    const trackMonthCtx = document.getElementById('trackMonth').getContext('2d');
-    const trackMonth = new Chart(trackMonthCtx, {
-      type:"line",
-      data:{
-        labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
-        datasets:[{
-          label:"Earnings",
-          fill:true,
-          data:["3700","100","8000","4000","7600","2050","7000","2000"],
-          backgroundColor:"rgba(78, 115, 223, 0.05)",
-          borderColor:"#0861ff"
-        }]
-      },
-      options:{
-        maintainAspectRatio:false,
-        legend:{
-          display:false
-        },
-        title:{},
-        scales:{
-          xAxes:[{
-            gridLines:{
-              color:"rgb(234, 236, 244)",
-              zeroLineColor:"rgb(234, 236, 244)",
-              drawBorder:false,
-              drawTicks:false,
-              borderDash:["2"],
-              zeroLineBorderDash:["2"],
-              drawOnChartArea:false},
-              ticks:{
-                fontColor:"#858796",
-                padding:20
-              }
-            }],
-            yAxes:[{
-              gridLines:{
-                color:"rgb(234, 236, 244)",
-                zeroLineColor:"rgb(234, 236, 244)",
-                drawBorder:false,
-                drawTicks:false,
-                borderDash:["2"],
-                zeroLineBorderDash:["2"]},
-                ticks:{
-                  fontColor:"#858796",
-                  padding:20
-                }
-              }]
-            }
+const trackMonthCtx = document.getElementById('trackMonth').getContext('2d');
+const trackMonth = new Chart(trackMonthCtx, {
+  type:"line",
+  data:{
+    labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
+    datasets:[{
+      label:"Earnings",
+      fill:true,
+      data:["3700","100","8000","4000","7600","2050","7000","2000"],
+      backgroundColor:"rgba(78, 115, 223, 0.05)",
+      borderColor:"#0861ff"
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,
+    legend:{
+      display:false
+    },
+    title:{},
+    scales:{
+      xAxes:[{
+        gridLines:{
+          color:"rgb(234, 236, 244)",
+          zeroLineColor:"rgb(234, 236, 244)",
+          drawBorder:false,
+          drawTicks:false,
+          borderDash:["2"],
+          zeroLineBorderDash:["2"],
+          drawOnChartArea:false},
+          ticks:{
+            fontColor:"#858796",
+            padding:20
           }
-        });
+        }],
+        yAxes:[{
+          gridLines:{
+            color:"rgb(234, 236, 244)",
+            zeroLineColor:"rgb(234, 236, 244)",
+            drawBorder:false,
+            drawTicks:false,
+            borderDash:["2"],
+            zeroLineBorderDash:["2"]},
+            ticks:{
+              fontColor:"#858796",
+              padding:20
+            }
+          }]
+        }
+      }
+    });
