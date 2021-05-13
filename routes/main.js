@@ -34,60 +34,11 @@ var date_parser = require("../date_parser");
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const title = 'Dashboard'
 
-  // Amount of orders per locality
-  // var localityOrders = {
-  //   index: 'orders',
-  //   body: {
-  //     query: {
-  //       bool: {
-  //         must: [
-  //           {
-  //             match: {"owner": req.user.user.replace("COMPANY#","")}
-  //           }
-  //         ]
-  //       }
-  //     },
-  //     aggs: {
-  //       Comunas: {
-  //         terms: { "field": "locality.keyword" }
-  //       }
-  //     }
-  //   }
-  // }
-  // var result_localityOrders = await client.search(localityOrders)
-  // console.log(result_localityOrders.body.aggregations.Comunas.buckets)
-
-
-  // Base query
-  // var search = {
-  //   index: 'orders',
-  //   body: {
-  //     query: {
-  //       bool: {
-  //         must: [
-  //           {
-  //             match: {"owner": req.user.user.replace("COMPANY#","")}
-  //           }
-  //         ]
-  //       }
-  //     },
-  //     aggs: {
-  //       Comunas: {
-  //         terms: { "field": "locality.keyword" }
-  //       },
-  //       Courriers: {
-  //         terms: { "field": "shippingMethod.keyword"}
-  //       },
-  //       Productos: {
-  //         terms: { "field": 'items.product.keyword'}
-  //       },
-  //       Items: {
-  //         terms: { "field": 'items.quantity'}
-  //       }
-  //     }
-  //   }
-  // }
-
+  // Monthly info
+  // Gets current date and exact same date but one year ago
+  var today = new Date()
+  var firstDay = new Date(today.getFullYear() - 1, today.getMonth(), 1);
+  var lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 1, 0, 0, 0, -1);
 
   var search = {
     index: 'orders',
@@ -97,19 +48,38 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
           must: [
             {
               match: {"owner": req.user.user.replace("COMPANY#", "")}
+            },
+            {
+              range: {
+                createdAt: {
+                  gte: firstDay.getTime(),
+                  lt: lastDay.getTime()
+                }
+              }
             }
           ]
         }
       },
       aggs: {
-        suma_costOrder: {
-            sum: {
-              "field": "cost.order"
+        amount_per_month: {
+          date_histogram: {
+            field: "createdAt",
+            interval: "month"
+          },
+          aggs: {
+            cost_order: {
+              sum: {
+                field: "cost.order"
+              }
+            },
+            cost_shipping: {
+              sum: {
+                field: "cost.shipping"
+              }
+            },
+            comunas: {
+              terms: { "field": "locality.keyword" }
             }
-        },
-        suma_costShipping: {
-          sum: {
-            "field": "cost.shipping"
           }
         }
       }
@@ -118,9 +88,119 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
   var result = await client.search(search)
 
-  console.log(result.body.aggregations)
+  // Double for checks for every Product & Quantity pair
+  var products_quantity = {}
+  for (i in result.body.hits.hits){
+    for (j in result.body.hits.hits[i]._source.items){
+      var producto = result.body.hits.hits[i]._source.items[j].product
+      var cantidad = result.body.hits.hits[i]._source.items[j].quantity
+      products_quantity[producto] = cantidad
+    }
+  }
 
-  res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", "") });
+  // Construct monthly info for frontend
+  var monthlyInfo_list = []
+  var monthlyInfo = {}
+  for (var i in result.body.aggregations.amount_per_month.buckets){
+
+    var key = new Date(result.body.aggregations.amount_per_month.buckets[i].key)
+    var month = key.getUTCMonth() + 1
+    var year = key.getFullYear()
+    var fecha = month + '/' + year
+
+    monthlyInfo["month_year"] = fecha
+    monthlyInfo["monthKey"] = result.body.aggregations.amount_per_month.buckets[i].key
+    monthlyInfo["ordersAmount"] = result.body.aggregations.amount_per_month.buckets[i].doc_count
+    monthlyInfo["productQuantity"] = products_quantity
+    monthlyInfo["localities"] = result.body.aggregations.amount_per_month.buckets[i].comunas.buckets
+    monthlyInfo["costShippings"] = result.body.aggregations.amount_per_month.buckets[i].cost_shipping
+    monthlyInfo["costOrders"] = result.body.aggregations.amount_per_month.buckets[i].cost_order
+
+    monthlyInfo_list.push(monthlyInfo)
+    monthlyInfo = {}
+  }
+
+  // Weekly info
+  // Gets monday of the current week
+  function getMonday(d) {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+    d.setHours(0);
+    d.setMinutes(0);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    return new Date(d.setDate(diff));
+  }
+
+  // Gets sunday of the current week
+  function getSunday(d) {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + 7; // adjust when day is sunday
+    d.setHours(23);
+    d.setMinutes(59);
+    d.setSeconds(59);
+    d.setMilliseconds(59);
+    return new Date(d.setDate(diff));
+  }
+
+  var search_weekly = {
+    index: 'orders',
+    body: {
+      query: {
+        bool: {
+          must: [
+            {
+              match: {"owner": req.user.user.replace("COMPANY#", "")}
+            },
+            {
+              range: {
+                createdAt: {
+                  gte: getMonday(new Date()).getTime(),
+                  lt: getSunday(new Date()).getTime()
+                }
+              }
+            }
+          ]
+        }
+      },
+      aggs: {
+        amount_per_week: {
+          date_histogram: {
+            field: "createdAt",
+            interval: "week"
+          },
+          aggs: {
+            cost_order: {
+              sum: {
+                field: "cost.order"
+              }
+            },
+            cost_shipping: {
+              sum: {
+                field: "cost.shipping"
+              }
+            },
+            comunas: {
+              terms: { "field": "locality.keyword" }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  var result_weekly = await client.search(search_weekly)
+
+  // Construct weekly info for frontend
+  var weeklyInfo = {}
+  weeklyInfo["weekKey"] = result_weekly.body.aggregations.amount_per_week.buckets[0].key
+  weeklyInfo["ordersAmount"] = result_weekly.body.aggregations.amount_per_week.buckets[0].doc_count
+  weeklyInfo["costShippings"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_shipping
+  weeklyInfo["costOrders"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_order
+
+  res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", ""), monthlyInfo_list: monthlyInfo_list, weeklyInfo: weeklyInfo });
 });
 
 router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
