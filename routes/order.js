@@ -675,7 +675,7 @@ router.get('/:id',  async(req, res) => {
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
   var logo = ""
   try {
-    const headCode = await s3.headObject({Bucket: process.env.AWS_S3_BUCKET, Key: "logos/"+req.user.user+".png"}).promise()
+    const headCode = await s3.headObject({Bucket: process.env.AWS_S3_BUCKET, Key: "logos/"+companyID+".png"}).promise()
     logo = await s3.getSignedUrl('getObject', {Key: "logos/"+companyID+".png", Expires: 60});
   } catch (e) {
     logo = "/images/placeholder.jpeg"
