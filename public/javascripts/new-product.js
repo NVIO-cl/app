@@ -120,23 +120,27 @@ $(document).ready(function(){
   $('#createProductButton').click(function(e){
     //$('#createProductButton').addClass("disabled").attr("disabled", true);
     var hasEmptyData = false;
+    var hasNegatives = false;
     e.preventDefault();
     if ($('#productName').val() == "") {
       $('#productName').addClass("is-invalid")
       hasEmptyData=true;
-    }
-    else {
+    } else {
       $('#productName').removeClass("is-invalid")
       $('#productName').addClass("is-valid")
     }
+
     if ($('#productPrice').val() == "") {
       $('#productPrice').addClass("is-invalid")
       hasEmptyData=true;
-    }
-    else {
+    } else if (parseInt($('#productPrice').val()) <= 0) {
+      $('#productPrice').addClass("is-invalid")
+      hasNegatives=true;
+    } else {
       $('#productPrice').removeClass("is-invalid")
       $('#productPrice').addClass("is-valid")
     }
+
     if (subproducts) {
       //Check if subproducts are filled with data
       var $attributes = $("[id$=\\[name\\]]");
@@ -144,22 +148,21 @@ $(document).ready(function(){
         if ($('#attributes\\['+index+'\\]\\[name\\]').val()=="") {
           $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid')
           hasEmptyData=true;
-        }
-        else {
+        } else {
           $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid')
           $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid')
         }
+
         if ($('#attributes\\['+index+'\\]\\[values\\]').val()=="") {
           $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid')
           hasEmptyData=true;
-        }
-        else {
+        } else {
           $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid')
           $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid')
         }
       });
     }
-    if (!hasEmptyData) {
+    if (!hasEmptyData && !hasNegatives) {
       if (subproducts) {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
         generateSubproducts();
@@ -171,13 +174,11 @@ $(document).ready(function(){
         //     </div>
         //   </div>
         // `)
-      }
-      else {
+      } else {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
         $('#createProduct').submit()
       }
-    }
-    else {
+    } else {
       $('#createProductButton').removeClass("disabled").attr("disabled", false);
     }
 
