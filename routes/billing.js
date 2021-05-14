@@ -7,7 +7,7 @@ var db = require("../db");
 
 router.get('/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Billing";
-  res.render('billing/billing', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+  res.render('billing/billing', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 module.exports = router;

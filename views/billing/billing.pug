@@ -124,7 +124,10 @@ head
                           i.fas.fa-check.mr-3.text-primary
                           | Exportar datos a Excel
                     .text-center.m-auto
-                      button.btn.btn-lg.btn-primary ¡Comienza ahora!
+                      if (planID == 0)
+                        button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                        button.btn.btn-lg.btn-primary Comenzar
             .col-xl.col-lg-6
               .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
                   .card-header.py-3
@@ -150,7 +153,10 @@ head
                           i.fas.fa-check.mr-3.text-primary
                           | Stock
                     .text-center.m-auto
-                      button.btn.btn-lg.btn-primary Próximamente
+                      if (planID == 1)
+                        button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                        button.btn.btn-lg.btn-primary Comenzar
             .col-xl.col-lg-6
               .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
                   .card-header.py-3
@@ -176,7 +182,10 @@ head
                           i.fas.fa-check.mr-3.text-primary
                           | Analítica de productos
                     .text-center.m-auto
-                      button.btn.btn-lg.btn-primary Próximamente  
+                      if (planID == 2)
+                        button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                        button.btn.btn-lg.btn-primary Comenzar 
             .col-xl.col-lg-6
               .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
                   .card-header.py-3
@@ -202,7 +211,10 @@ head
                           i.fas.fa-check.mr-3.text-primary
                           | Elimina branding de Alia
                     .text-center.m-auto
-                      button.btn.btn-lg.btn-primary Próximamente
+                      if (planID == 3)
+                        button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                        button.btn.btn-lg.btn-primary Comenzar
       footer.bg-white.sticky-footer
           .container.my-auto
               .text-center.my-auto.copyright

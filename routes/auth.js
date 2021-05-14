@@ -54,7 +54,7 @@ router.post('/login', upload.none(), function (req, res, next) {
       if (err) {
         res.send(err);
       }
-      res.cookie('token', user, {maxAge: maxAge, secure: false, httpOnly: true,});
+      res.cookie('token', user, {maxAge: maxAge, secure: false, httpOnly: false,});
       return res.redirect('/');
     });
   })(req, res);
