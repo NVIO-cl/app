@@ -417,6 +417,9 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
 
   //Convert main price string to int
   req.body.productPrice = parseInt(req.body.productPrice);
+  if (await req.body.productPrice < 1){
+    res.redirect(req.headers.referer);
+  }
 
   // If main stock is NaN, set it to null. If not, parse the stock.
   if (isNaN(parseInt(req.body.productStock))) {
@@ -424,6 +427,9 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
   }
   else {
     req.body.productStock = parseInt(req.body.productStock);
+    if (await req.body.productStock < 1){
+      res.redirect(req.headers.referer);
+    }
   }
 
   if (req.body.checkAttributes) {
