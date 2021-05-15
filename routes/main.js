@@ -200,7 +200,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
   weeklyInfo["costShippings"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_shipping
   weeklyInfo["costOrders"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_order
 
-  res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", ""), monthlyInfo_list: monthlyInfo_list, weeklyInfo: weeklyInfo });
+  res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", ""), monthlyInfo_list: JSON.stringify(monthlyInfo_list), weeklyInfo: JSON.stringify(weeklyInfo) });
 });
 
 router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

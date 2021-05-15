@@ -21,7 +21,11 @@ head
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    link(rel='stylesheet' href='/stylesheets/charts.css')
     link(rel='manifest' href='/manifest.json')
+    script.
+      var monthly = JSON.parse('!{monthlyInfo_list}');
+      var weekly = JSON.parse('!{weeklyInfo}');
 .d-lg-flex.d-sm-block
     nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
       a.navbar-brand(href="/")
@@ -49,8 +53,7 @@ head
           li.nav-item
               a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                   i.far.fa-user-circle.mr-1
-                  span Cerrar Sesión 
-            
+                  span Cerrar Sesión     
     nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
         .container-fluid.d-flex.flex-column.p-0
             a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
@@ -93,7 +96,7 @@ head
                                     .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
                                         span Ventas Semanal
                                     .text-dark.font-weight-bold.h5.mb-0
-                                        span $178,000
+                                         span $#{JSON.parse(weeklyInfo).costOrders.value}
                                 .col-auto.d-md-none.d-xl-block
                                     i.fas.fa-coins.fa-2x.text-gray-300
                 .col-md-3.col-xl-3.col-sm-6.mb-4
@@ -104,7 +107,7 @@ head
                                     .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
                                         span Ventas Mensual
                                     .text-dark.font-weight-bold.h5.mb-0
-                                        span $615,000
+                                        span $#{JSON.parse(monthlyInfo_list).slice(-1)[0].costOrders.value}
                                 .col-auto.d-md-none.d-xl-block
                                     i.fas.fa-money-bill-wave.fa-2x.text-gray-300
                 .col-md-3.col-xl-3.col-sm-6.mb-4
@@ -115,7 +118,7 @@ head
                                     .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
                                         span Pedidos Semanal
                                     .text-dark.font-weight-bold.h5.mb-0
-                                        span 74
+                                        span #{JSON.parse(weeklyInfo).ordersAmount}
                                 .col-auto.d-md-none.d-xl-block
                                     i.fas.fa-boxes.fa-2x.text-gray-300
                 .col-md-3.col-xl-3.col-sm-6.mb-4
@@ -126,7 +129,7 @@ head
                                     .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
                                         span Pedidos Mensual
                                     .text-dark.font-weight-bold.h5.mb-0
-                                        span 392
+                                        span #{JSON.parse(monthlyInfo_list).slice(-1)[0].ordersAmount}
                                 .col-auto.d-md-none.d-xl-block
                                     i.fas.fa-box.fa-2x.text-gray-300
             .row
@@ -158,17 +161,17 @@ head
                 .col-lg-6.col-xl-6
                     .card.shadow.mb-4
                         .card-header.d-flex.justify-content-between.align-items-center
-                            h6.text-primary.font-weight-bold.m-0 Tracking Pedidos por Mes
+                            h6.text-primary.font-weight-bold.m-0 Resumen Pedidos por Mes
                         .card-body
                             .chart-area
-                                canvas#perPeriod
+                                canvas#ordersMonthly
                 .col-lg-6.col-xl-6
                     .card.shadow.mb-4
                         .card-header.d-flex.justify-content-between.align-items-center
-                            h6.text-primary.font-weight-bold.m-0 Tracking Ventas por Mes
+                            h6.text-primary.font-weight-bold.m-0 Resumen Ventas por Mes
                         .card-body
                             .chart-area
-                                canvas#trackMonth
+                                canvas#salesMonthly
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
@@ -193,3 +196,5 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.m
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
 script(src='/javascripts/dash-charts.js')
+script.
+  chartEm(weekly, monthly);

@@ -186,10 +186,10 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
         }
       })
 
-      // Check if items are in the inventory and substract the quantity
+      // Check if items are in the inventory and subtract the quantity
       for (var item of itemList) {
         if (item.inventoryId) {
-          //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
+          //subtract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
           updateResult = await client.update({
             index:'products',
             id: item.inventoryId,
@@ -213,9 +213,9 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           // Do the query
           productQuery = await db.queryv2(paramsProduct);
           var params = {}
-          // If it's a subproduct, we have to substract to the master product too
+          // If it's a subproduct, we have to subtract to the master product too
           if (item.inventoryId.length == 18) {
-            //Substract the quantity to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+            //subtract the quantity to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
             updateResult = await client.update({
               index:'products',
               id: item.inventoryId.substring(0,12),
@@ -229,7 +229,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
                 }
               }
             })
-            // Substract the quantity on the main and subproduct in DynamoDB
+            // subtract the quantity on the main and subproduct in DynamoDB
             // If main product stock is not null, then it uses stock control
             if (productQuery.Items[0].stock != null) {
               // Get the subproduct index
@@ -414,7 +414,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
       // Do the query
       productQuery = await db.queryv2(paramsProduct);
 
-      //Substract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
+      //subtract the quantity in Elasticsearch (subproduct or single). If it goes below zero, cap it to 0. (should warn the user in frontend)
       updateResult = await client.update({
         index:'products',
         id: change.inventoryId,
@@ -429,7 +429,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
         }
       })
       if (change.inventoryId.length == 18) {
-        //Substract/add the delta to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
+        //subtract/add the delta to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
         updateResult = await client.update({
           index:'products',
           id: change.inventoryId.substring(0,12),
