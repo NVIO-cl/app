@@ -133,7 +133,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     monthlyInfo["month_year"] = fecha
     monthlyInfo["monthKey"] = result.body.aggregations.amount_per_month.buckets[i].key
     monthlyInfo["ordersAmount"] = result.body.aggregations.amount_per_month.buckets[i].doc_count
-    monthlyInfo["productQuantity"] = products_quantity
+    monthlyInfo["productQuantity"] = products_quantity_list
     monthlyInfo["localities"] = result.body.aggregations.amount_per_month.buckets[i].comunas.buckets
     monthlyInfo["costShippings"] = result.body.aggregations.amount_per_month.buckets[i].cost_shipping
     monthlyInfo["costOrders"] = result.body.aggregations.amount_per_month.buckets[i].cost_order

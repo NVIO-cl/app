@@ -4,11 +4,17 @@ function chartEm(weekly, monthly){
   const latestMonth = monthly.slice(-1)[0];
 
   // Top sellers
-  console.log(latestMonth.productQuantity.length)
   var productKeys = [];
   var productCounts = [];
-
-  for(var i = 0; i < latestMonth.productQuantity.length; i++){
+  
+  // Do at most 8 products
+  var prodLoopMin;
+  if(latestMonth.productQuantity.length < 8){
+    prodLoopMin = latestMonth.productQuantity.length;
+  } else {
+    prodLoopMin = 8;
+  }
+  for(var i = 0; i < prodLoopMin; i++){
       productKeys.push(latestMonth.productQuantity[i].key);
       productCounts.push(latestMonth.productQuantity[i].value);
   }
@@ -99,15 +105,26 @@ function chartEm(weekly, monthly){
     });
 
   // Resumen mensual de pedidos
+  const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+  const monthKeys = []        // Used for both monthly metrics
+  const monthOrders = []      // Used in "ordersMonthly"
+  const monthSaleValues = []  // Used in "salesMonthly"
+  for(var i = 0; i < monthly.length; i++){
+    monthKeys.push(monthNames[parseInt(monthly[i].month_year.split('/')[0]) - 1]) // Take the month/year, keep the month and map it to the list of month names
+    monthOrders.push(monthly[i].ordersAmount)
+    monthSaleValues.push(monthly[i].costOrders.value)
+  }
+  monthOrders.push(0);
+  monthSaleValues.push(0);
   const ordersMonthlyCtx = document.getElementById('ordersMonthly').getContext('2d');
   const ordersMonthly = new Chart(ordersMonthlyCtx, {
     type:"line",
     data:{
-      labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
+      labels:monthKeys,
       datasets:[{
-        label:"Earnings",
+        label:"Número de Pedidos",
         fill:true,
-        data:["37000","10000","8000","4000","7600","2050","7000","2000"],
+        data:monthOrders,
         backgroundColor:"rgba(78, 115, 223, 0.05)",
         borderColor:"#0861ff"
       }]
@@ -144,7 +161,8 @@ function chartEm(weekly, monthly){
               ticks:{
                 fontColor:"#858796",
                 padding:20
-              }
+              },
+              beginAtZero: true // This does not seem to be working, push a '0' at the end of the data array as a workaround
             }]
           },
           elements:{
@@ -156,15 +174,16 @@ function chartEm(weekly, monthly){
       });
 
   // Resumen mensual de ventas
+
   const salesMonthlyCtx = document.getElementById('salesMonthly').getContext('2d');
   const salesMonthly = new Chart(salesMonthlyCtx, {
     type:"line",
     data:{
-      labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
+      labels:monthKeys,
       datasets:[{
-        label:"Earnings",
+        label:"Ventas",
         fill:true,
-        data:["37000","10000","8000","4000","7600","2050","7000","2000"],
+        data:monthSaleValues,
         backgroundColor:"rgba(78, 115, 223, 0.05)",
         borderColor:"#0861ff"
       }]
@@ -200,7 +219,11 @@ function chartEm(weekly, monthly){
               zeroLineBorderDash:["2"]},
               ticks:{
                 fontColor:"#858796",
-                padding:20
+                padding:20,
+                callback: function(value, index, values) {
+                  return '$ ' + value;
+                },
+                beginAtZero: true
               }
             }]
           },
