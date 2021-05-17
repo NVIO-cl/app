@@ -90,11 +90,33 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
   // Double for checks for every Product & Quantity pair
   var products_quantity = {}
+  var products_quantity_list = []
   for (i in result.body.hits.hits){
     for (j in result.body.hits.hits[i]._source.items){
       var producto = result.body.hits.hits[i]._source.items[j].product
       var cantidad = result.body.hits.hits[i]._source.items[j].quantity
-      products_quantity[producto] = cantidad
+
+      // Checks if a product appears in separate orders and groups quantity by its name
+      if (products_quantity_list.length == 0){
+        products_quantity["key"] = producto
+        products_quantity["value"] = cantidad
+        products_quantity_list.push(products_quantity)
+        products_quantity = {}
+
+      } else {
+        for (k in products_quantity_list){
+          if (producto === products_quantity_list[k].key) {
+            products_quantity_list[k].value += cantidad
+            break
+          }
+          if (k == products_quantity_list.length - 1){
+            products_quantity["key"] = producto
+            products_quantity["value"] = cantidad
+            products_quantity_list.push(products_quantity)
+            products_quantity = {}
+          }
+        }
+      }
     }
   }
 
@@ -195,10 +217,18 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
   // Construct weekly info for frontend
   var weeklyInfo = {}
-  weeklyInfo["weekKey"] = result_weekly.body.aggregations.amount_per_week.buckets[0].key
-  weeklyInfo["ordersAmount"] = result_weekly.body.aggregations.amount_per_week.buckets[0].doc_count
-  weeklyInfo["costShippings"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_shipping
-  weeklyInfo["costOrders"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_order
+
+  if (result_weekly.body.aggregations.amount_per_week.buckets.length == 0){
+    weeklyInfo["weekKey"] = 0
+    weeklyInfo["ordersAmount"] = 0
+    weeklyInfo["costShippings"] = 0
+    weeklyInfo["costOrders"] = 0
+  } else {
+    weeklyInfo["weekKey"] = result_weekly.body.aggregations.amount_per_week.buckets[0].key
+    weeklyInfo["ordersAmount"] = result_weekly.body.aggregations.amount_per_week.buckets[0].doc_count
+    weeklyInfo["costShippings"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_shipping
+    weeklyInfo["costOrders"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_order
+  }
 
   res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", ""), monthlyInfo_list: JSON.stringify(monthlyInfo_list), weeklyInfo: JSON.stringify(weeklyInfo) });
 });
