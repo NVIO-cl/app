@@ -31,5 +31,3 @@ $(document).ready(function () {
         "order": [[ 1, "desc" ]]
     });
 });
-
-$.fn.dataTable.moment( 'dd/mm/yyyy hh:mm', 'es' );
