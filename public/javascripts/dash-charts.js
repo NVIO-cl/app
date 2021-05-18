@@ -64,6 +64,7 @@ function chartEm(weekly, monthly){
               zeroLineBorderDash:["2"]},
               ticks:{
                 fontColor:"#858796",
+                stepSize: 1,
                 padding:20
               }
             }],
