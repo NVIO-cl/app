@@ -120,6 +120,8 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     }
   }
 
+  products_quantity_list.sort((a, b) => (a.value < b.value) ? 1 : -1)
+
   // Construct monthly info for frontend
   var monthlyInfo_list = []
   var monthlyInfo = {}
