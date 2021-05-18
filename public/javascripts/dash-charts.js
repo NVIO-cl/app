@@ -6,7 +6,7 @@ function chartEm(weekly, monthly){
   // Top sellers
   var productKeys = [];
   var productCounts = [];
-  
+
   // Do at most 8 products
   var prodLoopMin;
   if(latestMonth.productQuantity.length < 8){
@@ -147,6 +147,7 @@ function chartEm(weekly, monthly){
             drawOnChartArea:false},
             ticks:{
               fontColor:"#858796",
+              stepSize: 1,
               padding:20
             }
           }],
@@ -160,6 +161,7 @@ function chartEm(weekly, monthly){
               zeroLineBorderDash:["2"]},
               ticks:{
                 fontColor:"#858796",
+                stepSize: 1,
                 padding:20
               },
               beginAtZero: true // This does not seem to be working, push a '0' at the end of the data array as a workaround
@@ -206,6 +208,7 @@ function chartEm(weekly, monthly){
             drawOnChartArea:false},
             ticks:{
               fontColor:"#858796",
+              stepSize: 1,
               padding:20
             }
           }],

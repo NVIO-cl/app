@@ -96,7 +96,10 @@ head
                                     .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
                                         span Ventas Semanal
                                     .text-dark.font-weight-bold.h5.mb-0
-                                         span $#{JSON.parse(weeklyInfo).costOrders.value}
+                                      if JSON.parse(weeklyInfo).costOrders.value == null
+                                        span $ 0
+                                      else
+                                        span $ #{JSON.parse(weeklyInfo).costOrders.value}
                                 .col-auto.d-md-none.d-xl-block
                                     i.fas.fa-coins.fa-2x.text-gray-300
                 .col-md-3.col-xl-3.col-sm-6.mb-4
@@ -107,7 +110,10 @@ head
                                     .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
                                         span Ventas Mensual
                                     .text-dark.font-weight-bold.h5.mb-0
-                                        span $#{JSON.parse(monthlyInfo_list).slice(-1)[0].costOrders.value}
+                                      if JSON.parse(monthlyInfo_list).slice(-1)[0].costOrders.value == null
+                                          span $ 0
+                                      else
+                                          span $ #{JSON.parse(monthlyInfo_list).slice(-1)[0].costOrders.value}
                                 .col-auto.d-md-none.d-xl-block
                                     i.fas.fa-money-bill-wave.fa-2x.text-gray-300
                 .col-md-3.col-xl-3.col-sm-6.mb-4
@@ -176,8 +182,9 @@ head
             .container.my-auto
                 .text-center.my-auto.copyright
                     span Copyright &copy; Alia 2021
-    //a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-    //    i.fas.fa-angle-up
+    //-
+      a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+          i.fas.fa-angle-up
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content
