@@ -208,9 +208,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         delete attribute.attribute;
       });
 
-      // If price is '', set it as 0. If not, parse it
-      if (subproduct.price == '') {
-        subproduct.price = 0;
+      if (subproduct.price == '' || subproduct.price == 0) {
+        res.redirect(req.headers.referer);
       }
       else {
         subproduct.price = parseInt(subproduct.price)

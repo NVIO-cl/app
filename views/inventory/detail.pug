@@ -163,7 +163,6 @@ head
                                         if (product.productType == "main")
                                             each attribute, index in product.attributesList
                                                 hr
-                                                // Id antiguo
                                                 .form-row(id='attributes['+index+']')
                                                     .col-xs-2.col-md-4.col-lg-4
                                                         .form-group
@@ -214,7 +213,7 @@ head
                                                 .form-group
                                                     label(for='productPrice')
                                                         strong Precio
-                                                    input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'' min=0)
+                                                    input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'' min=1 required='')
                                                 if(subproduct.stock != null)
                                                   .form-group(id='subproduct['+index+'][stockGroup]')
                                                       label(for='productStock')
