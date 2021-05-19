@@ -354,6 +354,11 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     if (req.body.productName == '') {
       isValid = false
     }
+
+    if (await req.body.productPrice <= 0 ){
+      res.redirect(req.headers.referer);
+    }
+
     if (isValid) {
 
       // Update Dynamo

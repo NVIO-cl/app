@@ -148,7 +148,7 @@ head
                                                   .form-group
                                                       label#priceLabel(for='productPrice')
                                                           strong Precio
-                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice' min=0)
+                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice' min=1 required='')
                                                       .invalid-feedback El precio no puede estar vacío
                                             if (product.stock !== null)
                                                 .col-xs-2.col-md-4(id='stock')
