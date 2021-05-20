@@ -10,4 +10,9 @@ router.get('/', passport.authenticate('jwt', {session: false, failureRedirect: '
   res.render('billing/billing', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
+router.get('/plans', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Plans";
+  res.render('billing/plans', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
+});
+
 module.exports = router;

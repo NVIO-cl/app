@@ -54,6 +54,10 @@ head
                         i.fas.fa-box.mr-1
                         span Crear Nuevo Producto
                 li.nav-item
+                    a.nav-link.active(href='/billing')
+                        i.fas.fa-file-invoice-dollar.mr-1
+                        span Planes y Facturación
+                li.nav-item
                     a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                         i.far.fa-user-circle.mr-1
                         span Cerrar Sesión
@@ -88,6 +92,10 @@ head
                         i.fas.fa-box.mr-1
                         span Crear Nuevo Producto
                 li.nav-item
+                    a.nav-link.active(href='/billing')
+                        i.fas.fa-file-invoice-dollar.mr-1
+                        span Planes y Facturación
+                li.nav-item
                     a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                         i.far.fa-user-circle
                         span Cerrar Sesión
@@ -95,130 +103,84 @@ head
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
-      .mt-5
-        h1.text-center.mb-5 Elige tu plan
-        .mx-4
-          .row
-            .col-xl.col-lg-6
-              .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                  .card-header.py-3
-                    h3.text-primary.m-0.font-weight-bold.text-center CAMINA
-                  .card-body
-                    .my-5
-                      h1.font-weight-bold.text-center $ 0
-                      h5.text-center ¡Gratis!
-                      .text-center.mt-5(style='height: 230px;')
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Ventas ilimitadas
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Formulario de venta
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Organización automática
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Exportar datos a Excel
-                    .text-center.m-auto
-                      if (planID == 0)
-                        button(disabled).btn.btn-lg.btn-primary Plan Actual
-                      else
-                        button.btn.btn-lg.btn-primary Comenzar
-            .col-xl.col-lg-6
-              .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                  .card-header.py-3
-                    h3.text-primary.m-0.font-weight-bold.text-center CORRE
-                  .card-body
-                    .my-5
-                      h1.font-weight-bold.text-center $ 5.000
-                      h5.text-center Mensuales (IVA incl.)
-                      .text-center.mt-5(style='height: 230px;')
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Plan CAMINA
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Productos autocompletables 
-                        hr
-                        div 
-                          i.fas.fa-check.mr-3.text-primary
-                          | Inventario
-                        hr
-                        div 
-                          i.fas.fa-check.mr-3.text-primary
-                          | Stock
-                    .text-center.m-auto
-                      if (planID == 1)
-                        button(disabled).btn.btn-lg.btn-primary Plan Actual
-                      else
-                        button.btn.btn-lg.btn-primary Comenzar
-            .col-xl.col-lg-6
-              .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                  .card-header.py-3
-                    h3.text-primary.m-0.font-weight-bold.text-center DESPEGA
-                  .card-body
-                    .my-5
-                      h1.font-weight-bold.text-center $ 15.000
-                      h5.text-center Mensuales (IVA incl.)
-                      .text-center.mt-5(style='height: 230px;')
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Plan CORRE
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Dashboard con Estadísticas
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Analítica de tu negocio
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Analítica de productos
-                    .text-center.m-auto
-                      if (planID == 2)
-                        button(disabled).btn.btn-lg.btn-primary Plan Actual
-                      else
-                        button.btn.btn-lg.btn-primary Comenzar 
-            .col-xl.col-lg-6
-              .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                  .card-header.py-3
-                    h3.text-primary.m-0.font-weight-bold.text-center VUELA
-                  .card-body
-                    .my-5
-                      h1.font-weight-bold.text-center $ 25.000
-                      h5.text-center Mensuales (IVA incl.)
-                      .text-center.mt-5(style='height: 230px;')
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Plan DESPEGA
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Pasarela de Pago
-                        hr
-                        div
-                          i.fas.fa-check.mr-3.text-primary
-                          | Personaliza formulario de venta
-                        hr
-                        div 
-                          i.fas.fa-check.mr-3.text-primary
-                          | Elimina branding de Alia
-                    .text-center.m-auto
-                      if (planID == 3)
-                        button(disabled).btn.btn-lg.btn-primary Plan Actual
-                      else
-                        button.btn.btn-lg.btn-primary Comenzar
-      footer.bg-white.sticky-footer
-          .container.my-auto
-              .text-center.my-auto.copyright
-                  span Copyright &copy; Alia 2021
+        #content
+            form
+                nav.navbar(style='margin-top: 17px;')
+                .container-fluid#prodContainer
+                    h3.text-dark.mb-4 Planes y Facturación
+                    .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
+                        .row
+                            .col
+                                .card.shadow.mb-3
+                                    .card-header.py-3
+                                        p.text-primary.m-0.font-weight-bold Tu Membresía
+                                    .card-body
+                                        .form-row
+                                            .col-xs-2.col-md-4
+                                                .form-group
+                                                    strong Nombre del Producto
+                                                    br
+                                                    p Plan Corre por $5.000/mes
+                                        .form-row
+                                            .col-xs-2.col-md-4
+                                                .form-group
+                                                    strong Tu próxima factura
+                                                    br
+                                                    p 19 de junio de 2021
+
+                                        .form-group(style='text-align: left;')
+                                            a.btn.btn-primary.btn-sm(href='/billing/plans' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Cambiar Plan
+
+
+                .container-fluid
+                    .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
+                        .row
+                            .col
+                                .card.shadow.mb-3
+                                    .card-header.py-3
+                                        p.text-primary.m-0.font-weight-bold Historial de Facturación
+                                    .card-body
+                                        .container-fluid(style="overflow-x:auto; padding-left: 0px; padding-right: 0px;")
+                                            table.table.table-striped
+                                                thead.thead-dark
+                                                    tr
+                                                        th(scope='col') Fecha
+                                                        th(scope='col') Descripción
+                                                        th(scope='col') Periodo del servicio
+                                                        th(scope='col') Forma de pago
+                                                        th(scope='col') Subtotal
+                                                        th(scope='col') Total
+                                                tbody
+                                                    tr
+                                                        th(scope='row') 19/05/21
+                                                        td Plan Corre
+                                                        td 19/05/21 — 18/06/21
+                                                        td •••••••••••• 7864
+                                                        td $6.992 (+$1.328 de IVA)
+                                                        td $8.320
+                                                    tr
+                                                        th(scope='row') 19/05/21
+                                                        td Plan Corre
+                                                        td 19/05/21 — 18/06/21
+                                                        td •••••••••••• 7864
+                                                        td $6.992 (+$1.328 de IVA)
+                                                        td $8.320
+                                                    tr
+                                                        th(scope='row') 19/05/21
+                                                        td Plan Corre
+                                                        td 19/05/21 — 18/06/21
+                                                        td •••••••••••• 7864
+                                                        td $6.992 (+$1.328 de IVA)
+                                                        td $8.320
+
+                                            p NOTA: Solo se muestra el último año del historial de facturación
+
+
+
+        footer.bg-white.sticky-footer
+            .container.my-auto
+                .text-center.my-auto.copyright
+                    span Copyright &copy; Alia 2021
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content
