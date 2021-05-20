@@ -95,52 +95,49 @@ head
         #content.container-fluid(style='margin-top: 32px;')
           h3.text-dark.mb-4 Historial de Ventas
           .row
-              .col-md-6.col-xl-3.col-sm-6.mb-4
-                  .card.shadow.border-left-primary.py-2
+              .col-md-6.col-lg-3.col-sm-6.mb-4
+                  .card.shadow.border-left-primary.py-2(style='height: 120px')
                       .card-body
                           .row.align-items-center.no-gutters
                               .col.mr-2
                                   .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                    span Formularios Vacíos
-                                    //- Datos de cliente rellenados, ORD.status.M.order.N == 1
+                                    span Pedidos sin Datos de cliente
                                   .text-dark.font-weight-bold.h5.mb-0
                                     span#empty
-                              .col-auto.d-md-none.d-xl-block
+                              .col-auto
                                   i.fas.fa-file.fa-2x.text-gray-300
-              .col-md-6.col-xl-3.col-sm-6.mb-4
-                  .card.shadow.border-left-info.py-2
+              .col-md-6.col-lg-3.col-sm-6.mb-4
+                  .card.shadow.border-left-info.py-2(style='height: 120px')
                       .card-body
                           .row.align-items-center.no-gutters
                               .col.mr-2
                                   .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
-                                      span Formularios Rellenados
-                                      //- En proceso de preparación, ORD.status.M.order.N == 2
+                                      span Pedidos con Datos de cliente
                                   .text-dark.font-weight-bold.h5.mb-0
                                     span#filled
-                              .col-auto.d-md-none.d-xl-block
+                              .col-auto
                                   i.fas.fa-file-signature.fa-2x.text-gray-300
-              .col-md-6.col-xl-3.col-sm-6.mb-4
-                  .card.shadow.border-left-primary.py-2
+              .col-md-6.col-lg-3.col-sm-6.mb-4
+                  .card.shadow.border-left-primary.py-2(style='height: 120px')
                       .card-body
                           .row.align-items-center.no-gutters
                               .col.mr-2
                                   .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                      span En Preparación
+                                      span En proceso de preparación
                                   .text-dark.font-weight-bold.h5.mb-0
                                       span#preparing
-                              .col-auto.d-md-none.d-xl-block
+                              .col-auto
                                   i.fas.fa-box-open.fa-2x.text-gray-300
-              .col-md-6.col-xl-3.col-sm-6.mb-4
-                  .card.shadow.border-left-info.py-2
+              .col-md-6.col-lg-3.col-sm-6.mb-4
+                  .card.shadow.border-left-info.py-2(style='height: 120px')
                       .card-body
                           .row.align-items-center.no-gutters
                               .col.mr-2
                                   .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
-                                      span En envío / Listo para Retiro
-                                      //- En proceso de despacho, ORD.status.M.order.N == 5
+                                      span Enviando / Esperando 
                                   .text-dark.font-weight-bold.h5.mb-0
                                       span#shipping
-                              .col-auto.d-md-none.d-xl-block
+                              .col-auto
                                   i.fas.fa-shipping-fast.fa-2x.text-gray-300
         #tableContent.container-fluid                 
           .card.shadow

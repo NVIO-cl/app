@@ -51,7 +51,9 @@ function chartEm(weekly, monthly){
             drawOnChartArea:false},
             ticks:{
               fontColor:"#858796",
-              padding:20
+              padding:20,
+              maxRotation: 15,
+              minRotation: 0
             }
           }],
           yAxes:[{
