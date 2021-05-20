@@ -20,9 +20,10 @@ head
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css')
+    link(rel='stylesheet' href='stylesheets/history-cards.css')
     script.
       const orderList = JSON.parse('!{ordersForCards}')
-      var filled = preparing = empty = shipping = 0;
+      var filled = preparing = empty = takeout = shipping = finished = 0;
       for(var i = 0; i < orderList.length; i++){
         if(orderList[i].status.M.order.N == '0'){ // Sin información de cliente
           empty++;
@@ -30,8 +31,12 @@ head
           filled++;
         } else if (orderList[i].status.M.order.N == '2'){ // En proceso de preparación
           preparing++;
-        } else if (orderList[i].status.M.order.N == '3' || orderList[i].status.M.order.N == '4'){ // Listo para retirar || En proceso de despacho
+        } else if (orderList[i].status.M.order.N == '3'){ // Listo para retirar
+          takeout++;
+        } else if (orderList[i].status.M.order.N == '4'){ //  En proceso de despacho
           shipping++;
+        } else if (orderList[i].status.M.order.N == '5'){ //  En proceso de despacho
+          finished++;
         }
       }
 .d-lg-flex.d-sm-block
@@ -94,51 +99,78 @@ head
     #content-wrapper.d-flex.flex-column.flex-fill
         #content.container-fluid(style='margin-top: 32px;')
           h3.text-dark.mb-4 Historial de Ventas
-          .row
-              .col-md-6.col-lg-3.col-sm-6.mb-4
-                  .card.shadow.border-left-primary.py-2(style='height: 120px')
-                      .card-body
-                          .row.align-items-center.no-gutters
-                              .col.mr-2
-                                  .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                    span Pedidos sin Datos de cliente
-                                  .text-dark.font-weight-bold.h5.mb-0
-                                    span#empty
-                              .col-auto
-                                  i.fas.fa-file.fa-2x.text-gray-300
-              .col-md-6.col-lg-3.col-sm-6.mb-4
-                  .card.shadow.border-left-info.py-2(style='height: 120px')
-                      .card-body
-                          .row.align-items-center.no-gutters
-                              .col.mr-2
-                                  .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
-                                      span Pedidos con Datos de cliente
-                                  .text-dark.font-weight-bold.h5.mb-0
-                                    span#filled
-                              .col-auto
-                                  i.fas.fa-file-signature.fa-2x.text-gray-300
-              .col-md-6.col-lg-3.col-sm-6.mb-4
-                  .card.shadow.border-left-primary.py-2(style='height: 120px')
-                      .card-body
-                          .row.align-items-center.no-gutters
-                              .col.mr-2
-                                  .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
-                                      span En proceso de preparación
-                                  .text-dark.font-weight-bold.h5.mb-0
-                                      span#preparing
-                              .col-auto
-                                  i.fas.fa-box-open.fa-2x.text-gray-300
-              .col-md-6.col-lg-3.col-sm-6.mb-4
-                  .card.shadow.border-left-info.py-2(style='height: 120px')
-                      .card-body
-                          .row.align-items-center.no-gutters
-                              .col.mr-2
-                                  .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
-                                      span Enviando / Listo para Retiro 
-                                  .text-dark.font-weight-bold.h5.mb-0
-                                      span#shipping
-                              .col-auto
-                                  i.fas.fa-shipping-fast.fa-2x.text-gray-300
+          div
+            button.mx-auto.btn.btn-primary.border-0.mb-4(type='button' data-toggle='collapse' data-target='#toggleCards')
+              i.fas.fa-bars 
+              |  Filtros
+          #toggleCards.collapse
+            .row
+                .col-lg-4.col-sm-6.mb-4
+                    #emptyCard.card.shadow.border-left-primary.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                      span Pedidos sin Datos
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                      span#empty
+                                .col-auto
+                                    i.fas.fa-file.fa-2x.text-gray-500
+                .col-lg-4.col-sm-6.mb-4
+                    #filledCard.card.shadow.border-left-info.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                        span Pedidos con Datos
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                      span#filled
+                                .col-auto
+                                    i.fas.fa-file-signature.fa-2x.text-gray-500
+                .col-lg-4.col-sm-6.mb-4
+                    #preparingCard.card.shadow.border-left-primary.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                        span En preparación
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span#preparing
+                                .col-auto
+                                    i.fas.fa-box-open.fa-2x.text-gray-500
+                .col-lg-4.col-sm-6.mb-4
+                    #takeoutCard.card.shadow.border-left-info.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                      span Listo para Retirar
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                      span#takeout
+                                .col-auto
+                                    i.fas.fa-hand-holding.fa-2x.text-gray-500
+                .col-lg-4.col-sm-6.mb-4
+                    #shippingCard.card.shadow.border-left-primary.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                        span En despacho
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span#shipping
+                                .col-auto
+                                    i.fas.fa-shipping-fast.fa-2x.text-gray-500
+                .col-lg-4.col-sm-6.mb-4
+                    #finishedCard.card.shadow.border-left-info.py-2
+                        .card-body
+                            .row.align-items-center.no-gutters
+                                .col.mr-2
+                                    .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                        span Finalizado
+                                    .text-dark.font-weight-bold.h5.mb-0
+                                        span#finished
+                                .col-auto
+                                    i.fas.fa-check.fa-2x.text-gray-500
         #tableContent.container-fluid                 
           .card.shadow
               .card-header.py-3
@@ -167,7 +199,7 @@ head
                                       tr.text-center
                                           td #{ORD.SK.S.replace("ORDER#","")}
                                           td
-                                              span(style='display: none;')
+                                              span.d-none
                                                   | 0#{parseInt(ORD.createdAt.N)}
                                               if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
                                                   | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
@@ -310,7 +342,9 @@ script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
 script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
 script(src='javascripts/historytable.js')
 script.
+  $('#empty').html(empty)
   $('#filled').html(filled)
   $('#preparing').html(preparing)
-  $('#empty').html(empty)
+  $('#takeout').html(takeout)
   $('#shipping').html(shipping)
+  $('#finished').html(finished)

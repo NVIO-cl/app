@@ -1,0 +1,9 @@
+.card-selected {
+   background-color: #dff5f5;
+}
+
+@media (min-width: 768px) {
+    .card-summary {
+      height: 120px;
+    }
+}
