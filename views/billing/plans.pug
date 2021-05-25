@@ -102,140 +102,103 @@ head
                 li.nav-item
             .text-center.d-none.d-md-inline
                 button#sidebarToggle.btn.rounded-circle.border-0(type='button')
-
     #content-wrapper.d-flex.flex-column.flex-fill
-        nav.navbar(style='margin-top: 17px;')
-        .container-fluid
+      .container-fluid(style='margin-top: 32px;')
+        a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../billing')
+            i.fa.fa-arrow-left
+            | &nbsp;Regresar
 
-            a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../billing')
-                i.fa.fa-arrow-left
-                | &nbsp;Regresar
+        .text-center.mb-5
+          h3.text-dark.mt-4.text-center Elige tu Plan
+        .row
+          .card-deck
+            .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
+              .card.shadow.d-flex.flex-column.justify-content-between
+                .card-header.py-3
+                    h3.text-primary.m-0.font-weight-bold.text-center Camina
+                .card-body
+                    p
+                    | El plan Camina es la opción ideal para empezar a organizar tu negocio por redes sociales y ahorrar tiempo
+                    ul.list-group.list-group-flush.mt-3.mb-4.text-left
+                      li.list-group-item Ventas ilimitadas
+                      li.list-group-item Formulario de venta
+                      li.list-group-item Organización automática
+                      li.list-group-item Exportar datos a Excel
+                    .d-flex.flex-column.justify-content-between.mb-3.mx-auto
+                      h2.font-weight-bold.pt-1.mb-2 $0
+                      small(style='visibility:hidden') Este plan es gratis
+                      small.mb-2(style='visibility:hidden') No se te cobrará por usarlo
+                      if (planID == 0)
+                         button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                        button.btn.btn-lg.btn-primary Comenzar     
 
-            h3.text-dark.mb-4(style='text-align: center;') Elige tu Plan
+            .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
+             .card.shadow.d-flex.flex-column.justify-content-between
+               .card-header.py-3
+                   h3.text-primary.m-0.font-weight-bold.text-center Corre
+               .card-body
+                   p
+                   | El plan Corre te ayudará a dar el siguiente paso para crecer y organizar un volumen de pedidos creciente
+                   ul.list-group.list-group-flush.mt-3.mb-4.text-left
+                     li.list-group-item Todo lo del Plan Camina
+                     li.list-group-item Productos auto completables
+                     li.list-group-item Sistema de Inventario
+                     li.list-group-item Sistema de Stock
+                   .d-flex.flex-column.justify-content-between.mb-3.mx-auto
+                      h2.font-weight-bold.pt-1.mb-2 $4.000
+                      small Por mes, pagando anualmente
+                      small.mb-2 $5.000 al mes, pagando mensualmente
+                      if (planID == 1)
+                        button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                       button.btn.btn-lg.btn-primary Comenzar 
+                       
+            .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
+             .card.shadow.d-flex.flex-column.justify-content-between
+               .card-header.py-3
+                   h3.text-primary.m-0.font-weight-bold.text-center Despega
+               .card-body
+                   p
+                   | El plan Despega te entrega estadísticas de los pedidos realizados en Alia para que orientes tu negocio con mejor información
+                   ul.list-group.list-group-flush.mt-3.mb-4.text-left
+                     li.list-group-item Todo lo del Plan Corre
+                     li.list-group-item Dashboard con Estadísticas
+                     li.list-group-item Analítica de tu negocio
+                     li.list-group-item Analítica de productos
+                   .d-flex.flex-column.justify-content-between.mb-3.mx-auto
+                      h2.font-weight-bold.pt-1.mb-2 $12.000   
+                      small Por mes, pagando anualmente
+                      small.mb-2 $15.000 al mes, pagando mensualmente
+                      if (planID == 2)
+                        button(disabled).btn.btn-lg.btn-primary Plan Actual
+                      else
+                       button.btn.btn-lg.btn-primary Comenzar 
 
-            .row
-                .col-xl.col-lg-6
-                    .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                        .card-header.py-3
-                            h3.text-primary.m-0.font-weight-bold.text-center CAMINA
-                        .card-body
-                            .my-5
-                                h1.font-weight-bold.text-center $ 0
-                                h5.text-center ¡Gratis!
-                                .text-center.mt-5(style='height: 230px;')
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Ventas ilimitadas
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Formulario de venta
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Organización automática
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Exportar datos a Excel
-                            .text-center.m-auto
-                                if (planID == 0)
-                                    button(disabled).btn.btn-lg.btn-primary Plan Actual
-                                else
-                                    button.btn.btn-lg.btn-primary Comenzar
-                .col-xl.col-lg-6
-                    .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                        .card-header.py-3
-                            h3.text-primary.m-0.font-weight-bold.text-center CORRE
-                        .card-body
-                            .my-5
-                                h1.font-weight-bold.text-center $ 5.000
-                                h5.text-center Mensuales (IVA incl.)
-                                .text-center.mt-5(style='height: 230px;')
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Plan CAMINA
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Productos autocompletables
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Inventario
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Stock
-                            .text-center.m-auto
-                                if (planID == 1)
-                                    button(disabled).btn.btn-lg.btn-primary Plan Actual
-                                else
-                                    button.btn.btn-lg.btn-primary Comenzar
-                .col-xl.col-lg-6
-                    .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                        .card-header.py-3
-                            h3.text-primary.m-0.font-weight-bold.text-center DESPEGA
-                        .card-body
-                            .my-5
-                                h1.font-weight-bold.text-center $ 15.000
-                                h5.text-center Mensuales (IVA incl.)
-                                .text-center.mt-5(style='height: 230px;')
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Plan CORRE
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Dashboard con Estadísticas
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Analítica de tu negocio
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Analítica de productos
-                            .text-center.m-auto
-                                if (planID == 2)
-                                    button(disabled).btn.btn-lg.btn-primary Plan Actual
-                                else
-                                    button.btn.btn-lg.btn-primary Comenzar
-                .col-xl.col-lg-6
-                    .card.shadow.mb-4.mx-auto(style='max-width: 400px; min-width: 250px;')
-                        .card-header.py-3
-                            h3.text-primary.m-0.font-weight-bold.text-center VUELA
-                        .card-body
-                            .my-5
-                                h1.font-weight-bold.text-center $ 25.000
-                                h5.text-center Mensuales (IVA incl.)
-                                .text-center.mt-5(style='height: 230px;')
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Plan DESPEGA
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Pasarela de Pago
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Personaliza formulario de venta
-                                    hr
-                                    div
-                                        i.fas.fa-check.mr-3.text-primary
-                                        | Elimina branding de Alia
-                            .text-center.m-auto
-                                if (planID == 3)
-                                    button(disabled).btn.btn-lg.btn-primary Plan Actual
-                                else
-                                    button.btn.btn-lg.btn-primary Comenzar
-
-            footer.bg-white.sticky-footer
-            .container.my-auto
-                .text-center.my-auto.copyright
-                    span Copyright &copy; Alia 2021
-
+            .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
+             .card.shadow.d-flex.flex-column.justify-content-between
+               .card-header.py-3
+                   h3.text-primary.m-0.font-weight-bold.text-center Vuela
+               .card-body
+                  p
+                  | El plan Vuela te dará la mayor cantidad de libertad para manejar tu negocio y la experiencia de tu usuario
+                  ul.list-group.list-group-flush.mt-3.mb-4.text-left
+                    li.list-group-item Todo lo del Plan Despega 
+                    li.list-group-item Pasarela de Pago
+                    li.list-group-item Personaliza formulario de venta
+                    li.list-group-item Elimina branding de Alia
+                  .d-flex.flex-column.justify-content-between.mb-3.mx-auto
+                    h2.font-weight-bold.pt-1.mb-2 $20.000       
+                    small Por mes, pagando anualmente
+                    small.mb-2 $25.000 al mes, pagando mensualmente
+                    if (planID == 3)
+                      button(disabled).btn.btn-lg.btn-primary Plan Actual
+                    else
+                      button.btn.btn-lg.btn-primary Comenzar 
+      footer.bg-white.sticky-footer
+        .container.my-auto
+            .text-center.my-auto.copyright
+                span Copyright &copy; Alia 2021
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content
