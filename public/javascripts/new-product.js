@@ -60,6 +60,7 @@ $(document).ready(function(){
     $('#attributes').toggleClass("d-none");
     if ($('#checkAttributes').is(":checked")) {
       $("#priceLabel").html("<b>Precio base</b>");
+      $('#subproductForms').removeClass("d-none");
       $('#createProductButton').html('Generar subproductos');
       if($('#checkStock').is(":checked")){
         $('#stock').addClass("d-none");
@@ -68,6 +69,7 @@ $(document).ready(function(){
     }
     else {
       $("#priceLabel").html("<b>Precio</b>")
+      $('#subproductForms').addClass("d-none");
       $('#createProductButton').html('Crear producto');
       if ($('#checkStock').is(":checked")) {
         $('#stock').removeClass("d-none");
