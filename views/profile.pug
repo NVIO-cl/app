@@ -105,25 +105,15 @@ head
                             .row
                               .col-lg-12.col-md-6.col-sm-12
                                 .text-secondary.m-0.font-weight-bold.text-left.animated-placeholder#planName
-                              .col-lg-12.col-md-6.col-sm-12
-                                p.text-primary.m-0.text-right 
-                                  a(href='/billing') Cambiar Plan
-                                p.text-primary.m-0.text-right 
-                                  a(href='#') Más Detalles
-                            hr
+                                small.text-secondary.m-0.text-left#planPrice
                             p
-                            p.text-primary.m-0.font-weight-bold Datos de Cobro
+                            p.text-primary.m-0.font-weight-bold Método de Pago
                             .row
                               .col-lg-12.col-md-6.col-sm-12
-                                p.text-secondary.m-0.font-weight-bold.text-left.animated-placeholder#lastFour
-                                small.text-secondary.m-0.text-left#nextBillingDate
+                                p.text-secondary.m-0.font-weight-bold.text-left.animated-placeholder#paymentMethod
                               .col-lg-12.col-md-6.col-sm-12
-                                p.text-primary.m-0.text-right 
-                                  a(href='#') Editar Info de Cobro
                                 p.text-primary.m-0.text-right
-                                  a(href='#') Cambiar Día de Cobro
-                                p.text-primary.m-0.text-right
-                                  a(href='#') Más Detalles
+                                  a(href='/billing') Más Detalles
                     .col-lg-8
                         .row
                             .col
