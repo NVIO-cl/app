@@ -90,12 +90,12 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     pages = [1]
   }
 
-  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, base_url: req.url, pages: pages, pagesAmount:pagesAmount});
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, base_url: req.url, pages: pages, pagesAmount:pagesAmount, planID: req.user['custom:plan_id']});
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Producto";
-  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 router.post('/create', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req,res)=>{
@@ -388,4 +388,3 @@ router.post('/searchProduct',passport.authenticate('jwt', {session: false, failu
 });
 
 module.exports = router;
-

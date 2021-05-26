@@ -23,7 +23,7 @@ var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", "") });
+  res.render('index', { title: 'Alia', userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -140,7 +140,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
   var logo = await s3.getSignedUrl('getObject', {Key: "comprobantes/" + req.user.user.replace("COMPANY#","") + "/" + req.params.id + ".png", Expires: 10});
 
-  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", "")});
+  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 /* GET historial. */
@@ -165,7 +165,7 @@ router.get('/historial',passport.authenticate('jwt', {session: false, failureRed
     }
   };
   historialQuery = await db.query(params);
-  res.render('historial', {title: name, orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", "")});
+  res.render('historial', {title: name, orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

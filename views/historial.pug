@@ -21,230 +21,180 @@ head
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css')
 .d-lg-flex.d-sm-block
-    nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
-      a.navbar-brand(href="/")
-        img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='max-height:50px;')
-      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")    
-        span.navbar-toggler-icon
-      .collapse.navbar-collapse#navbarNav
-        ul.navbar-nav
-          li.nav-item
-              a.nav-link(href='/')
-                  i.fas.fa-tachometer-alt.mr-1
-                  span Dashboard
-          li.nav-item
-              a.nav-link(href='/profile')
-                  i.fas.fa-user.mr-1
-                  span Perfil
-          li.nav-item
-              a.nav-link.active(href='/historial')
-                  i.fas.fa-table.mr-1
-                  span Historial de Ventas
-          li.nav-item
-              a.nav-link(href='/order/create')
-                  i.fas.fa-plus-square.mr-1
-                  span Crear Nueva Orden
-          li.nav-item
-              a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
-                  i.far.fa-user-circle.mr-1
-                  span Cerrar Sesión 
-                                            
-    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
-        .container-fluid.d-flex.flex-column.p-0
-            a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
-            hr.sidebar-divider.my-0
-            ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
-                li.nav-item
-                    a.nav-link(href='/')
-                        i.fas.fa-tachometer-alt
-                        span Dashboard
-                li.nav-item
-                    a.nav-link(href='/profile')
-                        i.fas.fa-user
-                        span Perfil
-                li.nav-item
-                    a.nav-link.active(href='/historial')
-                        i.fas.fa-table
-                        span Historial de Ventas
-                li.nav-item
-                    a.nav-link(href='/order/create')
-                        i.fas.fa-plus-square
-                        span Crear Nueva Orden
-                li.nav-item
-                    a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
-                        i.far.fa-user-circle
-                        span Cerrar Sesión
-                li.nav-item
-            .text-center.d-none.d-md-inline
-                button#sidebarToggle.btn.rounded-circle.border-0(type='button')
-    #content-wrapper.d-flex.flex-column.flex-fill
-        #content
-            nav.navbar(style='margin-top: 17px;')
-            .container-fluid
-                h3.text-dark.mb-4 Historial de Ventas
-                .card.shadow
-                    .card-header.py-3
-                        p.text-primary.m-0.font-weight-bold Vista Resumida
-                            a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='excel/' style='background: #12c4f2; border: #12c4f2; float: right;')
-                                i.fas.fa-download.fa-sm.text-white-50
-                                | &nbsp;Descargar Plantilla
-                    .card-body
-                        .container-fluid(style="overflow-x:auto;")
-                            table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
-                                table#dataTable.table.my-0
-                                    thead
-                                        tr(style='font-size: 14px;text-align: center;')
-                                            th Número Pedido
-                                            th Fecha
-                                            th Cliente
-                                            th Monto
-                                            th Pago
-                                            th Preparación
-                                            th Items
-                                            th Método Entrega
-                                            th Notas y Comentarios
-                                            th Vista Detallada
-                                    tbody
-                                        each ORD, index in orders
-                                            tr.text-center
-                                                td #{ORD.SK.S.replace("ORDER#","")}
-                                                td
-                                                    span(style='display: none;')
-                                                        | 0#{parseInt(ORD.createdAt.N)}
-                                                    if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
-                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
-                                                    else
-                                                        | #{new Date(parseInt(ORD.createdAt.N)).getDate()}
-                                                    if    new Date(parseInt(ORD.createdAt.N)).getMonth() + 1 < 10
-                                                        | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                    else
-                                                        | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
-                                                    | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
-                                                    if new Date(parseInt(ORD.createdAt.N)).getMinutes() < 10
-                                                        | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
-                                                    else
-                                                        | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+  if (planID == 0)
+    include ./includes/navbar-0.pug
+  if (planID == 1)
+    include ./includes/navbar-1.pug
+  if (planID == 2)
+    include ./includes/navbar-2.pug
+  if (planID == 3)
+    include ./includes/navbar-3.pug
+  #content-wrapper.d-flex.flex-column.flex-fill
+      #content
+          .container-fluid(style='margin-top: 17px;')
+              h3.text-dark.mb-4 Historial de Ventas
+              .card.shadow
+                  .card-header.py-3
+                      p.text-primary.m-0.font-weight-bold Vista Resumida
+                          a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='excel/' style='background: #12c4f2; border: #12c4f2; float: right;')
+                              i.fas.fa-download.fa-sm.text-white-50
+                              | &nbsp;Descargar Plantilla
+                  .card-body
+                      .container-fluid(style="overflow-x:auto;")
+                          table-responsive.table.mt-2(role='grid' aria-describedby='dataTable_info')
+                              table#dataTable.table.my-0
+                                  thead
+                                      tr(style='font-size: 14px;text-align: center;')
+                                          th Número Pedido
+                                          th Fecha
+                                          th Cliente
+                                          th Monto
+                                          th Pago
+                                          th Preparación
+                                          th Items
+                                          th Método Entrega
+                                          th Notas y Comentarios
+                                          th Vista Detallada
+                                  tbody
+                                      each ORD, index in orders
+                                          tr.text-center
+                                              td #{ORD.SK.S.replace("ORDER#","")}
+                                              td
+                                                  span(style='display: none;')
+                                                      | 0#{parseInt(ORD.createdAt.N)}
+                                                  if new Date(parseInt(ORD.createdAt.N)).getDate() < 10
+                                                      | 0#{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                  else
+                                                      | #{new Date(parseInt(ORD.createdAt.N)).getDate()}
+                                                  if    new Date(parseInt(ORD.createdAt.N)).getMonth() + 1 < 10
+                                                      | /0#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                  else
+                                                      | /#{new Date(parseInt(ORD.createdAt.N)).getMonth() + 1}
+                                                  | /#{new Date(parseInt(ORD.createdAt.N)).getFullYear()} #{new Date(parseInt(ORD.createdAt.N)).getHours()}:
+                                                  if new Date(parseInt(ORD.createdAt.N)).getMinutes() < 10
+                                                      | 0#{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
+                                                  else
+                                                      | #{new Date(parseInt(ORD.createdAt.N)).getMinutes()}
 
-                                                //- Make it prettier pls
-                                                -
-                                                    try {
-                                                        a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
-                                                    } catch (err) {
-                                                        a = ""
-                                                    }
+                                              //- Make it prettier pls
+                                              -
+                                                  try {
+                                                      a = ORD.clientData.M.firstName.S + " " + ORD.clientData.M.lastName.S
+                                                  } catch (err) {
+                                                      a = ""
+                                                  }
 
-                                                td #{a}
-                                                td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
-                                                td
-                                                  if (ORD.status.M.payment.N == 0)
-                                                    | Sin información de cliente
-                                                  else if (ORD.status.M.payment.N == 1)
-                                                    | Comprobante subido, pago sin verificar
-                                                  else if (ORD.status.M.payment.N == 2)
-                                                    | Pago verificado
-                                                  else if (ORD.status.M.payment.N == 3)
-                                                    | Pago en efectivo
-                                                td 
-                                                  if (ORD.status.M.order.N == 0)
-                                                    | Sin información de cliente
-                                                  else if (ORD.status.M.order.N == 1)
-                                                    | Datos de cliente rellenados
-                                                  else if (ORD.status.M.order.N == 2)
-                                                    | En proceso de preparación
-                                                  else if (ORD.status.M.order.N == 3)
-                                                    | Listo para retirar
-                                                  else if (ORD.status.M.order.N == 4)
-                                                    | En proceso de despacho
-                                                  else if (ORD.status.M.order.N == 5)
-                                                    | Pedido finalizado
+                                              td #{a}
+                                              td #{parseInt(ORD.cost.M.order.N)+parseInt(ORD.cost.M.shipping.N)}
+                                              td
+                                                if (ORD.status.M.payment.N == 0)
+                                                  | Sin información de cliente
+                                                else if (ORD.status.M.payment.N == 1)
+                                                  | Comprobante subido, pago sin verificar
+                                                else if (ORD.status.M.payment.N == 2)
+                                                  | Pago verificado
+                                                else if (ORD.status.M.payment.N == 3)
+                                                  | Pago en efectivo
+                                              td 
+                                                if (ORD.status.M.order.N == 0)
+                                                  | Sin información de cliente
+                                                else if (ORD.status.M.order.N == 1)
+                                                  | Datos de cliente rellenados
+                                                else if (ORD.status.M.order.N == 2)
+                                                  | En proceso de preparación
+                                                else if (ORD.status.M.order.N == 3)
+                                                  | Listo para retirar
+                                                else if (ORD.status.M.order.N == 4)
+                                                  | En proceso de despacho
+                                                else if (ORD.status.M.order.N == 5)
+                                                  | Pedido finalizado
 
-                                                td
-                                                    if (a = parseInt(ORD.items.L.length)) > 2
-                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S + ", y " + parseInt(ORD.items.L.length - 2) + " más"}
-                                                    else if (a = parseInt(ORD.items.L.length)) === 2
-                                                        | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S}
-                                                    else
-                                                        | #{ORD.items.L[0].M.product.S}
+                                              td
+                                                  if (a = parseInt(ORD.items.L.length)) > 2
+                                                      | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S + ", y " + parseInt(ORD.items.L.length - 2) + " más"}
+                                                  else if (a = parseInt(ORD.items.L.length)) === 2
+                                                      | #{ORD.items.L[0].M.product.S + ", " + ORD.items.L[1].M.product.S}
+                                                  else
+                                                      | #{ORD.items.L[0].M.product.S}
 
-                                                td #{ORD.shippingMethod.S}
+                                              td #{ORD.shippingMethod.S}
 
-                                                 -
-                                                     try {
-                                                         b = ORD.status.M.comments.L.length
-                                                         c = ORD.status.M.comments.L[0].M.timestamp.N
+                                               -
+                                                   try {
+                                                       b = ORD.status.M.comments.L.length
+                                                       c = ORD.status.M.comments.L[0].M.timestamp.N
 
-                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate() < 10)
-                                                             z = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
-                                                         else
-                                                             z = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+                                                       if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate() < 10)
+                                                           z = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
+                                                       else
+                                                           z = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getDate()
 
-                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1 < 10)
-                                                             y = "/0" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
-                                                         else
-                                                             y = "/" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
-                                                         x = "/" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getFullYear() + " " + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getHours() + ":"
-                                                         if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes() > 10)
-                                                             w = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
-                                                         else
-                                                             w = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+                                                       if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1 < 10)
+                                                           y = "/0" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                       else
+                                                           y = "/" + (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMonth() + 1)
+                                                       x = "/" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getFullYear() + " " + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getHours() + ":"
+                                                       if (new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes() > 10)
+                                                           w = new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
+                                                       else
+                                                           w = "0" + new Date(parseInt(ORD.status.M.comments.L[0].M.timestamp.N)).getMinutes()
 
-                                                         var date_string = z+y+x+w;
+                                                       var date_string = z+y+x+w;
 
-                                                         if (parseInt(b) > 1)
-                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S + ", y " + parseInt(ORD.status.M.comments.L.length - 1) + " más"
-                                                         else if (parseInt(b) == 1)
-                                                            b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S
-                                                         else
-                                                            b = ""
-                                                     } catch (err) {
-                                                         b = "Error"
-                                                     }
+                                                       if (parseInt(b) > 1)
+                                                          b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S + ", y " + parseInt(ORD.status.M.comments.L.length - 1) + " más"
+                                                       else if (parseInt(b) == 1)
+                                                          b = date_string + " - " + ORD.status.M.comments.L[0].M.comment.S
+                                                       else
+                                                          b = ""
+                                                   } catch (err) {
+                                                       b = "Error"
+                                                   }
 
-                                                td #{b}
-                                                td
-                                                    a.btn.btn-info(type='button' style='background: #12c4f2; border: #12c4f2;' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
+                                              td #{b}
+                                              td
+                                                  a.btn.btn-info(type='button' style='background: #12c4f2; border: #12c4f2;' href='detail/' + ORD.SK.S.replace("ORDER#","")) Detalle
 
-                                        tfoot
-                                            tr(style='font-size: 14px;text-align: center;')
-                                                td
-                                                    strong Número Pedido
-                                                td
-                                                    strong Fecha
-                                                td
-                                                    strong Cliente
-                                                td
-                                                    strong Monto
-                                                td
-                                                    strong Pago
-                                                td
-                                                    strong Preparación
-                                                td
-                                                    strong Items
-                                                td
-                                                    strong Método Entrega
-                                                td
-                                                    strong Notas y Comentarios
-                                                td
-                                                    strong Vista Detallada
-            footer.bg-white.sticky-footer
-                .container.my-auto
-                    .text-center.my-auto.copyright
-                        span Copyright &copy; Alia 2021
-        //a.border.rounded.d-inline.scroll-to-top(href='#page-top')
-        //    i.fas.fa-angle-up
-    .modal.fade#modal-logout(tabindex='-1', role='dialog')
-        .modal-dialog(role='document')
-            .modal-content
-                .modal-header
-                    h5.modal-title Estás a punto de cerrar sesión
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                        span(aria-hidden='true') &times;
-                .modal-body
-                    p ¿Deseas cerrar tu sesión?
-                .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
-                    a.btn.btn-danger(href='/logout') Cerrar Sesión
+                                      tfoot
+                                          tr(style='font-size: 14px;text-align: center;')
+                                              td
+                                                  strong Número Pedido
+                                              td
+                                                  strong Fecha
+                                              td
+                                                  strong Cliente
+                                              td
+                                                  strong Monto
+                                              td
+                                                  strong Pago
+                                              td
+                                                  strong Preparación
+                                              td
+                                                  strong Items
+                                              td
+                                                  strong Método Entrega
+                                              td
+                                                  strong Notas y Comentarios
+                                              td
+                                                  strong Vista Detallada
+          footer.bg-white.sticky-footer
+              .container.my-auto
+                  .text-center.my-auto.copyright
+                      span Copyright &copy; Alia 2021
+      //a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+      //    i.fas.fa-angle-up
+  .modal.fade#modal-logout(tabindex='-1', role='dialog')
+      .modal-dialog(role='document')
+          .modal-content
+              .modal-header
+                  h5.modal-title Estás a punto de cerrar sesión
+                  button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') &times;
+              .modal-body
+                  p ¿Deseas cerrar tu sesión?
+              .modal-footer
+                  button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
+                  a.btn.btn-danger(href='/logout') Cerrar Sesión
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
@@ -253,3 +203,6 @@ script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
 script(src='//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
 script(src='//cdn.datatables.net/plug-ins/1.10.22/sorting/datetime-moment.js')
 script(src='javascripts/historytable.js')
+script(src='/javascripts/navbars.js')
+script.
+  nav('historial');
