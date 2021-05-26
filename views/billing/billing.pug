@@ -120,13 +120,20 @@ head
                                   .form-row
                                       .col-xs-2.col-md-4
                                           .form-group
-                                              strong Nombre del Producto
+                                              strong Nombre del Plan
                                               br
                                               .animated-placeholder#planName
+
+                                      .col-xs-2.col-md-4
+                                          .form-group
+                                              strong Método de Pago
+                                              br
+                                              .animated-placeholder#billingMethod
+
                                   .form-row
                                       .col-xs-2.col-md-4
                                           .form-group
-                                              strong Fecha de próxima factura
+                                              strong Fecha de Próxima Factura
                                               br
                                               .animated-placeholder#nextBillingDate
 
@@ -153,7 +160,9 @@ head
                                                   th(scope='col') Subtotal
                                                   th(scope='col') Total
                                           tbody#billingHistoryBody
-                                      p NOTA: Solo se muestra el último año del historial de facturación
+
+                                  p NOTA: Solo se muestra el último año del historial de facturación
+
         footer.bg-white.sticky-footer
             .container.my-auto
                 .text-center.my-auto.copyright
