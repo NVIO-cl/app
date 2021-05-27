@@ -58,8 +58,15 @@ function(email, password, cb) {
   // 5) Do authentication
   cognitoUser.authenticateUser(authenticationDetails, {
 	onSuccess: function(result) {
+    var refreshToken = result.getRefreshToken().token;
     var idToken = result.getIdToken().getJwtToken();
-		return cb(null, idToken, {message: 'Logged In Successfully'});
+    tokens = {
+      idToken: idToken,
+      refreshToken: refreshToken
+    };
+    console.log(idToken);
+    console.log(refreshToken);
+		return cb(null, tokens, {message: 'Logged In Successfully'});
 	},
 
   	onFailure: function(err) {

@@ -96,7 +96,7 @@ $(document).ready(function(){
 
     // Check if there's a discount applied
     if (discountMethod) {
-      $('#discountName').text("Descuento: "+name);
+      $('#discountName').text(name);
       // If the discount is months, calculate based on period and plan
       if (discountMethod=="month" && selectedPlanPeriod == "Y") {
         discountAmount = selectedPlanPrice*0.8*amount;
