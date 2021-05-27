@@ -104,55 +104,54 @@ $.ajax({ // Billing history api call
   dataType: 'json',
   success: function (result, status, xhr) {
     const itemList = result.result.items; // Shorthand
-    console.log(itemList)
     for(var i = 0; i < itemList.length; i++){ // Each row element
 
       var status = itemList[i].status
+      var colorStatus = ""
 
       if (status == 0 || status == '0'){
         status = "Sin pagar"
+        colorStatus = "text-danger font-weight-bold"
       } else if (status == 1 || status == '1'){
         status = "Pagado"
+        colorStatus = "text-success font-weight-bold"
       } else if (status == 2 || status == '2'){
         status = "Fallido"
+        colorStatus = "text-warning font-weight-bold"
       } else if (status == 3 || status == '3'){
         status = "Expirado"
+        colorStatus = "text-primary font-weight-bold"
       } else if (status == 4 || status == '4'){
         status = "Cancelado"
+        colorStatus = "text-warning font-weight-bold"
       }
 
-      /* You have to check the payment method here because you can't interpolate
-         logical statements inside a multiline string (or at least I couldn't
-         find how to do so) */
-      if(itemList[i].paymentMethod == 0){
-        $('#billingHistoryBody').append(`
-          <tr>
-            <th scope="row">${new Date(itemList[i].createdAt).toLocaleDateString('es-CL')}</th>
-            <td>${itemList[i].invoiceDetail.name.split(" Período ")[0]}</td>
-            <td>${itemList[i].invoiceDetail.name.split(" Período ")[1]}</td>
-            <td>Sin Método de Pago</td>
-            <td>$${itemList[i].invoiceDetail.total}</td>
-            <td>${status}</td>
-            <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
-            <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>    
-          </tr>
-        `);
-      } else if(itemList[i].paymentMethod == 1){
-        $('#billingHistoryBody').append(`
-          <tr>
-            <th scope="row">${new Date(itemList[i].createdAt).toLocaleDateString('es-CL')}</th>
-            <td>${itemList[i].invoiceDetail.name.split(" Período ")[0]}</td>
-            <td>${itemList[i].invoiceDetail.name.split(" Período ")[1]}</td>
-            <td>Transferencia</td>
-            <td>$${itemList[i].invoiceDetail.total}</td>
-            <td>${status}</td>
-            <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
-            <td><a class="btn btn-primary" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" href="/billing/pay/${itemList[i].SK.replace("INVOICE#","")}">Ver más</a></td>                                                                                                                        
-          </tr>
-        `);
-      } else {
-        // Cry
+      var paymentMethod = itemList[i].paymentMethod
+
+      if (paymentMethod == 0 || paymentMethod == '0'){
+        paymentMethod = "Ninguno"
+      } else if (paymentMethod == 1 || paymentMethod == '1'){
+        paymentMethod = "Transferencia"
+      } else if (paymentMethod == 2 || paymentMethod == '2'){
+        paymentMethod = "Flow"
+      } else if (paymentMethod == 3 || paymentMethod == '3'){
+        paymentMethod = "Stripe"
+      } else if (paymentMethod == 4 || paymentMethod == '4'){
+        paymentMethod = "Paypal"
       }
+
+      $('#billingHistoryBody').append(`
+        <tr>
+          <th scope="row">${new Date(itemList[i].createdAt).toLocaleDateString('es-CL')}</th>
+          <td>${itemList[i].invoiceDetail.name.split(" Período ")[0]}</td>
+          <td>${itemList[i].invoiceDetail.name.split(" Período ")[1]}</td>
+          <td>${paymentMethod}</td>
+          <td>$${itemList[i].invoiceDetail.total}</td>
+          <td class="${colorStatus}">${status}</td>
+          <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
+          <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>    
+        </tr>
+      `);
     }
   },
   error: function (xhr, status, error) {
