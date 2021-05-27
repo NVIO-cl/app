@@ -1,0 +1,80 @@
+nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
+  a.navbar-brand(href="/")
+    img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='max-height:50px;')
+  button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+    span.navbar-toggler-icon
+  .collapse.navbar-collapse#navbarNav
+    ul.navbar-nav
+      li.nav-item
+        a.nav-link#dashboardMobile(href='/')
+          i.fas.fa-tachometer-alt.mr-1
+          span Dashboard
+      li.nav-item
+        a.nav-link#profileMobile(href='/profile')
+          i.fas.fa-user.mr-1
+          span Perfil
+      li.nav-item
+        a.nav-link#historialMobile(href='/historial')
+          i.fas.fa-table.mr-1
+          span Historial de Ventas
+      li.nav-item
+        a.nav-link#orderCreateMobile(href='/order/create')
+          i.fas.fa-plus-square.mr-1
+          span Crear Nueva Orden
+      li.nav-item    
+        a.nav-link#inventoryMobile(href='/inventory')
+          i.fas.fa-boxes.mr-1
+          span Inventario
+      li.nav-item
+          a.nav-link#inventoryCreateMobile(href='/inventory/create')
+            i.fas.fa-box.mr-1
+            span Crear Nuevo Producto
+      li.nav-item
+        a.nav-link#billingMobile(href='/billing')
+          i.fas.fa-file-invoice-dollar.mr-1
+          span Planes y Facturación
+      li.nav-item
+        a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+          i.far.fa-user-circle.mr-1
+          span Cerrar Sesión
+nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
+  .container-fluid.d-flex.flex-column.p-0
+    a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
+      img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
+    hr.sidebar-divider.my-0
+    ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
+      li.nav-item
+        a.nav-link#dashboard(href='/')
+          i.fas.fa-tachometer-alt
+          span Dashboard
+      li.nav-item
+        a.nav-link#profile(href='/profile')
+          i.fas.fa-user
+          span Perfil
+      li.nav-item
+        a.nav-link#historial(href='/historial')
+          i.fas.fa-table
+          span Historial de Ventas
+      li.nav-item
+        a.nav-link#orderCreate(href='/order/create')
+          i.fas.fa-plus-square
+          span Crear Nueva Orden
+      li.nav-item    
+        a.nav-link#inventory(href='/inventory')
+          i.fas.fa-boxes.mr-1
+          span Inventario
+      li.nav-item
+          a.nav-link#inventoryCreate(href='/inventory/create')
+            i.fas.fa-box.mr-1
+            span Crear Nuevo Producto
+      li.nav-item
+        a.nav-link#billing(href='/billing')
+          i.fas.fa-file-invoice-dollar.mr-1
+          span Planes y Facturación
+      li.nav-item
+        a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+          i.far.fa-user-circle
+          span Cerrar Sesión
+      li.nav-item
+    .text-center.d-none.d-md-inline
+      button#sidebarToggle.btn.rounded-circle.border-0(type='button')

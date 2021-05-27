@@ -46,7 +46,7 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
     noTransfer = true;
   }
 
-  res.render('order/create', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer });
+  res.render('order/create', { title: 'Alia', userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, planID: req.user['custom:plan_id']});
 });
 
 router.post('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -293,7 +293,7 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
     res.clearCookie('message');
   }
 
-  res.render('order/edit', { title: 'Alia', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message});
+  res.render('order/edit', { title: 'Alia', editOrderInfo: order, userID: req.user.user.replace("COMPANY#", ""), noTransfer:noTransfer, message:message, planID: req.user['custom:plan_id']});
 });
 
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -660,7 +660,7 @@ router.get('/:id',  async(req, res) => {
 
   getCompany = await db.query(params);
 
-  res.render('order/client', { title: 'NVIO', logo: logo, orderData: getOrder.Items[0], orderID: req.params.id, companyData: getCompany.Items[0]});
+  res.render('order/client', { title: 'Alia', logo: logo, orderData: getOrder.Items[0], orderID: req.params.id, companyData: getCompany.Items[0]});
 });
 
 router.post('/fill', upload.single('comprobante'), async(req,res)=> {
