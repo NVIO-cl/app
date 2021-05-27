@@ -149,15 +149,15 @@ head
                               .mr-auto Despega
                               #despega-price $12.000 / mes
                       .card.mb-2
-                        .card-body.p-2
+                        .card-body.bg-light.p-2
                           .custom-control.custom-radio
                             if(selectedPlanId == 3)
-                              input.custom-control-input(type="radio" id="vuela" name="plan" checked="checked")
+                              input.custom-control-input(type="radio" id="vuela" name="plan" checked="checked" disabled)
                             else
-                              input.custom-control-input(type="radio" id="vuela" name="plan")
+                              input.custom-control-input(type="radio" id="vuela" name="plan" disabled)
                             label.custom-control-label.d-flex(for="vuela")
                               .mr-auto Vuela
-                              #vuela-price $20.000 / mes
+                              #vuela-price ¡Próximamente!
                     .col-md-12
                       h5.text-dark.mt-2
                         | Método de pago: 

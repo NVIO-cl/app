@@ -58,7 +58,7 @@ $(document).ready(function(){
     selectedPlanPeriod = "M";
     $('#corre-price').text('$5.000 / mes');
     $('#despega-price').text('$15.000 / mes');
-    $('#vuela-price').text('$25.000 / mes');
+    $('#vuela-price').text('¡Próximamente!');
     recalc();
   });
 
@@ -68,7 +68,7 @@ $(document).ready(function(){
     selectedPlanPeriod = "Y";
     $('#corre-price').text('$4.000 / mes');
     $('#despega-price').text('$12.000 / mes');
-    $('#vuela-price').text('$20.000 / mes');
+    $('#vuela-price').text('¡Próximamente!');
     recalc();
   });
 

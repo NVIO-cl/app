@@ -44,8 +44,7 @@ head
             .card.shadow.d-flex.flex-column.justify-content-between
               .card-header.py-3
                   h3.text-primary.m-0.font-weight-bold.text-center Camina
-              .card-body
-                  p
+              .card-body.d-flex.flex-column.justify-content-between
                   | El plan Camina es la opción ideal para empezar a organizar tu negocio por redes sociales y ahorrar tiempo
                   ul.list-group.list-group-flush.mt-3.mb-4.text-left
                     li.list-group-item Ventas ilimitadas
@@ -59,14 +58,13 @@ head
                     if (planID == 0)
                        button(disabled).btn.btn-lg.btn-primary Plan Actual
                     else
-                      button.btn.btn-lg.btn-primary Comenzar     
+                      button.btn.btn-lg.btn-primary Volver al plan básico    
 
           .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
            .card.shadow.d-flex.flex-column.justify-content-between
              .card-header.py-3
                  h3.text-primary.m-0.font-weight-bold.text-center Corre
-             .card-body
-                 p
+             .card-body.d-flex.flex-column.justify-content-between
                  | El plan Corre te ayudará a dar el siguiente paso para crecer y organizar un volumen de pedidos creciente
                  ul.list-group.list-group-flush.mt-3.mb-4.text-left
                    li.list-group-item Todo lo del Plan Camina
@@ -79,15 +77,15 @@ head
                     small.mb-2 $5.000 al mes, pagando mensualmente
                     if (planID == 1)
                       button(disabled).btn.btn-lg.btn-primary Plan Actual
+                    else if (planID == 0)
+                      a.btn.btn-lg.btn-primary(href="/billing/plans/1") Comenzar 
                     else
-                     button.btn.btn-lg.btn-primary Comenzar 
-                     
+                      a.btn.btn-lg.btn-primary(href="/billing/plans/1") Cambiar
           .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
            .card.shadow.d-flex.flex-column.justify-content-between
              .card-header.py-3
                  h3.text-primary.m-0.font-weight-bold.text-center Despega
-             .card-body
-                 p
+             .card-body.d-flex.flex-column.justify-content-between
                  | El plan Despega te entrega estadísticas de los pedidos realizados en Alia para que orientes tu negocio con mejor información
                  ul.list-group.list-group-flush.mt-3.mb-4.text-left
                    li.list-group-item Todo lo del Plan Corre
@@ -100,15 +98,16 @@ head
                     small.mb-2 $15.000 al mes, pagando mensualmente
                     if (planID == 2)
                       button(disabled).btn.btn-lg.btn-primary Plan Actual
+                    else if (planID == 0)
+                      a.btn.btn-lg.btn-primary(href="/billing/plans/2") Comenzar 
                     else
-                     button.btn.btn-lg.btn-primary Comenzar 
+                      a.btn.btn-lg.btn-primary(href="/billing/plans/1") Cambiar
 
           .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
            .card.shadow.d-flex.flex-column.justify-content-between
              .card-header.py-3
                  h3.text-primary.m-0.font-weight-bold.text-center Vuela
-             .card-body
-                p
+             .card-body.d-flex.flex-column.justify-content-between
                 | El plan Vuela te dará la mayor cantidad de libertad para manejar tu negocio y la experiencia de tu usuario
                 ul.list-group.list-group-flush.mt-3.mb-4.text-left
                   li.list-group-item Todo lo del Plan Despega 
@@ -121,8 +120,10 @@ head
                   small.mb-2 $25.000 al mes, pagando mensualmente
                   if (planID == 3)
                     button(disabled).btn.btn-lg.btn-primary Plan Actual
+                  else if (planID == 0)
+                    button.btn.btn-lg.btn-primary(disabled) ¡Próximamente! 
                   else
-                    button.btn.btn-lg.btn-primary Comenzar 
+                    button.btn.btn-lg.btn-primary(disabled) ¡Próximamente!
     footer.bg-white.sticky-footer
       .container.my-auto
           .text-center.my-auto.copyright
