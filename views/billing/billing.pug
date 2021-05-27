@@ -56,7 +56,7 @@ head
                                           .form-group
                                               strong Método de Pago
                                               br
-                                              .animated-placeholder#billingMethod
+                                              .animated-placeholder#paymentMethod
 
                                   .form-row
                                       .col-xs-2.col-md-4
@@ -85,8 +85,10 @@ head
                                                   th(scope='col') Descripción
                                                   th(scope='col') Periodo del servicio
                                                   th(scope='col') Forma de pago
-                                                  th(scope='col') Subtotal
                                                   th(scope='col') Total
+                                                  th(scope='col') Estado
+                                                  th(scope='col') Detalles
+                                                  th(scope='col') Pagar
                                           tbody#billingHistoryBody
 
                                   p NOTA: Solo se muestra el último año del historial de facturación
@@ -95,6 +97,42 @@ head
             .container.my-auto
                 .text-center.my-auto.copyright
                     span Copyright &copy; Alia 2021
+
+    .modal.fade#modal-invoice(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title#invoiceTitle
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p
+                        #invoiceDate
+                    p
+                        #invoiceDescription
+                    p
+                        #invoicePeriod
+                    p
+                        #invoicePaymentMethod
+                    p
+                        #invoiceSubtotal
+                    p
+                        #invoiceDiscount
+                    p
+                        #invoiceDiscountReason
+                    p
+                        #invoiceTotal
+                    p
+                        #retryInvoice
+                    p
+                        #updatedAtInvoice
+                    p
+                        #statusInvoice
+
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
+
+
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content

@@ -87,4 +87,38 @@ $(document).ready(function(){
     $('#planPrice').text(planPrice);
     $('#totalPrice').text(planPrice);
   }
+
+  function a(){
+    var couponCode = $("#couponCheck").val();
+    $.ajax({
+      type: "GET",
+      url: "https://api.aliachile.com/dev/coupon/checkValidity?couponCode=" + couponCode,
+      headers: {
+        Authorization: 'Bearer ' + Cookies.get("token")
+      },
+      dataType: 'json',
+      success: function (result, status, xhr) {
+        if(result.result.valid === true){
+          $('#couponCheck').addClass("is-valid")
+        } else {
+          $('#couponCheck').addClass("is-invalid")
+        }
+        $('#couponCheckButton').text($('#couponCheckButton').text() == 'Aplicar' ? 'Limpiar' : 'Aplicar');
+      },
+      error: function (xhr, status, error) {
+        console.log(error);
+      }
+    })
+  }
+
+  function b(){
+    $('#couponForm #couponCheck').val('');
+    $('#couponCheckButton').text($('#couponCheckButton').text() == 'Aplicar' ? 'Limpiar' : 'Aplicar');
+    $('#couponCheck').removeClass("is-invalid")
+    $('#couponCheck').removeClass("is-valid")
+  }
+
+  $("#couponCheckButton").click(function() {
+    return (this.tog = !this.tog) ? a() : b();
+  });
 });

@@ -9,6 +9,7 @@ $.ajax({ // Billing info api call
     // Human-friendly Variable Names
     const planId = result.billingData.planId;
     const nextBillingDate = result.billingData.nextBillingDate;
+    const paymentMethod = result.billingData.paymentMethod;
 
     // Display Plan Details
     switch (planId){
@@ -68,6 +69,26 @@ $.ajax({ // Billing info api call
       $('#nextBillingDate').removeClass('animated-placeholder');
       $('#nextBillingDate').text('Hubo un error al consultar tu siguiente fecha de cobro');
     }
+
+    // Display Payment Method
+
+    switch (paymentMethod) {
+      case 0:
+        $('#paymentMethod').removeClass('animated-placeholder');           // Remove animation
+        $('#paymentMethod').text('No hay método de pago registrado');      // Add plan name
+        break;
+      case 1:
+        $('#paymentMethod').removeClass('animated-placeholder');
+        $('#paymentMethod').text('Transferencia');
+        break;
+      case 2:
+        $('#paymentMethod').removeClass('animated-placeholder');
+        $('#paymentMethod').text('Flow');
+        break;
+      default:
+        $('#paymentMethod').text('Hubo un error al consultar el método de pago')
+    }
+
   },
   error: function (xhr, status, error) {
     console.log(error);
@@ -83,8 +104,23 @@ $.ajax({ // Billing history api call
   dataType: 'json',
   success: function (result, status, xhr) {
     const itemList = result.result.items; // Shorthand
-
+    console.log(itemList)
     for(var i = 0; i < itemList.length; i++){ // Each row element
+
+      var status = itemList[i].status
+
+      if (status == 0 || status == '0'){
+        status = "Sin pagar"
+      } else if (status == 1 || status == '1'){
+        status = "Pagado"
+      } else if (status == 2 || status == '2'){
+        status = "Fallido"
+      } else if (status == 3 || status == '3'){
+        status = "Expirado"
+      } else if (status == 4 || status == '4'){
+        status = "Cancelado"
+      }
+
       /* You have to check the payment method here because you can't interpolate
          logical statements inside a multiline string (or at least I couldn't
          find how to do so) */
@@ -92,22 +128,26 @@ $.ajax({ // Billing history api call
         $('#billingHistoryBody').append(`
           <tr>
             <th scope="row">${new Date(itemList[i].createdAt).toLocaleDateString('es-CL')}</th>
-            <td>${itemList[i].paymentDetail.name.split(" Período ")[0]}</td>
-            <td>${itemList[i].paymentDetail.name.split(" Período ")[1]}</td>
+            <td>${itemList[i].invoiceDetail.name.split(" Período ")[0]}</td>
+            <td>${itemList[i].invoiceDetail.name.split(" Período ")[1]}</td>
             <td>Sin Método de Pago</td>
-            <td>$${itemList[i].paymentDetail.subTotal}</td>
-            <td>$${itemList[i].paymentDetail.total}</td>
+            <td>$${itemList[i].invoiceDetail.total}</td>
+            <td>${status}</td>
+            <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
+            <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>    
           </tr>
         `);
       } else if(itemList[i].paymentMethod == 1){
         $('#billingHistoryBody').append(`
           <tr>
             <th scope="row">${new Date(itemList[i].createdAt).toLocaleDateString('es-CL')}</th>
-            <td>${itemList[i].paymentDetail.name.split(" Período ")[0]}</td>
-            <td>${itemList[i].paymentDetail.name.split(" Período ")[1]}</td>
+            <td>${itemList[i].invoiceDetail.name.split(" Período ")[0]}</td>
+            <td>${itemList[i].invoiceDetail.name.split(" Período ")[1]}</td>
             <td>Transferencia</td>
-            <td>$${itemList[i].paymentDetail.subTotal}</td>
-            <td>$${itemList[i].paymentDetail.total}</td>
+            <td>$${itemList[i].invoiceDetail.total}</td>
+            <td>${status}</td>
+            <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
+            <td><a class="btn btn-primary" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" href="/billing/pay/${itemList[i].SK.replace("INVOICE#","")}">Ver más</a></td>                                                                                                                        
           </tr>
         `);
       } else {
@@ -118,4 +158,83 @@ $.ajax({ // Billing history api call
   error: function (xhr, status, error) {
     console.log(error);
   }
+});
+
+$('#modal-invoice').on('show.bs.modal', function (event){
+  var invoiceId = $(event.relatedTarget).data("id");
+  $.ajax({ // Billing info api call
+    type: "GET",
+    url: "https://api.aliachile.com/dev/invoice/" + invoiceId,
+    headers: {
+      Authorization: 'Bearer ' + Cookies.get("token")
+    },
+    dataType: 'json',
+    success: function (result, status, xhr) {
+
+      var paymentMethod = result.result.paymentMethod
+
+      if (paymentMethod == 0 || paymentMethod == '0'){
+        paymentMethod = "Sin método de pago"
+      } else if (paymentMethod == 1 || paymentMethod == '1'){
+        paymentMethod = "Transferencia"
+      }
+
+      var status = result.result.status
+
+      if (status == 0 || status == '0'){
+        status = "Sin pagar"
+      } else if (status == 1 || status == '1'){
+        status = "Pagado"
+      } else if (status == 2 || status == '2'){
+        status = "Fallido"
+      } else if (status == 3 || status == '3'){
+        status = "Expirado"
+      } else if (status == 4 || status == '4'){
+        status = "Cancelado"
+      }
+
+      console.log(result)
+      const invoiceTitle =  "Detalles de la facturación " + invoiceId
+      $('#invoiceTitle').text(invoiceTitle);
+
+      const invoiceDate =  "Fecha de creación : " + new Date(result.result.createdAt).toLocaleDateString('es-CL')
+      $('#invoiceDate').text(invoiceDate);
+
+      const invoiceDescription =  "Nombre del plan: " + result.result.invoiceDetail.name.split(" Período ")[0]
+      $('#invoiceDescription').text(invoiceDescription);
+
+      const invoicePeriod =  "Periodo: " + result.result.invoiceDetail.name.split(" Período ")[1]
+      $('#invoicePeriod').text(invoicePeriod);
+
+      const invoicePaymentMethod =  "Forma de pago: " + paymentMethod
+      $('#invoicePaymentMethod').text(invoicePaymentMethod);
+
+      const invoiceSubtotal =  "Subtotal: " + result.result.invoiceDetail.subTotal
+      $('#invoiceSubtotal').text(invoiceSubtotal);
+
+      if (result.result.invoiceDetail.discount){
+        const invoiceDiscount =  "Descuento: " + result.result.invoiceDetail.discount
+        $('#invoiceDiscount').text(invoiceDiscount);
+
+        const invoiceDiscountReason =  "Descuento: " + result.result.invoiceDetail.discountReason
+        $('#invoiceDiscountReason').text(invoiceDiscountReason);
+      }
+
+      const invoiceTotal =  "Total: " + result.result.invoiceDetail.total
+      $('#invoiceTotal').text(invoiceTotal);
+
+      const retryInvoice =  "Re-intentos : " + result.result.retries
+      $('#retryInvoice').text(retryInvoice);
+
+      const updatedAtInvoice =  "Última modificación : " + new Date(result.result.updatedAt).toLocaleDateString('es-CL')
+      $('#updatedAtInvoice').text(updatedAtInvoice);
+
+      const statusInvoice =  "Estado de facturación : " + status
+      $('#statusInvoice').text(statusInvoice);
+
+    },
+    error: function (xhr, status, error) {
+      console.log(error);
+    }
+  })
 });
