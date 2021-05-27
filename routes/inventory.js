@@ -135,7 +135,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   getProduct = await db.queryv2(paramsProduct);
   var product = getProduct.Items[0];
 
-  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId});
+  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId, planID: req.user['custom:plan_id']});
 });
 
 router.post('/edit', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) =>{
