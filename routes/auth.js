@@ -121,6 +121,10 @@ router.post('/register', upload.none(), async(req, res) => {
     Name: 'custom:company_id',
     Value: company_id
   }
+  var plan_idData = {
+    Name: 'custom:plan_id',
+    Value: '0'
+  }
 
   var params_profile={
     TableName: process.env.AWS_DYNAMODB_TABLE,
@@ -151,9 +155,9 @@ router.post('/register', upload.none(), async(req, res) => {
   var first_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(first_nameData);
   var last_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(last_nameData);
   var company_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(company_idData);
-
-
-  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData], null, (err, data)=>{
+  var plan_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(plan_idData);
+  
+  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData, plan_idData], null, (err, data)=>{
     if (err) {
       console.log(err);
       res.cookie('message', {type:'danger', content:err.message});

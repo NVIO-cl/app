@@ -78,25 +78,89 @@ head
 
                         .container-fluid(style="overflow-x:auto; padding-left: 0px; padding-right: 0px;")
                             form#editProducts
-                                table.table.table-striped
+                                table.table.table-striped.text-nowrap
                                     thead
                                         tr
                                             //th(scope='col') ID
                                             th(scope='col') Nombre
-                                            th(scope='col') Subproductos?
+                                                if(f === undefined)
+                                                    button#nameFilter.btn(value='productName.keyword_asc' name='f')
+                                                        i.fas.fa-sort
+                                                else if (f == 'productName.keyword_asc')
+                                                    button#nameFilter.btn(value='productName.keyword_desc' name='f')
+                                                        i.fas.fa-sort-up
+                                                else if (f == 'productName.keyword_desc')
+                                                    button#nameFilter.btn(value='' name='f')
+                                                        i.fas.fa-sort-down
+                                                else
+                                                    button#nameFilter.btn(value='productName.keyword_asc' name='f')
+                                                        i.fas.fa-sort
+                                            th(scope='col') ¿Subproductos?
+                                                if(f === undefined)
+                                                    button#subproductsFilter.btn(value='productType.keyword_asc' name='f')
+                                                        i.fas.fa-sort
+                                                else if (f == 'productType.keyword_asc')
+                                                    button#subproductsFilter.btn(value='productType.keyword_desc' name='f')
+                                                        i.fas.fa-sort-up
+                                                else if (f == 'productType.keyword_desc')
+                                                    button#subproductsFilter.btn(value='' name='f')
+                                                        i.fas.fa-sort-down
+                                                else
+                                                    button#subproductsFilter.btn(value='productType.keyword_asc' name='f')
+                                                        i.fas.fa-sort
                                             th(scope='col') Stock
+                                                if(f === undefined)
+                                                    button#stockFilter.btn(value='stock_desc' name='f')
+                                                        i.fas.fa-sort
+                                                else if (f == 'stock_desc')
+                                                    button#stockFilter.btn(value='stock_asc' name='f')
+                                                        i.fas.fa-sort-down
+                                                else if (f == 'stock_asc')
+                                                    button#stockFilter.btn(value='' name='f')
+                                                        i.fas.fa-sort-up
+                                                else
+                                                    button#stockFilter.btn(value='stock_desc' name='f')
+                                                        i.fas.fa-sort
                                             th(scope='col') Precio
+                                                if(f === undefined)
+                                                    button#priceFilter.btn(value='price_desc' name='f')
+                                                        i.fas.fa-sort
+                                                else if (f == 'price_desc')
+                                                    button#priceFilter.btn(value='price_asc' name='f')
+                                                        i.fas.fa-sort-down
+                                                else if (f == 'price_asc')
+                                                    button#priceFilter.btn(value='' name='f')
+                                                        i.fas.fa-sort-up
+                                                else
+                                                    button#priceFilter.btn(value='price_desc' name='f')
+                                                        i.fas.fa-sort
+                                            th(scope='col') ¿Habilitado?
+                                                if(f === undefined)
+                                                    button#availableFilter.btn(value='available_desc' name='f')
+                                                        i.fas.fa-sort
+                                                else if (f == 'available_desc')
+                                                    button#availableFilter.btn(value='available_asc' name='f')
+                                                        i.fas.fa-sort-up
+                                                else if (f == 'available_asc')
+                                                    button#availableFilter.btn(value='' name='f')
+                                                        i.fas.fa-sort-down
+                                                else
+                                                    button#availableFilter.btn(value='available_desc' name='f')
+                                                        i.fas.fa-sort
                                             th(scope='col') Acciones
+                                                button.btn.invisible
+                                                    i.fas.fa-sort
                                     tbody
                                       each product, index in results
                                         tr
                                             //th(scope='row') #{product._id}
                                             td(scope='row') #{product._source.productName}
                                             td(scope='row') #{product._source.attributesList ? 'Sí' : 'No'}
-                                            td(scope='row') #{product._source.stock ? product._source.stock : 'N/A'}
-                                            td(scope='row') #{product._source.checkAttributes ? 'Variable' : product._source.price}
+                                            td(scope='row') #{(product._source.stock !== null) ? product._source.stock : 'N/A'}
+                                            td(scope='row') #{product._source.price ? product._source.price : 'Variable'}
+                                            td(scope='row') #{product._source.available ? 'Sí' : 'No'}
                                             td(scope='row')
-                                              a.btn.btn-primary(href="/inventory/edit/"+product._id.substring(6)) Ver más
+                                              a.btn.btn-primary(href="/inventory/detail/"+product._id.substring(6)) Ver más
 
                         .col.col-sm-12.col-md-12.d-inline-flex.justify-content-center.justify-content-sm-end.justify-content-md-end.justify-content-lg-end
                             nav(aria-label='...')

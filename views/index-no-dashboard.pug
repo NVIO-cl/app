@@ -8,7 +8,6 @@ head
     meta(name='apple-touch-fullscreen' content='yes')
     title Dashboard - Alia
     script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
-    script(src='https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js')
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -22,14 +21,63 @@ head
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='manifest' href='/manifest.json')
 .d-lg-flex.d-sm-block
-    if (planID == 0)
-      include ./includes/navbar-0.pug
-    if (planID == 1)
-      include ./includes/navbar-1.pug
-    if (planID == 2)
-      include ./includes/navbar-2.pug
-    if (planID == 3)
-      include ./includes/navbar-3.pug
+    nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
+      a.navbar-brand(href="/")
+        img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='max-height:50px;')
+      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")    
+        span.navbar-toggler-icon
+      .collapse.navbar-collapse#navbarNav
+        ul.navbar-nav
+          li.nav-item
+              a.nav-link.active(href='/')
+                  i.fas.fa-tachometer-alt.mr-1
+                  span Dashboard
+          li.nav-item
+              a.nav-link(href='/profile')
+                  i.fas.fa-user.mr-1
+                  span Perfil
+          li.nav-item
+              a.nav-link(href='/historial')
+                  i.fas.fa-table.mr-1
+                  span Historial de Ventas
+          li.nav-item
+              a.nav-link(href='/order/create')
+                  i.fas.fa-plus-square.mr-1
+                  span Crear Nueva Orden
+          li.nav-item
+              a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+                  i.far.fa-user-circle.mr-1
+                  span Cerrar Sesión 
+            
+    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
+        .container-fluid.d-flex.flex-column.p-0
+            a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
+                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
+            hr.sidebar-divider.my-0
+            ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
+                li.nav-item
+                    a.nav-link.active(href='/')
+                        i.fas.fa-tachometer-alt
+                        span Dashboard
+                li.nav-item
+                    a.nav-link(href='/profile')
+                        i.fas.fa-user
+                        span Perfil
+                li.nav-item
+                    a.nav-link(href='/historial')
+                        i.fas.fa-table
+                        span Historial de Ventas
+                li.nav-item
+                    a.nav-link(href='/order/create')
+                        i.fas.fa-plus-square
+                        span Crear Nueva Orden
+                li.nav-item
+                    a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+                        i.far.fa-user-circle
+                        span Cerrar Sesión
+                li.nav-item
+            .text-center.d-none.d-md-inline
+                button#sidebarToggle.btn.rounded-circle.border-0(type='button')
     #content-wrapper.d-flex.flex-column.flex-fill
         #content
             nav.navbar(style='margin-top: 17px;')
@@ -147,65 +195,18 @@ head
                                             a.dropdown-item(href='#')
                                                 i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
                                                 | &nbsp;Logout
-            .container-fluid.text-center
-                .row
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Productos Más Vendidos
-                      .card-body
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Ventas de la Semana/Mes
-                      .card-body  
-                .row
-                  .col-md-6
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Tracking ventas por Mes
-                      .card-body  
-                        canvas#myChart(style='position: relative; height:1vh; width:1vw')
-                        script.
-                          const ctx = document.getElementById('myChart').getContext('2d');
-                          const myChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                                datasets: [{
-                                    label: '# of Sales',
-                                    data: [12, 19, 3, 5, 2, 3],
-                                    backgroundColor: 'rgba(8, 97, 255, 0.2)',
-                                    borderColor: 'rgb(8, 97, 255)',
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                            }
-                          });
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Cantidad de pedidos por comunas
-                      .card-body 
-                .row 
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Cantidad de pedidos de la Semana/Mes
-                      .card-body 
-                  .col-md
-                    .card.shadow.mb-3
-                      .card-header
-                        .text-primary
-                          | Tracking cantidad de pedidos por Mes
-                      .card-body 
+            .container-fluid
+                .d-sm-flex.justify-content-between.align-items-center.mb-4
+                    h3.text-dark.mb-0 Bienvenido a Alia
+                //-
+                    a.btn.btn-primary.btn-sm.d-none.d-sm-inline-block(role='button' href='#' style='background: #6e3c8e;')
+                        i.fas.fa-download.fa-sm.text-white-50
+                        | &nbsp;Descargar Plantilla
+                .row.justify-content-md-center
+                  .col-md-8
+                    .h4.text-center Aprende a usar la plataforma en 3 minutos:
+                    .embed-responsive.embed-responsive-16by9
+                      iframe(src="https://www.youtube.com/embed/ty2PzG1Lps8?modestbranding=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
             //-
                 .row
                     .col-md-6.col-xl-3.mb-4
@@ -318,6 +319,8 @@ head
             .container.my-auto
                 .text-center.my-auto.copyright
                     span Copyright &copy; Alia 2021
+    //a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+    //    i.fas.fa-angle-up
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content
@@ -335,6 +338,3 @@ script(src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundl
 script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
-script(src='/javascripts/navbars.js')
-script.
-  nav('dashboard');

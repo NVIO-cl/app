@@ -58,7 +58,31 @@ function(email, password, cb) {
   // 5) Do authentication
   cognitoUser.authenticateUser(authenticationDetails, {
 	onSuccess: function(result) {
-    var refreshToken = result.getRefreshToken().token;
+    // If user doesn't have a plan variable (it's an old one), create it.
+    cognitoUser.getUserAttributes(function(err,res){
+      var plan = res.find(x => x.Name === 'custom:plan_id');
+      if (plan === undefined) {
+        var plan_id = {
+        	Name: 'custom:plan_id',
+        	Value: '0',
+        };
+        var plan_id = new AmazonCognitoIdentity.CognitoUserAttribute(plan_id);
+        var attributeList = []
+        attributeList.push(plan_id)
+        // It's an old user but it checks out. Set the plan to 0 by default.
+        cognitoUser.updateAttributes(attributeList, function(err,res){
+          if (err) {
+            console.log(err);
+          }
+          else {
+            console.log("Old user set to plan 0");
+          }
+        })
+      }
+    });
+
+
+
     var idToken = result.getIdToken().getJwtToken();
     tokens = {
       idToken: idToken,
@@ -73,58 +97,6 @@ function(email, password, cb) {
       return cb(err.code, null, {message: 'Error'});
   	},
   });
-
-
-  // LEGACY LOGIN USING DYNAMODB
-  /*
-  var hashedPassword;
-
-  var params = {
-    "TableName": process.env.AWS_DYNAMODB_TABLE,
-    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
-    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
-    "ExpressionAttributeValues": {":cd420": {"S":"EMAIL"},":cd421": {"S":"EMAIL#" + email}}
-  };
-
-  userQuery = await db.query(params);
-
-  if (userQuery.Count == 0) {
-    return cb(null, false, {message: 'Incorrect email or password.'});
-  }
-
-  userID = userQuery.Items[0].userID.S;
-  if (userID.includes("ADMIN")){
-    profileID = userID.replace("ADMIN", "PROFILE");
-  }
-  else if (userID.includes("CLIENT")) {
-    profileID = userID.replace("CLIENT", "PROFILE");
-  }
-  else {
-    profileID = userID.replace("COMPANY", "PROFILE");
-  }
-
-  params = {
-    "TableName": process.env.AWS_DYNAMODB_TABLE,
-    "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
-    "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
-    "ExpressionAttributeValues": {":cd420": {"S": userID},":cd421": {"S": profileID}}
-  }
-
-  profileQuery = await db.query(params);
-
-  hashedPassword = profileQuery.Items[0].password.S;
-  bcrypt.compare(password, hashedPassword, (err, result) =>{
-    if (err) {
-      return cb(null, false, {message: 'An error occured processing the request.'});
-    }
-    if (result) {
-      return cb(null, userID, {message: 'Logged In Successfully'});
-    }
-    else {
-      return cb(null, false, {message: 'Incorrect email or password.'});
-    }
-  });
-  */
 }));
 
 var cookieExtractor = (req) => {

@@ -83,8 +83,7 @@ $(document).ready(function(){
   $('body').on('click', "[id^=delete]", function(){
     if ($(this).attr('id') == 'delete[0]') {
       alert("No puedes eliminar el primer atributo")
-    }
-    else {
+    } else {
       id = parseInt($(this).attr('id').replace("delete[", "").replace("]", ""))
       $('#attributes\\['+id+'\\]').fadeOut("fast",function(){
         $('#attributes\\['+id+'\\]').remove();
@@ -92,6 +91,14 @@ $(document).ready(function(){
         recalc();
         attributeCount--;
       });
+      // Make the "regen attributes" button exists, plain jquery can't handle 'on("remove")'
+      if($('#createProductButton').hasClass("d-none")){ // this means createProductButton is disabled
+        if(!regenExists){ // Check to see if the regenerate button exists
+          $("<br><button id='regenerateAttributes' class='btn btn-primary btn-sm' style='background: #12c4f2; border: #12c4f2; margin-top: 10px;'>Actualizar Atributos</button>").appendTo($('#createAttribute').parent());
+          regenExists = !regenExists;
+        }
+        // TODO: Notify the user that they have changes pending update if they click "submit" while the "regenerateAttributes" button still exists
+      }
     }
   })
 
@@ -193,13 +200,56 @@ $(document).ready(function(){
     // Brutish solution: Once the button is clicked, clear subproducts, then generate, then hide the button
     // The cleaner way to do this is to check for differences, keep a list of the IDs that exist, then compare it to the list that would be generated and remove/add cards accordingly
     e.preventDefault();
-    $('#subproductForms').empty();
-    generateSubproducts();
-    $('#regenerateAttributes').remove();
-    $('#createSubproducts').remove();
-    $('br').remove();
-    regenExists = !regenExists;
-    // TODO: Implement a cleaner way to do this, as described at the beginning of this function
+    // validate form
+    var hasEmptyData = false;
+    if ($('#productName').val() == "") {
+      $('#productName').addClass("is-invalid");
+      hasEmptyData=true;
+    } else {
+      $('#productName').removeClass("is-invalid");
+      $('#productName').addClass("is-valid");
+    }
+    if ($('#productPrice').val() == "") {
+      $('#productPrice').addClass("is-invalid");
+      hasEmptyData=true;
+    } else {
+      $('#productPrice').removeClass("is-invalid");
+      $('#productPrice').addClass("is-valid");
+    }
+    if (subproducts) {
+      //Check if subproducts are filled with data
+      var $attributes = $("[id$=\\[name\\]]");
+      $attributes.each((index) => {
+        if ($('#attributes\\['+index+'\\]\\[name\\]').val()=="") {
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid');
+          hasEmptyData=true;
+        }
+        else {
+          $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid');
+          $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid');
+        }
+        if ($('#attributes\\['+index+'\\]\\[values\\]').val()=="") {
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid');
+          hasEmptyData=true;
+        }
+        else {
+          $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid');
+          $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid');
+        }
+      });
+    }
+    if (!hasEmptyData) {
+      // remove extraneous elements
+      $('#subproductForms').empty();
+      generateSubproducts();
+      $('#regenerateAttributes').remove();
+      $('#createSubproducts').remove();
+      $('br').remove();
+      regenExists = !regenExists;
+      // TODO: Implement a cleaner way to do this, as described at the beginning of this function
+    } else {
+      // something's empty, do nothing
+    }
   });
 
   function generateSubproducts(){
@@ -239,7 +289,6 @@ $(document).ready(function(){
           value: item
         })
       });
-      console.log(attributes);
       var card = `
       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" id="subproductCard[${i}]">
         <div class="card shadow mb-3">

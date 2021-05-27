@@ -23,7 +23,11 @@ var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  res.render('index', { title: 'Alia', userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
+  if(req.user['custom:plan_id'] >= 2){ // If the user has dashboard functionality
+    res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
+  } else { // If the user doesn't have dashboard access
+    res.render('index-no-dashboard', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
+  }
 });
 
 router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -140,7 +144,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
   var logo = await s3.getSignedUrl('getObject', {Key: "comprobantes/" + req.user.user.replace("COMPANY#","") + "/" + req.params.id + ".png", Expires: 10});
 
-  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
+  res.render('detail', {title: name, order: detailQuery.Items, parsed_comments_date: comentarios, logo: logo, parsed_created_at: parsed_created_at, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
 });
 
 /* GET historial. */
