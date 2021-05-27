@@ -1,0 +1,198 @@
+doctype html
+head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no')
+    meta(name='apple-mobile-web-app-capable' content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style' content='default')
+    meta(name='apple-mobile-web-app-title' content='alia')
+    meta(name='apple-touch-fullscreen' content='yes')
+    title Detalle - Alia
+    script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
+    script.
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SJETCMY2EN', {
+            'user_id': '#{userID}'
+        });
+    link(rel='icon' type='image/png' href='https://alia.s3.amazonaws.com/assets/img/favicon.png')
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
+    link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
+.d-lg-flex.d-sm-block
+    nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
+        a.navbar-brand(href="/")
+            img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='max-height:50px;')
+        button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+        .collapse.navbar-collapse#navbarNav
+            ul.navbar-nav
+                li.nav-item
+                    a.nav-link(href='/')
+                        i.fas.fa-tachometer-alt.mr-1
+                        span Dashboard
+                li.nav-item
+                    a.nav-link(href='/profile')
+                        i.fas.fa-user.mr-1
+                        span Perfil
+                li.nav-item
+                    a.nav-link(href='/historial')
+                        i.fas.fa-table.mr-1
+                        span Historial de Ventas
+                li.nav-item
+                    a.nav-link(href='/order/create')
+                        i.fas.fa-plus-square.mr-1
+                        span Crear Nueva Orden
+                li.nav-item
+                    a.nav-link(href='/inventory')
+                        i.fas.fa-boxes.mr-1
+                        span Inventario
+                li.nav-item
+                    a.nav-link(href='/inventory/create')
+                        i.fas.fa-box.mr-1
+                        span Crear Nuevo Producto
+                li.nav-item
+                    a.nav-link.active(href='/billing')
+                        i.fas.fa-file-invoice-dollar.mr-1
+                        span Planes y Facturación
+                li.nav-item
+                    a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+                        i.far.fa-user-circle.mr-1
+                        span Cerrar Sesión
+    nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
+        .container-fluid.d-flex.flex-column.p-0
+            a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
+                img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
+            hr.sidebar-divider.my-0
+            ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
+                li.nav-item
+                    a.nav-link(href='/')
+                        i.fas.fa-tachometer-alt
+                        span Dashboard
+                li.nav-item
+                    a.nav-link(href='/profile')
+                        i.fas.fa-user
+                        span Perfil
+                li.nav-item
+                    a.nav-link(href='/historial')
+                        i.fas.fa-table
+                        span Historial de Ventas
+                li.nav-item
+                    a.nav-link(href='/order/create')
+                        i.fas.fa-plus-square
+                        span Crear Nueva Orden
+                li.nav-item
+                    a.nav-link(href='/inventory')
+                        i.fas.fa-boxes
+                        span Inventario
+                li.nav-item
+                    a.nav-link(href='/producto')
+                        i.fas.fa-box.mr-1
+                        span Crear Nuevo Producto
+                li.nav-item
+                    a.nav-link.active(href='/billing')
+                        i.fas.fa-file-invoice-dollar.mr-1
+                        span Planes y Facturación
+                li.nav-item
+                    a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
+                        i.far.fa-user-circle
+                        span Cerrar Sesión
+                li.nav-item
+            .text-center.d-none.d-md-inline
+                button#sidebarToggle.btn.rounded-circle.border-0(type='button')
+    #content-wrapper.d-flex.flex-column.flex-fill
+      .container-fluid(style='margin-top: 32px;')
+        a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../billing/plans')
+            i.fa.fa-arrow-left
+            | &nbsp;Regresar
+        .row
+          .col-md-12.col-sm-12
+            .card-deck
+              .card.shadow
+                h4.card-header Selecciona tu plan
+                .card-body
+                  .row
+                    .col-md-12
+                      h5.text-dark.mt-2
+                        | Ciclo de pago:
+                      .custom-control.custom-radio.custom-control-inline
+                        input.custom-control-input(type="radio" id="mensual" name="billingPeriod")
+                        label.custom-control-label(for="mensual") Mensual
+                      .custom-control.custom-radio.custom-control-inline
+                        input.custom-control-input(type="radio" id="anual" name="billingPeriod" checked="checked")
+                        label.custom-control-label(for="anual") 
+                          | Anual 
+                          b.text-primary (ahorras 20%)
+                    .col-md-12
+                      h5.text-dark.mt-2
+                        | Plan:
+                      .card.mb-2
+                        .card-body.p-2
+                          .custom-control.custom-radio
+                            if(selectedPlanId == 1)
+                              input.custom-control-input(type="radio" id="corre" name="plan" checked="checked")
+                            else
+                              input.custom-control-input(type="radio" id="corre" name="plan")
+                            label.custom-control-label.d-flex(for="corre")
+                              .mr-auto Corre
+                              #corre-price $4.000 / mes
+                      .card.mb-2
+                        .card-body.p-2
+                          .custom-control.custom-radio
+                            if(selectedPlanId == 2)
+                              input.custom-control-input(type="radio" id="despega" name="plan" checked="checked")
+                            else
+                              input.custom-control-input(type="radio" id="despega" name="plan")
+                            label.custom-control-label.d-flex(for="despega") 
+                              .mr-auto Despega
+                              #despega-price $12.000 / mes
+                      .card.mb-2
+                        .card-body.p-2
+                          .custom-control.custom-radio
+                            if(selectedPlanId == 3)
+                              input.custom-control-input(type="radio" id="vuela" name="plan" checked="checked")
+                            else
+                              input.custom-control-input(type="radio" id="vuela" name="plan")
+                            label.custom-control-label.d-flex(for="vuela")
+                              .mr-auto Vuela
+                              #vuela-price $20.000 / mes
+                    .col-md-12
+                      h5.text-dark.mt-2
+                        | Método de pago: 
+                        .text-primary.mb-2.mt-2.font-weight-bold Transferencia
+                        a.btn.btn-primary.btn-sm.d-inline(type='button' href='/billing') Cambiar
+              .card.shadow
+                h4.card-header Resumen de tu compra
+                .card-body.d-flex.justify-content-center.flex-column
+                  .row.d-flex#planRow
+                    .mr-auto#planName 
+                    #planPrice $24.000
+                  .row.d-flex#discountRow
+                    .mr-auto#discountName
+                    #discountPrice
+                  .row.dflex#totalRow
+                    .mr-auto Total
+                    b.text-primary.h5#totalPrice $24.000
+      footer.bg-white.sticky-footer
+        .container.my-auto
+            .text-center.my-auto.copyright
+                span Copyright &copy; Alia 2021
+    .modal.fade#modal-logout(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Estás a punto de cerrar sesión
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p ¿Deseas cerrar tu sesión?
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
+                    a.btn.btn-danger(href='/logout') Cerrar Sesión
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+script(src='/javascripts/theme.js')
+script(src='/javascripts/payment.js')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx' crossorigin='anonymous')
+script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')

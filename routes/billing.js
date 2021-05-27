@@ -15,4 +15,10 @@ router.get('/plans', passport.authenticate('jwt', {session: false, failureRedire
   res.render('billing/plans', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
+router.get('/plans/:id', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var name = "Selección de plan";
+  console.log(req.params);
+  res.render('billing/payment', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id'], selectedPlanId: parseInt(req.params.id)});
+});
+
 module.exports = router;
