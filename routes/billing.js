@@ -5,6 +5,11 @@ const validator = require('validator');
 const { nanoid } = require("nanoid");
 var db = require("../db");
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+const poolData = {
+  UserPoolId: process.env.AWS_COGNITO_USERPOOLID,
+  ClientId: process.env.AWS_COGNITO_CLIENTID
+};
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 router.get('/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Billing";
@@ -23,6 +28,7 @@ router.get('/plans/:id', passport.authenticate('jwt', {session: false, failureRe
 });
 
 router.post('/setPlan/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req, res) => {
+  console.log("SET PLAN!");
   // Set the new plan
 
   // If successful, set the new claim
@@ -33,7 +39,8 @@ router.post('/setPlan/', passport.authenticate('jwt', {session: false, failureRe
   // If unsuccessful, redirect back
 
 
-  console.log(req.cookie);
+  console.log(req.cookies);
+  console.log(req.body);
 });
 
 module.exports = router;

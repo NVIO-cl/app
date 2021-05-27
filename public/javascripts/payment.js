@@ -129,6 +129,7 @@ $(document).ready(function(){
     $('#planName').text(selectedPlanName + " " + selectedBillingPeriod);
     $('#planPrice').text(planPrice);
     $('#totalPrice').text(locale.format(totalPrice));
+    $('#modalTotalPrice').text("Monto a pagar: "+locale.format(totalPrice));
   }
 
   $('#couponForm').submit((e)=>{
@@ -175,7 +176,7 @@ $(document).ready(function(){
     name = "";
     $('#couponCheck').removeClass("is-invalid");
     $('#couponCheck').removeClass("is-valid");
-    $('#couponCheck').val("")
+    $('#couponCheck').val("");
     $('#couponCheckButton').removeClass('d-none');
     $('#couponClearButton').addClass('d-none');
     recalc();
@@ -191,5 +192,33 @@ $(document).ready(function(){
     discountAmount = 0;
     name = "";
     recalc();
+  });
+
+  $('#paidButton').click(()=>{
+    console.log("PAID!");
+    var planId = "";
+    var couponCode = "";
+    // Get plan ID
+    planId = $("input[name=plan]:checked").val();
+    // Get plan period
+    planId = planId + $("input[name=billingPeriod]:checked").val();
+    console.log(planId);
+    // Get coupon
+    couponCode = $('#couponCheck').val();
+    console.log(couponCode);
+    // Send request to middleware
+    $.ajax({
+      type: "POST",
+      url: "/billing/setPlan",
+      data: {planId: planId, couponCode: couponCode},
+      dataType: 'json',
+      success: function(result,status,xhr){
+        
+      },
+      error: function(xhr,status,error){
+
+      }
+    });
+
   });
 });
