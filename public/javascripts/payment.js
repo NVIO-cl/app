@@ -27,7 +27,6 @@ $(document).ready(function(){
   var locale = Intl.NumberFormat('es-CL', {style: "currency",currency:"CLP"});
 
   if ($('#corre').prop("checked") == true) {
-    console.log("CORRE IS CHECKED");
     selectedPlanName = "Plan Corre";
     selectedPlanNumber = "1";
 
@@ -35,7 +34,6 @@ $(document).ready(function(){
     planPrice = selectedPlanPrice * selectedPeriodMult;
 
   } else if ($('#despega').prop("checked") == true){
-    console.log("DESPEGA IS CHECKED");
     selectedPlanName = "Plan Despega";
     selectedPlanNumber = "2";
 
@@ -43,7 +41,6 @@ $(document).ready(function(){
     planPrice = despegaPrice* selectedPeriodMult;
 
   } else if ($('#vuela').prop("checked") == true){
-    console.log("VUELA IS CHECKED");
     selectedPlanName = "Plan Vuela";
     selectedPlanNumber = "3";
 
@@ -73,7 +70,6 @@ $(document).ready(function(){
   });
 
   $('#corre').click(()=>{
-    console.log("CHANGED TO CORRE");
     selectedPlanPrice = correPrice;
     selectedPlanName="Plan Corre";
     selectedPlanNumber = "1";
@@ -81,7 +77,6 @@ $(document).ready(function(){
   });
 
   $('#despega').click(()=>{
-    console.log("CHANGED TO DESPEGA");
     selectedPlanPrice = despegaPrice;
     selectedPlanName="Plan Despega";
     selectedPlanNumber = "2";
@@ -89,7 +84,6 @@ $(document).ready(function(){
   });
 
   $('#vuela').click(()=>{
-    console.log("CHANGED TO VUELA");
     selectedPlanPrice = vuelaPrice;
     selectedPlanName="Plan Vuela";
     selectedPlanNumber = "3";
@@ -99,7 +93,6 @@ $(document).ready(function(){
   function recalc(){
     // First get the plan price
     planPrice = selectedPlanPrice * selectedPeriodMult;
-    console.log("PLAN PRICE IS: " + planPrice);
 
     // Check if there's a discount applied
     if (discountMethod) {
@@ -131,7 +124,6 @@ $(document).ready(function(){
 
     // Set prices n' stuff.
     totalPrice = planPrice - discountAmount;
-    console.log("TOTAL PRICE IS: " + totalPrice);
     planPrice = locale.format(planPrice);
     planId = selectedPlanNumber+selectedPlanPeriod;
     $('#planName').text(selectedPlanName + " " + selectedBillingPeriod);
