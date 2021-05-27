@@ -162,33 +162,28 @@ head
                       h5.text-dark.mt-2
                         | Método de pago: 
                         .text-primary.mb-2.mt-2.font-weight-bold Transferencia
-                        a.btn.btn-primary.btn-sm.d-inline(type='button' href='/billing') Cambiar
               .card.shadow
                 h4.card-header Resumen de tu compra
-                .card-body.d-flex.justify-content-center.flex-column
+                .card-body.d-flex.justify-content-center.flex-column.mx-4
                   .row.d-flex#planRow
                     .mr-auto#planName 
                     #planPrice $24.000
                   .row.d-flex#discountRow
                     .mr-auto#discountName
                     #discountPrice
+                  .dropdown-divider
                   .row.d-flex#totalRow
                     .mr-auto Total
                     b.text-primary.h5#totalPrice $24.000
-
-                  .row.d-flex.justify-content-md-center
-                      h6 Aplicar Cupón de Descuento
-                      form#couponForm
-                          .container-fluid(style="padding-left: 0px; padding-right: 0px;")
-                              .form-row.flex-nowrap
-                                  .col-xs-12.col-sm-12.col-md-12
-                                      .form-group
-                                          input.form-control#couponCheck(type='text' name='couponCheck' autocomplete='off')
-                                          .invalid-feedback El cupón ingresado no es válido
-
-                                  .col-xs-12.col-md-12.d-inline
-                                      .form-group
-                                          button.btn.btn-primary.btn-sm#couponCheckButton(type='button' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Aplicar
+                  .row.d-flex.justify-content-center
+                    h6 Aplicar Cupón de Descuento
+                  form#couponForm.form-inline.justify-content-center
+                    .form-group
+                      input.form-control#couponCheck(type='text' name='couponCheck' autocomplete='off')
+                      //-.invalid-feedback El cupón ingresado no es válido <-- BROKEN AF IN INLINE FORMS.
+                    .form-group
+                      button.btn.btn-primary.ml-2#couponCheckButton(type='submit' style='background: #12c4f2; border: #12c4f2;') Aplicar
+                      button.btn.btn-primary.ml-2.d-none#couponClearButton(type='button' style='background: #12c4f2; border: #12c4f2;') Limpiar
 
 
 
