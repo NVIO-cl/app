@@ -150,6 +150,24 @@ head
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
 
 
+    .modal.fade#modal-pay(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Datos de Transferencia Alia
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p Nombre: Bla Bla
+                    p Rut: 12345678-9
+                    p Banco: Banco de Chile
+                    p Tipo de Cuenta: Cuenta Corriente
+                    p Número de Cuenta: 1234 5678 91011
+                    P Correo electrónico: contacto@aliachile.com
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
+                    button.btn.btn-success(type='button', data-dismiss='modal') Ya Pagué
+
     .modal.fade#modal-transfer(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content

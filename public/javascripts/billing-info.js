@@ -108,22 +108,31 @@ $.ajax({ // Billing history api call
 
       var status = itemList[i].status
       var colorStatus = ""
+      var paymentButton = ""
+      var paymentHref = "#invoice"
+      var paymentTarget = "#modal-pay"
 
       if (status == 0 || status == '0'){
-        status = "Sin pagar"
+        status = "Sin Pagar"
         colorStatus = "text-danger font-weight-bold"
       } else if (status == 1 || status == '1'){
+        status = "Esperando Confirmación"
+        colorStatus = "text-warning font-weight-bold"
+      } else if (status == 2 || status == '2'){
         status = "Pagado"
         colorStatus = "text-success font-weight-bold"
-      } else if (status == 2 || status == '2'){
-        status = "Fallido"
-        colorStatus = "text-warning font-weight-bold"
+        paymentButton = "disabled"
+        paymentHref = "#"
+        paymentTarget = "#"
       } else if (status == 3 || status == '3'){
-        status = "Expirado"
-        colorStatus = "text-primary font-weight-bold"
+        status = "Fallido"
+        colorStatus = "text-danger font-weight-bold"
       } else if (status == 4 || status == '4'){
+        status = "Expirado"
+        colorStatus = "text-muted font-weight-bold"
+      } else if (status == 5 || status == '5'){
         status = "Cancelado"
-        colorStatus = "text-warning font-weight-bold"
+        colorStatus = "text-muted font-weight-bold"
       }
 
       var paymentMethod = itemList[i].paymentMethod
@@ -149,7 +158,7 @@ $.ajax({ // Billing history api call
           <td>$${itemList[i].invoiceDetail.total}</td>
           <td class="${colorStatus}">${status}</td>
           <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
-          <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>    
+          <td><a class="btn btn-primary ${paymentButton}" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target=${paymentTarget} href=${paymentHref}>Ver más</a></td>    
         </tr>
       `);
     }
