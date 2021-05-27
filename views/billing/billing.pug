@@ -39,8 +39,8 @@ head
                 i.fa.fa-arrow-left
                 | &nbsp;Regresar
               .col-lg-12(style="padding-left: 0px; padding-right: 0px;")
-                  .row
-                      .col
+                  .row.flex-column.flex-lg-row
+                      .col.col-sm-12.col-md-12.col-lg-6
                           .card.shadow.mb-3
                               .card-header.py-3
                                   p.text-primary.m-0.font-weight-bold Tu Membresía
@@ -52,12 +52,6 @@ head
                                               br
                                               .animated-placeholder#planName
 
-                                      .col-xs-2.col-md-4
-                                          .form-group
-                                              strong Método de Pago
-                                              br
-                                              .animated-placeholder#paymentMethod
-
                                   .form-row
                                       .col-xs-2.col-md-4
                                           .form-group
@@ -67,6 +61,29 @@ head
 
                                   .form-group(style='text-align: left;')
                                       a.btn.btn-primary.btn-sm(href='/billing/plans' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Cambiar Plan
+
+                      .col.col-sm-12.col-md-12.col-lg-6
+                          .card.shadow.mb-3
+                              .card-header.py-3
+                                  p.text-primary.m-0.font-weight-bold Tu Método de Pago
+                              .card-body
+                                  .form-row
+                                      .col-xs-2.col-md-4
+                                          .form-group
+                                              strong Método de Pago
+                                              br
+                                              .animated-placeholder#paymentMethod
+
+                                  .form-row
+                                      .col-xs-2.col-md-4
+                                          .form-group(style="margin-bottom: 6px;")
+                                              strong Datos de Transferencia
+                                              br
+                                              a.btn.btn-primary.btn-sm(data-toggle='modal' data-target='#modal-transfer' href='#transfer' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Mostrar
+
+                                  .form-group(style='text-align: left; margin-bottom: 0px;')
+                                      a.btn.btn-primary.btn-sm.disabled(href='#' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Cambiar Método de Pago
+                                      p(style="margin-bottom: 0px;") Estamos trabajando para integrar más métodos de pago =)
 
 
           .container-fluid#billingHistory
@@ -132,6 +149,23 @@ head
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
 
+
+    .modal.fade#modal-transfer(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Datos de Transferencia Alia
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p Nombre: Bla Bla
+                    p Rut: 12345678-9
+                    p Banco: Banco de Chile
+                    p Tipo de Cuenta: Cuenta Corriente
+                    p Número de Cuenta: 1234 5678 91011
+                    P Correo electrónico: contacto@aliachile.com
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
 
     .modal.fade#modal-logout(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
