@@ -27,7 +27,7 @@ passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password'
 },
-function(email, password, cb) {
+async function(email, password, cb) {
   // 1) Parse login data
   email = email.toLowerCase();
   var userID;
@@ -55,66 +55,28 @@ function(email, password, cb) {
   };
   var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
 
-  // 5) Do authentication
-  cognitoUser.authenticateUser(authenticationDetails, {
-	onSuccess: function(result) {
-    // If user doesn't have a plan variable (it's an old one), create it.
-    var idToken = result.getIdToken().getJwtToken();
-    var refreshToken = result.getRefreshToken().token;
-    var tokens = {
-      idToken: idToken,
-      refreshToken: refreshToken
-    };
-    cognitoUser.getUserAttributes(async function(err,res){
-      var plan = res.find(x => x.Name === 'custom:plan_id');
-      if (plan === undefined) {
-        var plan_id = {
-        	Name: 'custom:plan_id',
-        	Value: '0',
-        };
-        plan_id = new AmazonCognitoIdentity.CognitoUserAttribute(plan_id);
-        var attributeList = [];
-        attributeList.push(plan_id);
-        // It's an old user but it checks out. Set the plan to 0 by default.
-        cognitoUser.updateAttributes(attributeList, function(err,res){
-          if (err) {
-            console.log(err);
-          }
-          else {
-            console.log("Old user set to plan 0");
-            // Reauthenticating the user twice is a bad idea. Too bad!
-            cognitoUser.authenticateUser(authenticationDetails, {
-              onSuccess: function(result){
-                idToken = result.getIdToken().getJwtToken();
-                refreshToken = result.getRefreshToken().token;
-                tokens = {
-                  idToken: idToken,
-                  refreshToken: refreshToken
-                };
-                return cb(null, tokens, {message: 'Logged In Successfully'});
-              }, onFailure: function(err){
-                return cb(err.code, null, {message: 'Error'});
-              }
-            });
-          }
-        });
-      } else {
-        // Check if the billing plan ID is different. If it is, change the token and
-        // Yes, you guessed it. REAUTH!
-        let params = {
-          "TableName": "billing-dev", // CHANGE WHEN GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!
-          Key: {
-            PK: result.idToken.payload.user,
-            SK: result.idToken.payload.user.replace("COMPANY", "BILLING")
-          },
-        };
-        getBilling = await db.get(params);
-        if (parseInt(plan.Value) != parseInt(getBilling.Item.planId.charAt(0))) {
-          console.log("DIFFERENT PLAN IDs");
+  // 5) Do fist authentication
+  var idToken = "";
+  var refreshToken = "";
+  var tokens = {};
+   cognitoUser.authenticateUser(authenticationDetails, {
+  	onSuccess: async function(result) {
+      idToken = result.getIdToken().getJwtToken();
+      refreshToken = result.getRefreshToken().token;
+      tokens = {
+        idToken: idToken,
+        refreshToken: refreshToken
+      };
 
+      // 6) If first auth is correct, check if user has custom:plan_id
+      var plan = undefined;
+      await cognitoUser.getUserAttributes(async function(err,res){
+        plan = res.find(x => x.Name === 'custom:plan_id');
+        // 7a) If plan does not exist, create it as 0
+        if (plan === undefined) {
           var plan_id = {
-          	Name: 'custom:plan_id',
-          	Value: getBilling.Item.planId.charAt(0),
+            Name: 'custom:plan_id',
+            Value: '0',
           };
           plan_id = new AmazonCognitoIdentity.CognitoUserAttribute(plan_id);
           var attributeList = [];
@@ -125,7 +87,8 @@ function(email, password, cb) {
               console.log(err);
             }
             else {
-              // Reauth
+              console.log("OLD USER PLAN SET TO 0");
+              // Reauthenticating the user twice is a bad idea. Too bad!
               cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess: function(result){
                   idToken = result.getIdToken().getJwtToken();
@@ -139,19 +102,59 @@ function(email, password, cb) {
                   return cb(err.code, null, {message: 'Error'});
                 }
               });
-            };
+            }
           });
         } else {
-          return cb(null, tokens, {message: 'Logged In Successfully'});
+          // 7b) If plan exists, check if it's different from the billing plan and change it.
+          let params = {
+            "TableName": "billing-dev", // CHANGE WHEN GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!
+            Key: {
+              PK: result.idToken.payload.user,
+              SK: result.idToken.payload.user.replace("COMPANY", "BILLING")
+            },
+          };
+          getBilling = await db.get(params);
+          if (parseInt(plan.Value) != parseInt(getBilling.Item.planId.charAt(0))) {
+
+            var plan_id = {
+              Name: 'custom:plan_id',
+              Value: getBilling.Item.planId.charAt(0),
+            };
+            var plan_id = new AmazonCognitoIdentity.CognitoUserAttribute(plan_id);
+            var attributeList = [];
+            attributeList.push(plan_id);
+            // It's an old user but it checks out. Set the plan to 0 by default.
+            cognitoUser.updateAttributes(attributeList, function(err,res){
+              if (err) {
+                console.log(err);
+              }
+              else {
+                // Reauth
+                cognitoUser.authenticateUser(authenticationDetails, {
+                  onSuccess: function(result){
+                    idToken = result.getIdToken().getJwtToken();
+                    refreshToken = result.getRefreshToken().token;
+                    tokens = {
+                      idToken: idToken,
+                      refreshToken: refreshToken
+                    };
+                    return cb(null, tokens, {message: 'Logged In Successfully'});
+                  }, onFailure: function(err){
+                    return cb(err.code, null, {message: 'Error'});
+                  }
+                });
+              };
+            });
+          } else {
+            return cb(null, tokens, {message: 'Logged In Successfully'});
+          }
         }
-
-      }
-    });
-	},
-
-  	onFailure: function(err) {
-      return cb(err.code, null, {message: 'Error'});
+      });
   	},
+    onFailure: function(err) {
+      console.log("ERROR LOGGING IN");
+        return cb(err.code, null, {message: 'Error'});
+    }
   });
 }));
 
