@@ -398,7 +398,7 @@ router.get('/historial',passport.authenticate('jwt', {session: false, failureRed
     }
   };
   historialQuery = await db.query(params);
-  res.render('historial', {title: name, ordersForCards: JSON.stringify(historialQuery.Items), orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", "")});
+  res.render('historial', {title: name, orders: historialQuery.Items, companyId: req.user.user.replace("COMPANY#",""), userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

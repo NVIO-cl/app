@@ -11,6 +11,7 @@ var authRouter = require('./routes/auth');
 var orderRouter = require('./routes/order');
 var profileRouter = require('./routes/profile');
 var inventoryRouter = require('./routes/inventory');
+var billingRouter = require('./routes/billing');
 
 var app = express();
 
@@ -39,6 +40,7 @@ app.use('/', authRouter);
 app.use('/order',orderRouter);
 app.use('/profile',profileRouter);
 app.use('/inventory', inventoryRouter);
+app.use('/billing', billingRouter);
 
 
 //Use cookieParser

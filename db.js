@@ -93,6 +93,22 @@ module.exports = {
     }
   },
 
+  get: async function (params) {
+    try {
+      var docClient = new aws.DynamoDB.DocumentClient();
+      const getOutput = await docClient.get(params).promise();
+      if(process.env.NODE_ENV == 'develop'){
+        console.info('Get successful.');
+      }
+      return getOutput;
+    } catch (err) {
+      if(process.env.NODE_ENV == 'develop'){
+        console.log(err);
+      }
+      return err;
+    }
+  },
+
   delete: async function (params) {
     try {
       var docClient = new aws.DynamoDB.DocumentClient();

@@ -22,198 +22,17 @@ head
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
 .d-lg-flex.d-sm-block
-  nav.navbar.navbar-dark.bg-gradient-primary.d-lg-none(style='background: #0861ff;')
-    a.navbar-brand(href="/")
-      img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='max-height:50px;')
-    button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")    
-      span.navbar-toggler-icon
-    .collapse.navbar-collapse#navbarNav
-      ul.navbar-nav
-        li.nav-item
-            a.nav-link(href='/')
-                i.fas.fa-tachometer-alt.mr-1
-                span Dashboard
-        li.nav-item
-            a.nav-link(href='/profile')
-                i.fas.fa-user.mr-1
-                span Perfil
-        li.nav-item
-            a.nav-link.active(href='/historial')
-                i.fas.fa-table.mr-1
-                span Historial de Ventas
-        li.nav-item
-            a.nav-link(href='/order/create')
-                i.fas.fa-plus-square.mr-1
-                span Crear Nueva Orden
-        if(userPlanID >= 1)          
-          li.nav-item
-              a.nav-link(href='/inventory')
-                  i.fas.fa-boxes
-                  span Inventario
-          li.nav-item
-              a.nav-link(href='/producto')
-                  i.fas.fa-box.mr-1
-                  span Crear Nuevo Producto        
-        li.nav-item
-            a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
-                i.far.fa-user-circle.mr-1
-                span Cerrar Sesión 
-                                          
-  nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.d-none.d-lg-block(style='background: #0861ff;')
-      .container-fluid.d-flex.flex-column.p-0
-          a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='#')
-              img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_bn.png' style='width: 90%; margin-top: 22px;')
-          hr.sidebar-divider.my-0
-          ul#accordionSidebar.nav.navbar-nav.text-light(style="margin-top: 22px;")
-              li.nav-item
-                  a.nav-link(href='/')
-                      i.fas.fa-tachometer-alt
-                      span Dashboard
-              li.nav-item
-                  a.nav-link(href='/profile')
-                      i.fas.fa-user
-                      span Perfil
-              li.nav-item
-                  a.nav-link.active(href='/historial')
-                      i.fas.fa-table
-                      span Historial de Ventas
-              li.nav-item
-                  a.nav-link(href='/order/create')
-                      i.fas.fa-plus-square
-                      span Crear Nueva Orden
-              if(userPlanID >= 1)          
-                li.nav-item
-                    a.nav-link(href='/inventory')
-                        i.fas.fa-boxes
-                        span Inventario
-                li.nav-item
-                    a.nav-link(href='/producto')
-                        i.fas.fa-box.mr-1
-                        span Crear Nuevo Producto        
-              li.nav-item
-                  a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
-                      i.far.fa-user-circle
-                      span Cerrar Sesión
-              li.nav-item
-          .text-center.d-none.d-md-inline
-              button#sidebarToggle.btn.rounded-circle.border-0(type='button')
+  if (planID == 0)
+    include ./includes/navbar-0.pug
+  if (planID == 1)
+    include ./includes/navbar-1.pug
+  if (planID == 2)
+    include ./includes/navbar-2.pug
+  if (planID == 3)
+    include ./includes/navbar-3.pug
   #content-wrapper.d-flex.flex-column.flex-fill
     #content
-      nav.navbar(style='margin-top: 17px;')
-                //--
-                    .container-fluid
-                        button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
-                            i.fas.fa-bars
-                        form.form-inline.d-none.d-sm-inline-block.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search
-                            .input-group
-                                input.bg-light.form-control.border-0.small(type='text' placeholder='Buscar...')
-                                .input-group-append
-                                    button.btn.btn-primary.py-0(type='button' style='background: #6e3c8e;')
-                                        i.fas.fa-search
-                        ul.nav.navbar-nav.flex-nowrap.ml-auto
-                            li.nav-item.dropdown.d-sm-none.no-arrow
-                                a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                    i.fas.fa-search
-                                .dropdown-menu.dropdown-menu-right.p-3.animated--grow-in(aria-labelledby='searchDropdown')
-                                    form.form-inline.mr-auto.navbar-search.w-100
-                                        .input-group
-                                            input.bg-light.form-control.border-0.small(type='text' placeholder='Search for ...')
-                                            .input-group-append
-                                                button.btn.btn-primary.py-0(type='button')
-                                                    i.fas.fa-search
-                            li.nav-item.dropdown.no-arrow.mx-1
-                                .nav-item.dropdown.no-arrow
-                                    a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                        span.badge.badge-danger.badge-counter 3+
-                                        i.fas.fa-bell.fa-fw
-                                    .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
-                                        h6.dropdown-header alerts center
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .mr-3
-                                                .bg-primary.icon-circle
-                                                    i.fas.fa-file-alt.text-white
-                                            div
-                                                span.small.text-gray-500 December 12, 2019
-                                                p A new monthly report is ready to download!
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .mr-3
-                                                .bg-success.icon-circle
-                                                    i.fas.fa-donate.text-white
-                                            div
-                                                span.small.text-gray-500 December 7, 2019
-                                                p $290.29 has been deposited into your account!
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .mr-3
-                                                .bg-warning.icon-circle
-                                                    i.fas.fa-exclamation-triangle.text-white
-                                            div
-                                                span.small.text-gray-500 December 2, 2019
-                                                p Spending Alert: We&apos;ve noticed unusually high spending for your account.
-                                        a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
-                            li.nav-item.dropdown.no-arrow.mx-1
-                                .nav-item.dropdown.no-arrow
-                                    a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                        i.fas.fa-envelope.fa-fw
-                                        span.badge.badge-danger.badge-counter 7
-                                    .dropdown-menu.dropdown-menu-right.dropdown-list.dropdown-menu-right.animated--grow-in
-                                        h6.dropdown-header alerts center
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .dropdown-list-image.mr-3
-                                                img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar4.jpeg')
-                                                .bg-success.status-indicator
-                                            .font-weight-bold
-                                                .text-truncate
-                                                    span Hi there! I am wondering if you can help me with a problem I&apos;ve been having.
-                                                p.small.text-gray-500.mb-0 Emily Fowler - 58m
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .dropdown-list-image.mr-3
-                                                img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar2.jpeg')
-                                                .status-indicator
-                                            .font-weight-bold
-                                                .text-truncate
-                                                    span I have the photos that you ordered last month!
-                                                p.small.text-gray-500.mb-0 Jae Chun - 1d
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .dropdown-list-image.mr-3
-                                                img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar3.jpeg')
-                                                .bg-warning.status-indicator
-                                            .font-weight-bold
-                                                .text-truncate
-                                                    span
-                                                        | Last month&apos;s report looks great, I am very happy with the progress so far, keep up the good work!
-                                                p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
-                                        a.d-flex.align-items-center.dropdown-item(href='#')
-                                            .dropdown-list-image.mr-3
-                                                img.rounded-circle(src='https://nvio.s3.amazonaws.com/assets/img/avatars/avatar5.jpeg')
-                                                .bg-success.status-indicator
-                                            .font-weight-bold
-                                                .text-truncate
-                                                    span
-                                                        | Am I a good boy? The reason I ask is because someone told me that people say this to all dogs, even if they aren&apos;t good...
-                                                p.small.text-gray-500.mb-0 Chicken the Dog &middot; 2w
-                                        a.text-center.dropdown-item.small.text-gray-500(href='#') Show All Alerts
-                                .shadow.dropdown-list.dropdown-menu.dropdown-menu-right(aria-labelledby='alertsDropdown')
-                            .d-none.d-sm-block.topbar-divider
-                            li.nav-item.dropdown.no-arrow
-                                .nav-item.dropdown.no-arrow
-                                    a.dropdown-toggle.nav-link(data-toggle='dropdown' aria-expanded='false' href='#')
-                                        span.d-none.d-lg-inline.mr-2.text-gray-600.small Juan P&eacute;rez
-                                        img.border.rounded-circle.img-profile(src='https://nvio.s3.amazonaws.com/assets/img/dogs/image3.jpeg')
-                                    .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in
-                                        a.dropdown-item(href='#')
-                                            i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
-                                            | &nbsp;Profile
-                                        a.dropdown-item(href='#')
-                                            i.fas.fa-cogs.fa-sm.fa-fw.mr-2.text-gray-400
-                                            | &nbsp;Settings
-                                        a.dropdown-item(href='#')
-                                            i.fas.fa-list.fa-sm.fa-fw.mr-2.text-gray-400
-                                            | &nbsp;Activity log
-                                        .dropdown-divider
-                                        a.dropdown-item(href='#')
-                                            i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
-                                            | &nbsp;Logout
-      .container-fluid
+      .container-fluid(style='margin-top: 32px;')
                 a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../historial')
                   i.fa.fa-arrow-left
                   | &nbsp;Regresar
@@ -525,3 +344,6 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.m
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js')
 script(src='https://nvio.s3.amazonaws.com/assets/js/script.min.js')
 script(src='/javascripts/detail.js')
+script(src='/javascripts/navbars.js')
+script.
+  nav('historial');
