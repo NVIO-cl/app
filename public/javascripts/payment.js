@@ -213,10 +213,12 @@ $(document).ready(function(){
       data: {planId: planId, couponCode: couponCode},
       dataType: 'json',
       success: function(result,status,xhr){
-        
+        console.log("res!");
+        console.log(result);
       },
       error: function(xhr,status,error){
-
+        console.log(error);
+        alert(error);
       }
     });
 

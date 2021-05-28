@@ -84,6 +84,7 @@ function(email, password, cb) {
 
 
     var idToken = result.getIdToken().getJwtToken();
+    var refreshToken = result.getRefreshToken().token;
     tokens = {
       idToken: idToken,
       refreshToken: refreshToken
