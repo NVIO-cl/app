@@ -91,7 +91,7 @@ main.page.payment-page
                     .products
                         h3.title Información del Pedido
                         .item
-                          p.item-name ID de pedido: #{orderID}
+                          p.item-name ID de pedido: #{orderID.slice(-6)}
                         if (orderData.clientData.M.address.M.locality.S == 'Retiro en tienda')
                           if (orderData.pickupAddress)
                             .item
@@ -149,7 +149,7 @@ main.page.payment-page
                           .item
                               p.item-name Correo: #{companyData.paymentData.M.email.S}
                           .item(style='text-align: center;')
-                              p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID}"!
+                              p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID.slice(-6)}"!
                         else
                           .item(style='text-align: center;')
                               p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda que debes pagar en efectivo al momento de recibir tu pedido!

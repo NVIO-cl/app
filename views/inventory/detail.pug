@@ -34,6 +34,12 @@ head
     if (planID == 3)
       include ../includes/navbar-3.pug
     #content-wrapper.d-flex.flex-column.flex-fill
+        if (message)
+          .alert.alert-dismissable.fade.show.m-2(role='alert', class='alert-'+message.type)
+            | #{message.content}
+            button.close(type='button' data-dismiss='alert' aria-label='Close')
+              span(aria-hidden='true')
+                |  &times;
         #content
           form#createProduct(action="/inventory/edit" method="POST")
             nav.navbar(style='margin-top: 17px;')
@@ -77,7 +83,7 @@ head
                                                   .form-group
                                                       label#priceLabel(for='productPrice')
                                                           strong Precio
-                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice')
+                                                      input.form-control#productPrice(type='number' value=''+product.price+'' name='productPrice' min=1 required='')
                                                       .invalid-feedback El precio no puede estar vacío
                                             if (product.stock !== null)
                                                 .col-xs-2.col-md-4(id='stock')
@@ -88,11 +94,10 @@ head
                                                         if(product.productType == "main")
                                                           input.form-control#productStock(type='number' value=''+product.stock+'' name='productStock' disabled)
                                                         else
-                                                          input.form-control#productStock(type='number' value=''+product.stock+'' name='productStock')
+                                                          input.form-control#productStock(type='number' value=''+product.stock+'' name='productStock' min=0)
                                         if (product.productType == "main")
                                             each attribute, index in product.attributesList
                                                 hr
-                                                // Id antiguo
                                                 .form-row(id='attributes['+index+']')
                                                     .col-xs-2.col-md-4.col-lg-4
                                                         .form-group
@@ -143,13 +148,13 @@ head
                                                 .form-group
                                                     label(for='productPrice')
                                                         strong Precio
-                                                    input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'')
+                                                    input.form-control(id='subproduct['+index+'][price]' name='subproduct['+index+'][price]' type='number' value=''+subproduct.price+'' min=1 required='')
                                                 if(subproduct.stock != null)
                                                   .form-group(id='subproduct['+index+'][stockGroup]')
                                                       label(for='productStock')
                                                           strong Stock
                                                           br
-                                                      input.form-control(id='subproduct['+index+'][stock]' name='subproduct['+index+'][stock]' type='number' value=''+subproduct.stock+'')
+                                                      input.form-control(id='subproduct['+index+'][stock]' name='subproduct['+index+'][stock]' type='number' value=''+subproduct.stock+'' min=1 required='')
 
 
 

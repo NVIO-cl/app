@@ -60,6 +60,7 @@ $(document).ready(function(){
     $('#attributes').toggleClass("d-none");
     if ($('#checkAttributes').is(":checked")) {
       $("#priceLabel").html("<b>Precio base</b>");
+      $('#subproductForms').removeClass("d-none");
       $('#createProductButton').html('Generar subproductos');
       if($('#checkStock').is(":checked")){
         $('#stock').addClass("d-none");
@@ -68,6 +69,7 @@ $(document).ready(function(){
     }
     else {
       $("#priceLabel").html("<b>Precio</b>")
+      $('#subproductForms').addClass("d-none");
       $('#createProductButton').html('Crear producto');
       if ($('#checkStock').is(":checked")) {
         $('#stock').removeClass("d-none");
@@ -120,23 +122,41 @@ $(document).ready(function(){
   $('#createProductButton').click(function(e){
     //$('#createProductButton').addClass("disabled").attr("disabled", true);
     var hasEmptyData = false;
+    var hasNegatives = false;
     e.preventDefault();
     if ($('#productName').val() == "") {
       $('#productName').addClass("is-invalid")
       hasEmptyData=true;
-    }
-    else {
+    } else {
       $('#productName').removeClass("is-invalid")
       $('#productName').addClass("is-valid")
     }
+
     if ($('#productPrice').val() == "") {
       $('#productPrice').addClass("is-invalid")
       hasEmptyData=true;
-    }
-    else {
+    } else if (parseInt($('#productPrice').val()) <= 0) {
+      $('#productPrice').addClass("is-invalid")
+      hasNegatives=true;
+    } else {
       $('#productPrice').removeClass("is-invalid")
       $('#productPrice').addClass("is-valid")
     }
+
+    if ($('#checkStock').is(":checked") && !$('#checkAttributes').is(":checked")) {
+      if ($('#productStock').val() == "") {
+        $('#productStock').addClass("is-invalid")
+        hasEmptyData=true;
+      } else if (parseInt($('#productStock').val()) <= 0) {
+        $('#productStock').addClass("is-invalid")
+        hasNegatives=true;
+      } else {
+        $('#productStock').removeClass("is-invalid")
+        $('#productStock').addClass("is-valid")
+      }
+    }
+
+
     if (subproducts) {
       //Check if subproducts are filled with data
       var $attributes = $("[id$=\\[name\\]]");
@@ -144,22 +164,21 @@ $(document).ready(function(){
         if ($('#attributes\\['+index+'\\]\\[name\\]').val()=="") {
           $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-invalid')
           hasEmptyData=true;
-        }
-        else {
+        } else {
           $('#attributes\\['+index+'\\]\\[name\\]').removeClass('is-invalid')
           $('#attributes\\['+index+'\\]\\[name\\]').addClass('is-valid')
         }
+
         if ($('#attributes\\['+index+'\\]\\[values\\]').val()=="") {
           $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-invalid')
           hasEmptyData=true;
-        }
-        else {
+        } else {
           $('#attributes\\['+index+'\\]\\[values\\]').removeClass('is-invalid')
           $('#attributes\\['+index+'\\]\\[values\\]').addClass('is-valid')
         }
       });
     }
-    if (!hasEmptyData) {
+    if (!hasEmptyData && !hasNegatives) {
       if (subproducts) {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...')
         generateSubproducts();
@@ -171,13 +190,11 @@ $(document).ready(function(){
         //     </div>
         //   </div>
         // `)
-      }
-      else {
+      } else {
         $('#createProductButton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creando...')
         $('#createProduct').submit()
       }
-    }
-    else {
+    } else {
       $('#createProductButton').removeClass("disabled").attr("disabled", false);
     }
 
@@ -301,11 +318,13 @@ $(document).ready(function(){
                 <div class="col-xs-2 col-sm-12 col-md-12">
                   <div class="form-group">
                     <label for="productPrice"><strong>Precio</strong></label>
-                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}">
+                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}" >
+                    <div class="invalid-feedback">El precio no puede estar vacío y debe ser mayor a cero</div>
                   </div>
                   <div class="form-group" id="subproduct[${i}][stockGroup]">
                     <label for="productStock"><strong>Stock</strong><br></label>
-                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25">
+                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25" >
+                    <div class="invalid-feedback">El stock no puede estar vacío y debe ser mayor a cero</div>
                   </div>
                 </div>
               </div>
@@ -334,8 +353,44 @@ $(document).ready(function(){
     }
     $('#subproductForms').after(`
       <div class="form-group text-center">
-        <button class="btn btn-primary btn-sm" id="createSubproducts" style="background: #12c4f2; border: #12c4f2; margin-top: 10px;" onclick="$('#createProduct').submit()">Guardar Subproductos</button>
+        <button class="btn btn-primary btn-sm" id="createSubproducts" style="background: #12c4f2; border: #12c4f2; margin-top: 10px;"">Guardar Subproductos</button>
       </div>
     `);
+
+    $(document).on("click", "#createSubproducts", function(e) {
+      e.preventDefault();
+      var hasEmptyData = false;
+      for (var i = 0; i < subproductsCount; i++)  {
+
+        if ($('input[id="subproduct['+i+'][price]"]').val() == "" || $('input[id="subproduct['+i+'][price]"]').val() === undefined){
+          $('input[id="subproduct['+i+'][price]"]').addClass("is-invalid");
+          hasEmptyData=true;
+        } else if (parseInt($('input[id="subproduct['+i+'][price]"]').val()) <= 0) {
+          $('input[id="subproduct['+i+'][price]"]').addClass("is-invalid");
+          hasEmptyData=true;
+        } else {
+          $('input[id="subproduct['+i+'][price]"]').removeClass("is-invalid");
+          $('input[id="subproduct['+i+'][price]"]').addClass("is-valid");
+        }
+
+        if ($('#checkStock').is(":checked")) {
+          if ($('input[id="subproduct['+i+'][stock]"]').val() == "" || $('input[id="subproduct['+i+'][stock]"]').val() === undefined){
+            $('input[id="subproduct['+i+'][stock]"]').addClass("is-invalid");
+            hasEmptyData=true;
+          } else if (parseInt($('input[id="subproduct['+i+'][stock]"]').val()) <= 0) {
+            $('input[id="subproduct['+i+'][stock]"]').addClass("is-invalid");
+            hasEmptyData=true;
+          } else {
+            $('input[id="subproduct['+i+'][stock]"]').removeClass("is-invalid");
+            $('input[id="subproduct['+i+'][stock]"]').addClass("is-valid");
+          }
+        }
+      }
+      if (hasEmptyData == false){
+        $('#createProduct').submit()
+      }else{
+        // Something went wrong, do nothing
+      }
+    });
   }
 });

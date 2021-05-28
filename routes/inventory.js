@@ -124,6 +124,11 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Detalle del Producto";
+  var message;
+  if (req.cookies.message != '') {
+    message = req.cookies.message
+    res.clearCookie('message');
+  }
   var companyID = req.user.user;
   var productId = req.originalUrl.slice(req.originalUrl.length - 6);
   var paramsProduct = {
@@ -203,9 +208,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         delete attribute.attribute;
       });
 
-      // If price is '', set it as 0. If not, parse it
-      if (subproduct.price == '') {
-        subproduct.price = 0;
+      if (subproduct.price == '' || subproduct.price == 0) {
+        res.redirect(req.headers.referer);
       }
       else {
         subproduct.price = parseInt(subproduct.price)
@@ -340,6 +344,7 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         }
       }
     })
+    res.cookie('message', {type:'success', content:'Producto editado con éxito'});
     res.redirect(req.headers.referer)
   }
 
@@ -348,6 +353,11 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     if (req.body.productName == '') {
       isValid = false
     }
+
+    if (await req.body.productPrice <= 0 ){
+      res.redirect(req.headers.referer);
+    }
+
     if (isValid) {
 
       // Update Dynamo
@@ -382,7 +392,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
           }
         }
       })
-      res.redirect('/inventory');
+      res.cookie('message', {type:'success', content:'Producto editado con éxito'});
+      res.redirect(req.headers.referer)
     }
   }
 })
@@ -410,6 +421,9 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
 
   //Convert main price string to int
   req.body.productPrice = parseInt(req.body.productPrice);
+  if (await req.body.productPrice < 1){
+    res.redirect(req.headers.referer);
+  }
 
   // If main stock is NaN, set it to null. If not, parse the stock.
   if (isNaN(parseInt(req.body.productStock))) {
@@ -417,6 +431,9 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
   }
   else {
     req.body.productStock = parseInt(req.body.productStock);
+    if (await req.body.productStock < 1){
+      res.redirect(req.headers.referer);
+    }
   }
 
   if (req.body.checkAttributes) {
