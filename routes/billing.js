@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const validator = require('validator');
 const { nanoid } = require("nanoid");
+const axios = require('axios');
 var db = require("../db");
 var aws = require("aws-sdk");
 aws.config.update({
@@ -13,8 +14,15 @@ aws.config.update({
 });
 
 router.get('/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  var msg = {}
+  if (req.cookies.message) {
+    msg = req.cookies.message;
+    res.clearCookie('message');
+    console.log("MESSAGE!");
+
+  }
   const name = "Billing";
-  res.render('billing/billing', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
+  res.render('billing/billing', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id'], message: msg});
 });
 
 router.get('/plans', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -24,72 +32,78 @@ router.get('/plans', passport.authenticate('jwt', {session: false, failureRedire
 
 router.get('/plans/:id', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   var name = "Selección de plan";
-  console.log(req.params);
   res.render('billing/payment', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id'], selectedPlanId: parseInt(req.params.id)});
 });
 
 router.post('/setPlan/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async(req, res) => {
-  console.log("SET PLAN!");
   // Set the new plan
-
-
-
-
-  // If successful, set the new claim
-  // Shitty amazon-cognito-identity-js library doesn't have this functionality
-  // https://github.com/aws-amplify/amplify-js/issues/6704
-  // so we have to use the more shittier aws-sdk. yay.
-  var cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
-  let params = {
-    UserAttributes: [
-      {
-        Name: "custom:plan_id",
-        Value: "2"
-      }
-    ],
-    UserPoolId: process.env.AWS_COGNITO_USERPOOLID,
-    Username: req.user.email
+  let config = {
+    headers: {Authorization: 'Bearer ' + req.cookies.token}
   };
-  update = cognitoidentityserviceprovider.adminUpdateUserAttributes(params, function(err, data) {
-    if (err) {
-      console.log(err.code);
-      return res.json(err.code);
-    }
-    else {
-      // If refresh token exists, refresh the token. If not, log out.
-      if (req.cookies.refresh) {
-        console.log(req.cookies.refresh);
-        let params = {
-          AuthFlow: "REFRESH_TOKEN_AUTH",
-          ClientId: process.env.AWS_COGNITO_CLIENTID,
-          AuthParameters: {
-            REFRESH_TOKEN: req.cookies.refresh
-          }
-        };
-        cognitoidentityserviceprovider.initiateAuth(params, function(err,data){
-          if (err) {
-            console.log(err);
-            return res.json(err);
-          }
-          else {
-            res.clearCookie('token');
-            return res.json("ok");
-
-          }
-        });
+  let axiosParams = {
+    planId: req.body.planId,
+    couponCode: req.body.couponCode
+  };
+  // Set the plan in the billing table
+  var axiosRes = await axios.post('https://api.aliachile.com/dev/subscription', axiosParams, config);
+  if (!axiosRes.data.error) {
+    // If successful, set the new claim
+    // Shitty amazon-cognito-identity-js library doesn't have this functionality
+    // https://github.com/aws-amplify/amplify-js/issues/6704
+    // Some poor soul like us asked for it on sept. 2020 but the issue has been ignored since.
+    // so we have to use the even shittier aws-sdk. yay.
+    var cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
+    let params = {
+      UserAttributes: [
+        {
+          Name: "custom:plan_id",
+          Value: req.body.planId.charAt(0)
+        }
+      ],
+      UserPoolId: process.env.AWS_COGNITO_USERPOOLID,
+      Username: req.user.email
+    };
+    update = cognitoidentityserviceprovider.adminUpdateUserAttributes(params, function(err, data) {
+      if (err) {
+        console.log(err.code);
+        return res.json(err.code);
       }
       else {
-        res.cookie('message', {type:'success', content:'Plan cambiado con éxito. Por favor vuelve a inicar sesión.'});
-        res.clearCookie('token');
+        // If refresh token exists, refresh the token. If not, log out.
+        if (req.cookies.refresh) {
+          let params = {
+            AuthFlow: "REFRESH_TOKEN_AUTH",
+            ClientId: process.env.AWS_COGNITO_CLIENTID,
+            AuthParameters: {
+              REFRESH_TOKEN: req.cookies.refresh
+            }
+          };
+          // Do token refresh
+          cognitoidentityserviceprovider.initiateAuth(params, function(err,data){
+            if (err) {
+              console.log(err);
+              res.clearCookie('token');
+              return res.json(err);
+            }
+            else {
+              res.cookie('token', data.AuthenticationResult.IdToken);
+              res.cookie('message', {type:'success', content:'¡Plan activado con éxito!'});
+              return res.json("ok");
+            }
+          });
+        }
+        else {
+        // If not, delete cookie and log out.
+          res.clearCookie('token');
+          res.cookie('message', {type:'success', content:'Plan cambiado con éxito. Por favor vuelve a inicar sesión.'});
+          return res.json("ok");
+        }
       }
-
-    }
-  });
-
-
-    // If not, delete cookie and log out.
-
-  // If unsuccessful, redirect back
+    });
+  } else {
+    res.cookie('message', {type:'warning', content:'Ocurrió un error al activar tu plan. Por favor escríbenos a soporte@aliachile.com'});
+    return res.json("ok");
+  }
 });
 
 module.exports = router;

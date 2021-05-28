@@ -37,7 +37,7 @@ $(document).ready(function(){
     selectedPlanName = "Plan Despega";
     selectedPlanNumber = "2";
 
-    selectedPlanPrice = despegarPrice;
+    selectedPlanPrice = despegaPrice;
     planPrice = despegaPrice* selectedPeriodMult;
 
   } else if ($('#vuela').prop("checked") == true){
@@ -213,8 +213,7 @@ $(document).ready(function(){
       data: {planId: planId, couponCode: couponCode},
       dataType: 'json',
       success: function(result,status,xhr){
-        console.log("res!");
-        console.log(result);
+        window.location.replace("/billing");
       },
       error: function(xhr,status,error){
         console.log(error);

@@ -34,6 +34,11 @@ head
     #content-wrapper.d-flex.flex-column.flex-fill
         #content(style='margin-top: 32px;')
           .container-fluid#membership
+              if (message.content)
+                .row.justify-content.center.mt-3
+                  .col
+                    .alert(class='alert-'+message.type)
+                      | #{message.content}
               h3.text-dark.mb-4 Planes y Facturación
               a.btn.btn-primary(type='button' style='margin-bottom: 10px; background: #12c4f2; border: #12c4f2;' href='../profile')
                 i.fa.fa-arrow-left
