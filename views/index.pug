@@ -22,13 +22,13 @@ head
     link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.12.0/css/all.css')
     link(rel='manifest' href='/manifest.json')
 .d-lg-flex.d-sm-block
-    if (planID == 0)
+    if (userPlanID == 0)
       include ./includes/navbar-0.pug
-    if (planID == 1)
+    if (userPlanID == 1)
       include ./includes/navbar-1.pug
-    if (planID == 2)
+    if (userPlanID == 2)
       include ./includes/navbar-2.pug
-    if (planID == 3)
+    if (userPlanID == 3)
       include ./includes/navbar-3.pug
     #content-wrapper.d-flex.flex-column.flex-fill
         #content
