@@ -176,7 +176,12 @@ router.post('/changePlan/', passport.authenticate('jwt', {session: false, failur
       return res.json("ok");
     }
   } else {
-    res.cookie('message', {type:'warning', content:'Ocurrió un error al activar tu plan. Por favor escríbenos a soporte@aliachile.com'});
+    if (axiosRes.data.message == "Plan cancellation requested. Can't change plan at end.") {
+      res.cookie('message', {type:'warning', content:'No puedes cambiar tu plan si solicitaste una cancelación.'});
+    }
+    else {
+      res.cookie('message', {type:'warning', content:'Ocurrió un error al activar tu plan. Por favor escríbenos a soporte@aliachile.com'});
+    }
     return res.json("ok");
   }
 });
