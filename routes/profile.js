@@ -20,8 +20,16 @@ aws.config.update({
 
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), async (req, res, next) => {
   const name = "Profile";
+  // Check if the image exists. If it doesn't, set a placeholder
   var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: s3Endpoint});
-  var logo = await s3.getSignedUrl('getObject', {Key: "logos/"+req.user.user+".png", Expires: 60});
+  var logo = ""
+  try {
+    const headCode = await s3.headObject({Bucket: process.env.AWS_S3_BUCKET, Key: "logos/"+req.user.user+".png"}).promise()
+    logo = await s3.getSignedUrl('getObject', {Key: "logos/"+req.user.user+".png", Expires: 60});
+  } catch (e) {
+    logo = "/images/placeholder.jpeg"
+  }
+
   params = {
     "TableName": process.env.AWS_DYNAMODB_TABLE,
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
@@ -30,7 +38,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     "ExpressionAttributeValues": {":cd420": {"S": req.user.user},":cd421": {"S": req.user.user.replace("COMPANY", "PROFILE")}}
   }
   profileResult = await db.query(params);
-  res.render('profile', {title: name, companyData: profileResult.Items[0], logo: logo, userID: req.user.user.replace("COMPANY#", "")});
+  res.render('profile', {title: name, companyData: profileResult.Items[0], logo: logo, userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
 });
 
 router.post('/saveName',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {

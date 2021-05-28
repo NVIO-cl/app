@@ -23,6 +23,11 @@ html(style='background: #0861ff;')
                             .row
                                 .col
                                     .p-5
+                                        if (message)
+                                          .row.justify-content.center.mt-3
+                                            .col
+                                              .alert(class='alert-'+message.type)
+                                                | #{message.content}
                                         .text-center(style='padding: 10px;')
                                             img(src='https://nvio.s3.amazonaws.com/assets/img/logo_alia_color.png' style='width: 85%;')
                                         h2(style="text-align:center;") Crear cuenta

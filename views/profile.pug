@@ -44,6 +44,15 @@ head
               a.nav-link(href='/order/create')
                   i.fas.fa-plus-square.mr-1
                   span Crear Nueva Orden
+          if(userPlanID >= 1)          
+            li.nav-item
+                a.nav-link(href='/inventory')
+                    i.fas.fa-boxes
+                    span Inventario
+            li.nav-item
+                a.nav-link(href='/inventory/create')
+                    i.fas.fa-box.mr-1
+                    span Crear Nuevo Producto        
           li.nav-item
               a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                   i.far.fa-user-circle.mr-1
@@ -71,6 +80,15 @@ head
                     a.nav-link(href='/order/create')
                         i.fas.fa-plus-square
                         span Crear Nueva Orden
+                if(userPlanID >= 1)          
+                  li.nav-item
+                      a.nav-link(href='/inventory')
+                          i.fas.fa-boxes
+                          span Inventario
+                  li.nav-item
+                      a.nav-link(href='/inventory/create')
+                          i.fas.fa-box.mr-1
+                          span Crear Nuevo Producto        
                 li.nav-item
                     a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                         i.far.fa-user-circle

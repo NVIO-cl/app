@@ -88,7 +88,6 @@ router.get('/register', (req, res) => {
 
 // Register POST route
 router.post('/register', upload.none(), async(req, res) => {
-
   if (!validator.isEmail(req.body.email)){
     return res.redirect('/register');
   }
@@ -120,6 +119,10 @@ router.post('/register', upload.none(), async(req, res) => {
     Name: 'custom:company_id',
     Value: company_id
   }
+  var plan_idData = {
+    Name: 'custom:plan_id',
+    Value: '0'
+  }
 
   var params_profile={
     TableName: process.env.AWS_DYNAMODB_TABLE,
@@ -144,23 +147,30 @@ router.post('/register', upload.none(), async(req, res) => {
       "createdAt": Date.now()
     }
   };
-  profilePut = await db.put(params_profile);
   var emailAttribute = AmazonCognitoIdentity.CognitoUserAttribute(emailData);
   var updated_atAttribute = AmazonCognitoIdentity.CognitoUserAttribute(updated_atData);
   var first_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(first_nameData);
   var last_nameAttribute = AmazonCognitoIdentity.CognitoUserAttribute(last_nameData);
   var company_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(company_idData);
+  var plan_idAttribute = AmazonCognitoIdentity.CognitoUserAttribute(plan_idData);
 
-
-  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData], null, (err, data)=>{
+  userPool.signUp(req.body.email, req.body.password, [emailAttribute, updated_atData, first_nameData, last_nameData, company_idData, plan_idData], null, async (err, data)=>{
     if (err) {
       console.log(err);
-      res.cookie('message', {type:'danger', content:err.message});
+      if (err.message == "1 validation error detected: Value at 'password' failed to satisfy constraint: Member must have length greater than or equal to 6") {
+        res.cookie('message', {type:'danger', content:'La contraseña debe tener 6 o más caracteres'});
+      }
+      else if (err.message == "An account with the given email already exists."){
+        res.cookie('message', {type:'danger', content:'Ya existe una cuenta con este correo.'});
+      }
+      else {
+        res.cookie('message', {type:'danger', content:"Error: " + err.message + ". Por favor contactar a soporte@aliachile.com"});
+      }
       return res.redirect('/register');
     }
     else {
-      //Do something with the data!
-      res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico'});
+      profilePut = await db.put(params_profile);
+      res.cookie('message', {type:'success', content:'Cuenta creada con éxito. Antes de iniciar sesión, verifica tu correo electrónico. Si no lo encuentras, revisa tu carpeta de correo no deseado.'});
       return res.redirect('/login');
     }
   })

@@ -43,6 +43,15 @@ head
             a.nav-link(href='/order/create')
                 i.fas.fa-plus-square.mr-1
                 span Crear Nueva Orden
+        if(userPlanID >= 1)          
+          li.nav-item
+              a.nav-link(href='/inventory')
+                  i.fas.fa-boxes
+                  span Inventario
+          li.nav-item
+              a.nav-link(href='/inventory/create')
+                  i.fas.fa-box.mr-1
+                  span Crear Nuevo Producto  
         li.nav-item
             a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                 i.far.fa-user-circle.mr-1
@@ -70,6 +79,15 @@ head
                   a.nav-link(href='/order/create')
                       i.fas.fa-plus-square
                       span Crear Nueva Orden
+              if(userPlanID >= 1)          
+                li.nav-item
+                    a.nav-link(href='/inventory')
+                        i.fas.fa-boxes
+                        span Inventario
+                li.nav-item
+                    a.nav-link(href='/inventory/create')
+                        i.fas.fa-box.mr-1
+                        span Crear Nuevo Producto  
               li.nav-item
                   a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                       i.far.fa-user-circle
@@ -219,13 +237,20 @@ head
                             each ORD, index in editOrderInfo.items
                               tr(id='items[' + index + ']')
                                 td
-                                  input.form-control(type='text' id='items[' + index + '][product]' name='items['+ index +'][product]' required value=ORD.product)
+                                  if (ORD.inventoryId)
+                                    input(type="hidden" value=ORD.inventoryId id='items['+index+'][regProduct]' name='items['+index+'][regProduct]')
+                                  input.form-control(type='text' id='items[' + index + '][product]' name='items['+ index +'][product]' required value=ORD.product onfocus='focusItem(this)')
+                                  .invalid-feedback 
+                                    | Este producto se encuentra sin stock. 
+                                    a(href="/inventory") Ir al inventario
+                                  .card.mt-1.float-left.shadow-sm(style='position:absolute;z-index:9999; -webkit-transform: translate3d(0,0,10px); max-width:90%; overflow:visible;' )
+                                    ul.list-group.list-group-flush(id='items['+index+'][autocompleteList]')
                                 td
                                   input.form-control(type='number' style='width: 100px;' id='items[' + index + '][price]' name='items['+ index +'][price]' min='1' required value=ORD.price)
                                 td
                                   input.form-control(type='number' style='width: 100px;' id='items[' + index + '][quantity]' name='items['+ index +'][quantity]' min='1' required value=ORD.quantity)
                                 td
-                                  .d-inline(id='items[0][subtotal]')
+                                  .d-inline(id='items['+index+'][subtotal]')
                                     | $ #{ORD.quantity*ORD.price}
                                   i.fas.fa-trash.d-inline.float-right.text-danger(id='delete['+ index +']' role='button')
                           tr

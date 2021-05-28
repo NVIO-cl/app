@@ -6,7 +6,7 @@ head
   meta(name='apple-mobile-web-app-status-bar-style' content='default')
   meta(name='apple-mobile-web-app-title' content='alia')
   meta(name='apple-touch-fullscreen' content='yes')
-  title Crear Orden - NVIO
+  title Crear Orden - Alia
   script(async='', src='https://www.googletagmanager.com/gtag/js?id=G-SJETCMY2EN')
   script.
     window.dataLayer = window.dataLayer || [];
@@ -43,6 +43,15 @@ head
             a.nav-link.active(href='/order/create')
                 i.fas.fa-plus-square.mr-1
                 span Crear Nueva Orden
+        if(userPlanID >= 1)          
+          li.nav-item
+              a.nav-link(href='/inventory')
+                  i.fas.fa-boxes
+                  span Inventario
+          li.nav-item
+              a.nav-link(href='/inventory/create')
+                  i.fas.fa-box.mr-1
+                  span Crear Nuevo Producto          
         li.nav-item
             a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                 i.far.fa-user-circle.mr-1
@@ -70,6 +79,15 @@ head
                   a.nav-link.active(href='/order/create')
                       i.fas.fa-plus-square
                       span Crear Nueva Orden
+              if(userPlanID >= 1)          
+                li.nav-item
+                    a.nav-link(href='/inventory')
+                        i.fas.fa-boxes
+                        span Inventario
+                li.nav-item
+                    a.nav-link(href='/inventory/create')
+                        i.fas.fa-box.mr-1
+                        span Crear Nuevo Producto  
               li.nav-item
                   a.nav-link(data-toggle='modal' data-target='#modal-logout' href='#logout')
                       i.far.fa-user-circle
@@ -203,7 +221,7 @@ head
               form#newOrder(action='/order/create' method='POST')
                 .form-row.align-items-center
                   .col
-                    .table-responsive
+                    .table-responsive(style="overflow-y: -webkit-paged-x")
                       table.table
                         thead
                           tr
@@ -214,7 +232,12 @@ head
                         tbody#tableBody
                           tr(id='items[0]')
                             td
-                              input.form-control(type='text' id='items[0][product]' name='items[0][product]' required)
+                              input.form-control(type='text' id='items[0][product]' name='items[0][product]' required onfocus='focusItem(this)' autocomplete='off')
+                              .invalid-feedback 
+                                | Este producto se encuentra sin stock. 
+                                a(href="/inventory") Ir al inventario
+                              .card.mt-1.float-left.shadow-sm(style='position:absolute;z-index:9999; -webkit-transform: translate3d(0,0,10px); max-width:90%; overflow:visible;' )
+                                ul.list-group.list-group-flush(id='items[0][autocompleteList]')
                             td
                               input.form-control(type='number' style='width: 100px;' id='items[0][price]' name='items[0][price]' min='1' required)
                             td
@@ -243,7 +266,7 @@ head
                               p#totalShip $ 0
                             .col
                               p#totalFin $ 0
-                    .form-row
+                    .form-row(style='z-index: 0')
                       .col
                         hr
                         .form-row.text-right.mb-3
@@ -330,7 +353,10 @@ head
           button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
           a.btn.btn-danger(href='/logout') Cerrar Sesión
 script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-script(src='/javascripts/order-create.js')
+if(userPlanID >= 1)
+  script(src='/javascripts/order-create/order-create-inv.js')
+else
+  script(src='/javascripts/order-create/order-create.js')
 script(src='/javascripts/theme.js')
 script(src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx' crossorigin='anonymous')
 
