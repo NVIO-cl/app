@@ -7,9 +7,16 @@ $.ajax({ // Billing info api call
   dataType: 'json',
   success: function (result, status, xhr) {
     // Human-friendly Variable Names
+    var locale = Intl.NumberFormat('es-CL', {style: "currency",currency:"CLP"});
     const planId = result.billingData.planId;
     const nextBillingDate = result.billingData.nextBillingDate;
     const paymentMethod = result.billingData.paymentMethod;
+    const changeAtEnd = result.billingData.changeAtEnd;
+
+    var name = ""
+    var period = ""
+    var multiplier = 0;
+    var price = 0;
 
     // If cancelAtEnd is true
     if (result.billingData.cancelAtEnd){
@@ -20,6 +27,38 @@ $.ajax({ // Billing info api call
       $('#nextBillingDateTitle').text('Fecha de Próxima Factura');
       $('#autoRenewal').removeClass('animated-placeholder');
       $('#autoRenewal').text('Activada');
+    }
+
+    if (result.billingData.changeAtEnd != null){
+
+      if (changeAtEnd.charAt(1) == "Y"){
+        multiplier = 12*0.8;
+        period = "anual"
+      } else if (changeAtEnd.charAt(1) == "M") {
+        multiplier = 1;
+        period = "mensual"
+      }
+      if (parseInt(changeAtEnd.charAt(0)) == 1){
+        price = 5000;
+        name = "Corre"
+      } else if (parseInt(changeAtEnd.charAt(0)) == 2){
+        price = 15000;
+        name = "Despega"
+      } else if (parseInt(changeAtEnd.charAt(0)) == 3){
+        price = 25000;
+        name = "Vuela"
+      }
+      var finalPrice = locale.format(price*multiplier);
+
+      $('#newPlanName').removeClass('animated-placeholder');
+      $('#newPlanNameTitle').text('Nombre del Próximo Plan');
+      $('#newPlanName').text(name);
+      $('#newPlanPrice').removeClass('animated-placeholder');
+      $('#newPlanPriceTitle').text('Precio del Próximo Plan');
+      $('#newPlanPrice').text(finalPrice + " " + period);
+    } else {
+      $('#newPlanNameCol').addClass("d-none");
+      $('#newPlanPriceCol').addClass("d-none");
     }
 
     // Display Plan Details
