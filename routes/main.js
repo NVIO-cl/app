@@ -32,11 +32,6 @@ var date_parser = require("../date_parser");
 
 /* GET home page. */
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
-  if(req.user['custom:plan_id'] >= 2){ // If the user has dashboard functionality
-    res.render('index', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
-  } else { // If the user doesn't have dashboard access
-    res.render('index-no-dashboard', { title: 'NVIO', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
-  }
   const title = 'Dashboard'
 
   // Monthly info
@@ -257,7 +252,11 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     weeklyInfo["costOrders"] = result_weekly.body.aggregations.amount_per_week.buckets[0].cost_order
   }
 
-  res.render('index', { title: title, userID: req.user.user.replace("COMPANY#", ""), monthlyInfo_list: JSON.stringify(monthlyInfo_list), weeklyInfo: JSON.stringify(weeklyInfo) });
+  if(req.user['custom:plan_id'] >= 2){ // If the user has dashboard functionality
+    res.render('index', { title: 'Alia', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id'], monthlyInfo_list: JSON.stringify(monthlyInfo_list), weeklyInfo: JSON.stringify(weeklyInfo) });
+  } else { // If the user doesn't have dashboard access
+    res.render('index-no-dashboard', { title: 'Alia', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
+  }
 });
 
 router.post('/detail/orderStatus',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
