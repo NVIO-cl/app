@@ -80,7 +80,7 @@ head
                     else if (planID == 0)
                       a.btn.btn-lg.btn-primary(href="/billing/plans/1") Comenzar 
                     else
-                      a.btn.btn-lg.btn-primary(href="/billing/plans/1") Cambiar
+                      button.btn.btn-lg.btn-primary(data-toggle='modal' data-target='#modal-change' data-id="1" data-currentPlan=planID) Cambiar
           .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
            .card.shadow.d-flex.flex-column.justify-content-between
              .card-header.py-3
@@ -101,7 +101,7 @@ head
                     else if (planID == 0)
                       a.btn.btn-lg.btn-primary(href="/billing/plans/2") Comenzar 
                     else
-                      a.btn.btn-lg.btn-primary(href="/billing/plans/1") Cambiar
+                      button.btn.btn-lg.btn-primary(data-toggle='modal' data-target='#modal-change' data-id="2"  data-currentPlan=planID) Cambiar
 
           .col-sm-12.col-md-6.col-lg-6.col-xl-3.d-flex.flex-column.text-center.mb-5
            .card.shadow.d-flex.flex-column.justify-content-between
@@ -144,7 +144,37 @@ head
                     p ¿Aún deseas cambiar de plan?
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') No, Cancelar
-                    button#freePlan.btn.btn-success(type='button') Sí, Cambiar de Plan         
+                    button#freePlan.btn.btn-success(type='button') Sí, Cambiar de Plan
+    .modal.fade#modal-change(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title#changePlanModalTitle Cambiar a Plan Camina
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p#changePlanTitle ¿Deseas cambiarte al plan Camina?
+                    ul
+                      li#changePlanPeriod El cambio se hará efectivo una vez finalizado el periodo del plan actual. 
+                      li#changePlanUsage Podrás seguir usando tu plan actual hasta ese día.
+                      li#changePlanReturn Luego de eso volverás al plan gratuito.
+                    p ¿Aún deseas cambiar de plan?
+                    form#changePlanForm
+                      h5.text-dark.mt-2
+                        | Ciclo de pago:
+                      .custom-control.custom-radio.custom-control-inline
+                        input.custom-control-input(type="radio" id="mensual" name="billingPeriod" value="M")
+                        label.custom-control-label(for="mensual") Mensual
+                      .custom-control.custom-radio.custom-control-inline
+                        input.custom-control-input(type="radio" id="anual" name="billingPeriod" checked="checked" value="Y")
+                        label.custom-control-label(for="anual") 
+                          | Anual 
+                          b.text-primary (ahorras 20%)
+                      h5.text-primary.mt-2#pricingTotal Total: $00.000
+                      input(type="hidden" id="planId" name="planId" value=0)
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') No, Cancelar
+                    button#changePlan.btn.btn-success(type='button') Sí, Cambiar de Plan         
   .modal.fade#modal-logout(tabindex='-1', role='dialog')
       .modal-dialog(role='document')
           .modal-content
