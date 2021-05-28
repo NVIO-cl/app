@@ -129,7 +129,7 @@ $.ajax({ // Billing history api call
       var status = itemList[i].status
       var colorStatus = ""
       var paymentButton = ""
-      var paymentHref = "#invoice"
+      var paymentHref = "#invoice-pay"
       var paymentTarget = "#modal-pay"
 
       if (status == 0 || status == '0'){
@@ -296,4 +296,22 @@ $('#modal-pay').on('show.bs.modal', function (event) {
       console.log(error);
     }
   })
+
+  $('#paymentReady').click(function() {
+    $.ajax({ // Billing info api call
+      type: "PUT",
+      url: "https://api.aliachile.com/dev/invoice/" + invoiceId,
+      headers: {
+        Authorization: 'Bearer ' + Cookies.get("token")
+      },
+      dataType: 'json',
+      success: function (result, status, xhr) {
+        window.location.replace('/billing');
+      },
+      error: function (xhr, status, error) {
+        console.log(error);
+      }
+    })
+  });
 });
+

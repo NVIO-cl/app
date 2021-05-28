@@ -126,6 +126,7 @@ head
                                           tbody#billingHistoryBody
 
                                   p NOTA: Solo se muestra el último año del historial de facturación
+                                  p Recuerda que siempre puedes escribirnos a contacto@aliachile.com para resolver cualquier duda
 
         footer.bg-white.sticky-footer
             .container.my-auto
@@ -185,7 +186,7 @@ head
                         #invoiceTotalPayment
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
-                    button.btn.btn-success(type='button', data-dismiss='modal') Ya Pagué
+                    button.btn.btn-success#paymentReady(type='button', data-dismiss='modal') Ya Pagué
 
     .modal.fade#modal-transfer(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
