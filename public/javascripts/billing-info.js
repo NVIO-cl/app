@@ -11,45 +11,64 @@ $.ajax({ // Billing info api call
     const nextBillingDate = result.billingData.nextBillingDate;
     const paymentMethod = result.billingData.paymentMethod;
 
+    // If cancelAtEnd is true
+    if (result.billingData.cancelAtEnd){
+      $('#nextBillingDateTitle').text('Fecha de Término del Plan');
+      $('#autoRenewal').removeClass('animated-placeholder');
+      $('#autoRenewal').text('Desactivada');
+    } else {
+      $('#nextBillingDateTitle').text('Fecha de Próxima Factura');
+      $('#autoRenewal').removeClass('animated-placeholder');
+      $('#autoRenewal').text('Activada');
+    }
+
     // Display Plan Details
     switch (planId){
       case 0:
         $('#planPrice').text('¡Tu plan actual es gratis!');   // Show plan price
-        $('#planName').removeClass('animated-placeholder');   // Remove animation
+        $('#planPrice').removeClass('animated-placeholder');   // Remove animation
+        $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Camina');                        // Add plan name
         break;
       case '0':
         $('#planPrice').text('¡Tu plan actual es gratis!');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Camina');
         break;
       case '1M':
         $('#planPrice').text('$5.000 mensual');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Corre');
         break;
       case '1Y':
         $('#planPrice').text('$48.000 anual');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Corre');
         break;
       case '2M':
         $('#planPrice').text('$15.000 mensual');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Despega');
         break;
       case '2Y':
         $('#planPrice').text('$144.000 anual');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Despega');
         break;
       case '3M':
         $('#planPrice').text('$25.000 mensual');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Vuela');
         break;
       case '3Y':
         $('#planPrice').text('$240.000 anual');
+        $('#planPrice').removeClass('animated-placeholder');
         $('#planName').removeClass('animated-placeholder');
         $('#planName').text('Vuela');
         break;
@@ -104,6 +123,7 @@ $.ajax({ // Billing history api call
   dataType: 'json',
   success: function (result, status, xhr) {
     const itemList = result.result.items; // Shorthand
+    var locale = Intl.NumberFormat('es-CL', {style: "currency",currency:"CLP"});
     for(var i = 0; i < itemList.length; i++){ // Each row element
 
       var status = itemList[i].status
@@ -118,6 +138,9 @@ $.ajax({ // Billing history api call
       } else if (status == 1 || status == '1'){
         status = "Esperando Confirmación"
         colorStatus = "text-warning font-weight-bold"
+        paymentButton = "disabled"
+        paymentHref = "#"
+        paymentTarget = "#"
       } else if (status == 2 || status == '2'){
         status = "Pagado"
         colorStatus = "text-success font-weight-bold"
@@ -130,9 +153,15 @@ $.ajax({ // Billing history api call
       } else if (status == 4 || status == '4'){
         status = "Expirado"
         colorStatus = "text-muted font-weight-bold"
+        paymentButton = "disabled"
+        paymentHref = "#"
+        paymentTarget = "#"
       } else if (status == 5 || status == '5'){
         status = "Cancelado"
         colorStatus = "text-muted font-weight-bold"
+        paymentButton = "disabled"
+        paymentHref = "#"
+        paymentTarget = "#"
       }
 
       var paymentMethod = itemList[i].paymentMethod
@@ -155,7 +184,7 @@ $.ajax({ // Billing history api call
           <td>${itemList[i].invoiceDetail.name.split(" Período ")[0]}</td>
           <td>${itemList[i].invoiceDetail.name.split(" Período ")[1]}</td>
           <td>${paymentMethod}</td>
-          <td>$${itemList[i].invoiceDetail.total}</td>
+          <td>${locale.format(itemList[i].invoiceDetail.total)}</td>
           <td class="${colorStatus}">${status}</td>
           <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
           <td><a class="btn btn-primary ${paymentButton}" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target=${paymentTarget} href=${paymentHref}>Ver más</a></td>    
@@ -178,7 +207,7 @@ $('#modal-invoice').on('show.bs.modal', function (event){
     },
     dataType: 'json',
     success: function (result, status, xhr) {
-
+      var locale = Intl.NumberFormat('es-CL', {style: "currency",currency:"CLP"});
       var paymentMethod = result.result.paymentMethod
 
       if (paymentMethod == 0 || paymentMethod == '0'){
@@ -192,12 +221,14 @@ $('#modal-invoice').on('show.bs.modal', function (event){
       if (status == 0 || status == '0'){
         status = "Sin pagar"
       } else if (status == 1 || status == '1'){
-        status = "Pagado"
+        status = "Esperando Confirmación"
       } else if (status == 2 || status == '2'){
-        status = "Fallido"
+        status = "Pagado"
       } else if (status == 3 || status == '3'){
-        status = "Expirado"
+        status = "Fallido"
       } else if (status == 4 || status == '4'){
+        status = "Expirado"
+      } else if (status == 5 || status == '5'){
         status = "Cancelado"
       }
 
@@ -217,18 +248,18 @@ $('#modal-invoice').on('show.bs.modal', function (event){
       const invoicePaymentMethod =  "Forma de pago: " + paymentMethod
       $('#invoicePaymentMethod').text(invoicePaymentMethod);
 
-      const invoiceSubtotal =  "Subtotal: " + result.result.invoiceDetail.subTotal
+      const invoiceSubtotal =  "Subtotal: " + locale.format(result.result.invoiceDetail.subTotal)
       $('#invoiceSubtotal').text(invoiceSubtotal);
 
       if (result.result.invoiceDetail.discount){
-        const invoiceDiscount =  "Descuento: " + result.result.invoiceDetail.discount
+        const invoiceDiscount =  "Descuento: " + locale.format(result.result.invoiceDetail.discount)
         $('#invoiceDiscount').text(invoiceDiscount);
 
-        const invoiceDiscountReason =  "Descuento: " + result.result.invoiceDetail.discountReason
+        const invoiceDiscountReason =  "Razón: " + result.result.invoiceDetail.discountReason
         $('#invoiceDiscountReason').text(invoiceDiscountReason);
       }
 
-      const invoiceTotal =  "Total: " + result.result.invoiceDetail.total
+      const invoiceTotal =  "Total: " + locale.format(result.result.invoiceDetail.total)
       $('#invoiceTotal').text(invoiceTotal);
 
       const retryInvoice =  "Re-intentos : " + result.result.retries
@@ -240,6 +271,26 @@ $('#modal-invoice').on('show.bs.modal', function (event){
       const statusInvoice =  "Estado de facturación : " + status
       $('#statusInvoice').text(statusInvoice);
 
+    },
+    error: function (xhr, status, error) {
+      console.log(error);
+    }
+  })
+});
+
+$('#modal-pay').on('show.bs.modal', function (event) {
+  var invoiceId = $(event.relatedTarget).data("id");
+  $.ajax({ // Billing info api call
+    type: "GET",
+    url: "https://api.aliachile.com/dev/invoice/" + invoiceId,
+    headers: {
+      Authorization: 'Bearer ' + Cookies.get("token")
+    },
+    dataType: 'json',
+    success: function (result, status, xhr) {
+      var locale = Intl.NumberFormat('es-CL', {style: "currency",currency:"CLP"});
+      const invoiceTotalPayment = "Total: " + locale.format(result.result.invoiceDetail.total);
+      $('#invoiceTotalPayment').text(invoiceTotalPayment);
     },
     error: function (xhr, status, error) {
       console.log(error);

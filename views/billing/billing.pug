@@ -57,12 +57,24 @@ head
                                               br
                                               .animated-placeholder#planName
 
+                                      .col-xs-2.col-md-4
+                                          .form-group
+                                              strong Valor del Plan
+                                              br
+                                              .animated-placeholder#planPrice
+
                                   .form-row
                                       .col-xs-2.col-md-4
                                           .form-group
-                                              strong Fecha de Próxima Factura
+                                              strong#nextBillingDateTitle
                                               br
                                               .animated-placeholder#nextBillingDate
+
+                                      .col-xs-2.col-md-4
+                                          .form-group
+                                              strong Renovación Automática
+                                              br
+                                              .animated-placeholder#autoRenewal
 
                                   .form-group(style='text-align: left;')
                                       a.btn.btn-primary.btn-sm(href='/billing/plans' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Cambiar Plan
@@ -169,6 +181,8 @@ head
                     p Tipo de Cuenta: Cuenta Corriente
                     p Número de Cuenta: 1234 5678 91011
                     P Correo electrónico: contacto@aliachile.com
+                    p
+                        #invoiceTotalPayment
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
                     button.btn.btn-success(type='button', data-dismiss='modal') Ya Pagué
