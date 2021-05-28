@@ -71,8 +71,11 @@ $('#modal-change').on('show.bs.modal', function (event) {
     // Call the API request to change plan
     $.ajax({
       type: "POST",
-      url: "https://api.aliachile.com/dev/subscription/change",
-      data: {planId: fullPlanId},
+      url: "http://localhost:3001/offline/subscription/change",
+      headers: {
+          Authorization: 'Bearer ' + Cookies.get("token")
+      },
+      data: JSON.stringify({"planId": fullPlanId}),
       dataType: 'json',
       success: function(result,status,xhr){
         window.location.replace("/billing");
