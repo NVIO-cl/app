@@ -22,13 +22,13 @@ head
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(rel='stylesheet' href='https://nvio.s3.amazonaws.com/assets/fonts/fontawesome5-overrides.min.css')
 .d-lg-flex.d-sm-block
-  if (planID == 0)
+  if (userPlanID == 0)
     include ./includes/navbar-0.pug
-  if (planID == 1)
+  if (userPlanID == 1)
     include ./includes/navbar-1.pug
-  if (planID == 2)
+  if (userPlanID == 2)
     include ./includes/navbar-2.pug
-  if (planID == 3)
+  if (userPlanID == 3)
     include ./includes/navbar-3.pug
   #content-wrapper.d-flex.flex-column.flex-fill
     #content
