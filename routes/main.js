@@ -122,26 +122,46 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
   products_quantity_list.sort((a, b) => (a.value < b.value) ? 1 : -1)
 
-  // Construct monthly info for frontend
   var monthlyInfo_list = []
   var monthlyInfo = {}
-  for (var i in result.body.aggregations.amount_per_month.buckets){
 
-    var key = new Date(result.body.aggregations.amount_per_month.buckets[i].key)
+  if(result.body.aggregations.amount_per_month.buckets.length == 0){
+    var key = new Date(Date.now())
     var month = key.getUTCMonth() + 1
     var year = key.getFullYear()
     var fecha = month + '/' + year
 
     monthlyInfo["month_year"] = fecha
-    monthlyInfo["monthKey"] = result.body.aggregations.amount_per_month.buckets[i].key
-    monthlyInfo["ordersAmount"] = result.body.aggregations.amount_per_month.buckets[i].doc_count
+    monthlyInfo["monthKey"] = 0
+    monthlyInfo["ordersAmount"] = 0
     monthlyInfo["productQuantity"] = products_quantity_list
-    monthlyInfo["localities"] = result.body.aggregations.amount_per_month.buckets[i].comunas.buckets
-    monthlyInfo["costShippings"] = result.body.aggregations.amount_per_month.buckets[i].cost_shipping
-    monthlyInfo["costOrders"] = result.body.aggregations.amount_per_month.buckets[i].cost_order
+    monthlyInfo["localities"] = 0
+    monthlyInfo["costShippings"] = 0
+    monthlyInfo["costOrders"] = 0
 
     monthlyInfo_list.push(monthlyInfo)
     monthlyInfo = {}
+  } else {
+
+    // Construct monthly info for frontend
+    for (var i in result.body.aggregations.amount_per_month.buckets){
+
+      var key = new Date(result.body.aggregations.amount_per_month.buckets[i].key)
+      var month = key.getUTCMonth() + 1
+      var year = key.getFullYear()
+      var fecha = month + '/' + year
+
+      monthlyInfo["month_year"] = fecha
+      monthlyInfo["monthKey"] = result.body.aggregations.amount_per_month.buckets[i].key
+      monthlyInfo["ordersAmount"] = result.body.aggregations.amount_per_month.buckets[i].doc_count
+      monthlyInfo["productQuantity"] = products_quantity_list
+      monthlyInfo["localities"] = result.body.aggregations.amount_per_month.buckets[i].comunas.buckets
+      monthlyInfo["costShippings"] = result.body.aggregations.amount_per_month.buckets[i].cost_shipping
+      monthlyInfo["costOrders"] = result.body.aggregations.amount_per_month.buckets[i].cost_order
+
+      monthlyInfo_list.push(monthlyInfo)
+      monthlyInfo = {}
+    }
   }
 
   // Weekly info
