@@ -57,12 +57,24 @@ head
                                               br
                                               .animated-placeholder#planName
 
+                                      .col-xs-2.col-md-4
+                                          .form-group
+                                              strong Valor del Plan
+                                              br
+                                              .animated-placeholder#planPrice
+
                                   .form-row
                                       .col-xs-2.col-md-4
                                           .form-group
-                                              strong Fecha de Próxima Factura
+                                              strong#nextBillingDateTitle
                                               br
                                               .animated-placeholder#nextBillingDate
+
+                                      .col-xs-2.col-md-4
+                                          .form-group
+                                              strong Renovación Automática
+                                              br
+                                              .animated-placeholder#autoRenewal
 
                                   .form-group(style='text-align: left;')
                                       a.btn.btn-primary.btn-sm(href='/billing/plans' style='background: #12c4f2; border: #12c4f2; margin-top: 5px;') Cambiar Plan
@@ -114,6 +126,7 @@ head
                                           tbody#billingHistoryBody
 
                                   p NOTA: Solo se muestra el último año del historial de facturación
+                                  p Recuerda que siempre puedes escribirnos a contacto@aliachile.com para resolver cualquier duda
 
         footer.bg-white.sticky-footer
             .container.my-auto
@@ -169,9 +182,11 @@ head
                     p Tipo de Cuenta: Cuenta Corriente
                     p Número de Cuenta: 1234 5678 91011
                     P Correo electrónico: contacto@aliachile.com
+                    p
+                        #invoiceTotalPayment
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancelar
-                    button.btn.btn-success(type='button', data-dismiss='modal') Ya Pagué
+                    button.btn.btn-success#paymentReady(type='button', data-dismiss='modal') Ya Pagué
 
     .modal.fade#modal-transfer(tabindex='-1', role='dialog')
         .modal-dialog(role='document')

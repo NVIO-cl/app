@@ -9,7 +9,6 @@ function callFree(e){ // Switch to free plan
     },
     dataType: 'json',
     success: function (result, status, xhr) {
-      e.preventDefault();
       window.location.replace('/billing');
     },
     error: function (xhr, status, error) {
