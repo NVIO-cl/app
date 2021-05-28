@@ -22,7 +22,7 @@ head
     link(rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css')
     link(rel='stylesheet' href='stylesheets/history-cards.css')
     script.
-      const orderList = JSON.parse('!{ordersForCards}')
+      const orderList = JSON.parse('!{ordersCards}')
       var filled = preparing = empty = takeout = shipping = finished = 0;
       for(var i = 0; i < orderList.length; i++){
         if(orderList[i].status.M.order.N == '0'){ // Sin información de cliente
@@ -52,6 +52,78 @@ head
       #content
           .container-fluid(style='margin-top: 17px;')
               h3.text-dark.mb-4 Historial de Ventas
+              div
+                button.mx-auto.btn.btn-primary.border-0.mb-4(type='button' data-toggle='collapse' data-target='#toggleCards')
+                  i.fas.fa-bars 
+                  |  Filtros
+              #toggleCards.collapse
+                .row
+                    .col-lg-4.col-sm-6.mb-4
+                        #emptyCard.card.shadow.border-left-primary.py-2
+                            .card-body
+                                .row.align-items-center.no-gutters
+                                    .col.mr-2
+                                        .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                          span Pedidos sin Datos
+                                        .text-dark.font-weight-bold.h5.mb-0
+                                          span#empty
+                                    .col-auto
+                                        i.fas.fa-file.fa-2x.text-gray-500
+                    .col-lg-4.col-sm-6.mb-4
+                        #filledCard.card.shadow.border-left-info.py-2
+                            .card-body
+                                .row.align-items-center.no-gutters
+                                    .col.mr-2
+                                        .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                            span Pedidos con Datos
+                                        .text-dark.font-weight-bold.h5.mb-0
+                                          span#filled
+                                    .col-auto
+                                        i.fas.fa-file-signature.fa-2x.text-gray-500
+                    .col-lg-4.col-sm-6.mb-4
+                        #preparingCard.card.shadow.border-left-primary.py-2
+                            .card-body
+                                .row.align-items-center.no-gutters
+                                    .col.mr-2
+                                        .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                            span En preparación
+                                        .text-dark.font-weight-bold.h5.mb-0
+                                            span#preparing
+                                    .col-auto
+                                        i.fas.fa-box-open.fa-2x.text-gray-500
+                    .col-lg-4.col-sm-6.mb-4
+                        #takeoutCard.card.shadow.border-left-info.py-2
+                            .card-body
+                                .row.align-items-center.no-gutters
+                                    .col.mr-2
+                                        .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                          span Listo para Retirar
+                                        .text-dark.font-weight-bold.h5.mb-0
+                                          span#takeout
+                                    .col-auto
+                                        i.fas.fa-hand-holding.fa-2x.text-gray-500
+                    .col-lg-4.col-sm-6.mb-4
+                        #shippingCard.card.shadow.border-left-primary.py-2
+                            .card-body
+                                .row.align-items-center.no-gutters
+                                    .col.mr-2
+                                        .text-uppercase.text-primary.font-weight-bold.text-xs.mb-1
+                                            span En despacho
+                                        .text-dark.font-weight-bold.h5.mb-0
+                                            span#shipping
+                                    .col-auto
+                                        i.fas.fa-shipping-fast.fa-2x.text-gray-500
+                    .col-lg-4.col-sm-6.mb-4
+                        #finishedCard.card.shadow.border-left-info.py-2
+                            .card-body
+                                .row.align-items-center.no-gutters
+                                    .col.mr-2
+                                        .text-uppercase.text-info.font-weight-bold.text-xs.mb-1
+                                            span Finalizado
+                                        .text-dark.font-weight-bold.h5.mb-0
+                                            span#finished
+                                    .col-auto
+                                        i.fas.fa-check.fa-2x.text-gray-500
               .card.shadow
                   .card-header.py-3
                       p.text-primary.m-0.font-weight-bold Vista Resumida
