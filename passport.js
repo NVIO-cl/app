@@ -67,7 +67,6 @@ async function(email, password, cb) {
         idToken: idToken,
         refreshToken: refreshToken
       };
-
       // 6) If first auth is correct, check if user has custom:plan_id
       var plan = undefined;
       await cognitoUser.getUserAttributes(async function(err,res){
@@ -87,7 +86,6 @@ async function(email, password, cb) {
               console.log(err);
             }
             else {
-              console.log("OLD USER PLAN SET TO 0");
               // Reauthenticating the user twice is a bad idea. Too bad!
               cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess: function(result){
@@ -114,14 +112,19 @@ async function(email, password, cb) {
             },
           };
           getBilling = await db.get(params);
-          if (parseInt(plan.Value) != parseInt(getBilling.Item.planId.charAt(0))) {
 
-            var plan_id = {
+          // If billing data does not exist, the user has never entered to billing or profile
+          // Most likely it's a new user.
+          if (!getBilling.Item) {
+            return cb(null, tokens, {message: 'Logged In Successfully'});
+          }
+          if (parseInt(plan.Value) != parseInt(getBilling.Item.planId.charAt(0))) {
+            let plan_id = {
               Name: 'custom:plan_id',
               Value: getBilling.Item.planId.charAt(0),
             };
-            var plan_id = new AmazonCognitoIdentity.CognitoUserAttribute(plan_id);
-            var attributeList = [];
+            plan_id = new AmazonCognitoIdentity.CognitoUserAttribute(plan_id);
+            let attributeList = [];
             attributeList.push(plan_id);
             // It's an old user but it checks out. Set the plan to 0 by default.
             cognitoUser.updateAttributes(attributeList, function(err,res){
@@ -143,7 +146,7 @@ async function(email, password, cb) {
                     return cb(err.code, null, {message: 'Error'});
                   }
                 });
-              };
+              }
             });
           } else {
             return cb(null, tokens, {message: 'Logged In Successfully'});
