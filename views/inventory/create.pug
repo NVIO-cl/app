@@ -47,20 +47,20 @@ head
                                                     label(for='productName')
                                                         strong Nombre del Producto
                                                         br
-                                                    input.form-control#productName(type='text' placeholder='Ej: Polera' name='productName')
+                                                    input.form-control#productName(type='text' placeholder='Ej: Polera' name='productName' autocomplete='off')
                                                     .invalid-feedback El nombre del producto no puede estar vacío
                                             .col-xs-2.col-md-4
                                                 .form-group
                                                     label#priceLabel(for='productPrice')
                                                         strong Precio
-                                                    input.form-control#productPrice(type='number' placeholder='Ej: 8000' name='productPrice' min=1 required='')
+                                                    input.form-control#productPrice(type='number' placeholder='Ej: 8000' name='productPrice' min=1 required='' autocomplete='off')
                                                     .invalid-feedback El precio no puede estar vacío y debe ser mayor a cero
                                             .col-xs-2.col-md-4.d-none(id='stock')
                                                 .form-group
                                                     label#stockLabel(for='productStock')
                                                         strong Stock
                                                         br
-                                                    input.form-control#productStock(type='number' placeholder='Ej: 25' name='productStock' min=1 required='')
+                                                    input.form-control#productStock(type='number' placeholder='Ej: 25' name='productStock' min=1 required='' autocomplete='off')
                                                     .invalid-feedback El stock no puede estar vacío y debe ser mayor a cero
                                         .form-row
                                             .col-xs-2.col-md-4(style='height: 25px')
@@ -81,7 +81,7 @@ head
                                                         label(for='productName')
                                                             strong Atributo
                                                             br
-                                                        input.form-control(type='text' placeholder='Ej: Talla' name='attributes[0][name]' id='attributes[0][name]')
+                                                        input.form-control(type='text' placeholder='Ej: Talla' name='attributes[0][name]' id='attributes[0][name]' autocomplete='off')
                                                         .invalid-feedback El nombre del atributo no puede estar vacío
 
                                                 .col-xs-2.col-md-4
@@ -89,7 +89,7 @@ head
                                                         label(for='productName')
                                                             strong Valores
                                                             br
-                                                        input.form-control(type='text' placeholder='Ej: S, M, L, XL' name='attributes[0][values]' id='attributes[0][values]')
+                                                        input.form-control(type='text' placeholder='Ej: S, M, L, XL' name='attributes[0][values]' id='attributes[0][values]' autocomplete='off')
                                                         .invalid-feedback El atributo debe tener al menos un valor
 
                                                 .col-xs-2.col-sm-12.text-center.text-md-left.p-2.col-md-4.col-lg-4.mt-md-4.mt-lg-4
