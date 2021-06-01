@@ -136,7 +136,7 @@ $(document).ready(function(){
     e.preventDefault();
     $.ajax({
       type: "GET",
-      url: "https://api-prod.aliachile.com/coupon/checkValidity?couponCode=" + $('#couponCheck').val() + "&planId=" + planId,
+      url: process.env.API_ENDPOINT + "/dev/coupon/checkValidity?couponCode=" + $('#couponCheck').val() + "&planId=" + planId,
       headers: {
         Authorization: 'Bearer ' + Cookies.get("token")
       },

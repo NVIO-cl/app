@@ -1,6 +1,6 @@
 $.ajax({ // Billing info api call
   type: "GET",
-  url: "https://api-prod.aliachile.com/billing",
+  url: process.env.API_ENDPOINT + "/dev/billing",
   headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
   },
@@ -155,7 +155,7 @@ $.ajax({ // Billing info api call
 
 $.ajax({ // Billing history api call
   type: "GET",
-  url: "https://api-prod.aliachile.com/invoice",
+  url: process.env.API_ENDPOINT + "/dev/invoice",
   headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
   },
@@ -240,7 +240,7 @@ $('#modal-invoice').on('show.bs.modal', function (event){
   var invoiceId = $(event.relatedTarget).data("id");
   $.ajax({ // Billing info api call
     type: "GET",
-    url: "https://api-prod.aliachile.com/invoice/" + invoiceId,
+    url: process.env.API_ENDPOINT + "/dev/invoice/" + invoiceId,
     headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
     },
@@ -321,7 +321,7 @@ $('#modal-pay').on('show.bs.modal', function (event) {
   var invoiceId = $(event.relatedTarget).data("id");
   $.ajax({ // Billing info api call
     type: "GET",
-    url: "https://api-prod.aliachile.com/invoice/" + invoiceId,
+    url: process.env.API_ENDPOINT + "/dev/invoice/" + invoiceId,
     headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
     },
@@ -339,7 +339,7 @@ $('#modal-pay').on('show.bs.modal', function (event) {
   $('#paymentReady').click(function() {
     $.ajax({ // Billing info api call
       type: "PUT",
-      url: "https://api-prod.aliachile.com/invoice/" + invoiceId,
+      url: process.env.API_ENDPOINT + "/dev/invoice/" + invoiceId,
       headers: {
         Authorization: 'Bearer ' + Cookies.get("token")
       },

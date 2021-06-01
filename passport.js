@@ -105,7 +105,7 @@ async function(email, password, cb) {
         } else {
           // 7b) If plan exists, check if it's different from the billing plan and change it.
           let params = {
-            "TableName": "billing-prod", // CHANGE WHEN GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!
+            "TableName": process.env.API_BILLING_TABLE, // CHANGE WHEN GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!
             Key: {
               PK: result.idToken.payload.user,
               SK: result.idToken.payload.user.replace("COMPANY", "BILLING")
