@@ -45,7 +45,7 @@ router.post('/setPlan/', passport.authenticate('jwt', {session: false, failureRe
     couponCode: req.body.couponCode
   };
   // Set the plan in the billing table
-  var axiosRes = await axios.post('https://api.aliachile.com/dev/subscription', axiosParams, config);
+  var axiosRes = await axios.post('https://api-prod.aliachile.com/subscription', axiosParams, config);
   if (!axiosRes.data.error) {
     // If successful, set the new claim
     // Shitty amazon-cognito-identity-js library doesn't have this functionality
@@ -115,7 +115,7 @@ router.post('/changePlan/', passport.authenticate('jwt', {session: false, failur
     planId: req.body.planId,
   };
   // Set the plan in the billing table
-  var axiosRes = await axios.post('https://api.aliachile.com/dev/subscription/change', axiosParams, config);
+  var axiosRes = await axios.post('https://api-prod.aliachile.com/subscription/change', axiosParams, config);
   if (!axiosRes.data.error) {
     if (parseInt(req.user['custom:plan_id']) < parseInt(req.body.planId.charAt(0))) {
       // If successful, set the new claim

@@ -9,9 +9,9 @@ const JWTStrategy   = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 var https = require('https');
 
-var jwkToPem = require('jwk-to-pem')
+var jwkToPem = require('jwk-to-pem');
 
-const AmazonCognitoIdentity = require('amazon-cognito-identity-js')
+const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 //AWS Settings
 var aws = require("aws-sdk");
@@ -37,8 +37,8 @@ async function(email, password, cb) {
   var poolData = {
     UserPoolId: process.env.AWS_COGNITO_USERPOOLID,
     ClientId: process.env.AWS_COGNITO_CLIENTID
-  }
-  var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData)
+  };
+  var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 
   // 3) Initialize UserData
@@ -105,7 +105,7 @@ async function(email, password, cb) {
         } else {
           // 7b) If plan exists, check if it's different from the billing plan and change it.
           let params = {
-            "TableName": "billing-dev", // CHANGE WHEN GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!
+            "TableName": "billing-prod", // CHANGE WHEN GOING TO PRODUCTION!!!!!!!!!!!!!!!!!!!!
             Key: {
               PK: result.idToken.payload.user,
               SK: result.idToken.payload.user.replace("COMPANY", "BILLING")
@@ -170,20 +170,20 @@ var cookieExtractor = (req) => {
 };
 
 let key = (req, done)=>{
-  var pem = ''
-  url = 'https://cognito-idp.us-east-1.amazonaws.com/'+process.env.AWS_COGNITO_USERPOOLID+'/.well-known/jwks.json'
+  var pem = '';
+  url = 'https://cognito-idp.us-east-1.amazonaws.com/'+process.env.AWS_COGNITO_USERPOOLID+'/.well-known/jwks.json';
   https.get(url, function(res){
-    var body = ''
+    var body = '';
     res.on('data', function(chunk){
-      body += chunk
+      body += chunk;
     });
     res.on('end', function(){
-      parsedBody = JSON.parse(body)
-      pem = jwkToPem(parsedBody.keys[0])
-      done(null, pem)
-    })
-  })
-}
+      parsedBody = JSON.parse(body);
+      pem = jwkToPem(parsedBody.keys[0]);
+      done(null, pem);
+    });
+  });
+};
 passport.use(new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         secretOrKey   : key,
