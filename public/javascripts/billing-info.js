@@ -1,6 +1,6 @@
 $.ajax({ // Billing info api call
   type: "GET",
-  url: "https://api.aliachile.com/dev/billing",
+  url: "https://api-prod.aliachile.com/billing",
   headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
   },
@@ -155,7 +155,7 @@ $.ajax({ // Billing info api call
 
 $.ajax({ // Billing history api call
   type: "GET",
-  url: "https://api.aliachile.com/dev/invoice",
+  url: "https://api-prod.aliachile.com/invoice",
   headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
   },
@@ -226,7 +226,7 @@ $.ajax({ // Billing history api call
           <td>${locale.format(itemList[i].invoiceDetail.total)}</td>
           <td class="${colorStatus}">${status}</td>
           <td><a class="btn btn-primary" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target='#modal-invoice' href="#invoice">Ver más</a></td>
-          <td><a class="btn btn-primary ${paymentButton}" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target=${paymentTarget} href=${paymentHref}>Ver más</a></td>    
+          <td><a class="btn btn-primary ${paymentButton}" data-id="${itemList[i].SK.replace("INVOICE#","")}" style="background: #12c4f2;border: #12c4f2;padding-bottom: 3px;padding-top: 3px;" data-toggle='modal' data-target=${paymentTarget} href=${paymentHref}>Ver más</a></td>
         </tr>
       `);
     }
@@ -240,7 +240,7 @@ $('#modal-invoice').on('show.bs.modal', function (event){
   var invoiceId = $(event.relatedTarget).data("id");
   $.ajax({ // Billing info api call
     type: "GET",
-    url: "https://api.aliachile.com/dev/invoice/" + invoiceId,
+    url: "https://api-prod.aliachile.com/invoice/" + invoiceId,
     headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
     },
@@ -321,7 +321,7 @@ $('#modal-pay').on('show.bs.modal', function (event) {
   var invoiceId = $(event.relatedTarget).data("id");
   $.ajax({ // Billing info api call
     type: "GET",
-    url: "https://api.aliachile.com/dev/invoice/" + invoiceId,
+    url: "https://api-prod.aliachile.com/invoice/" + invoiceId,
     headers: {
       Authorization: 'Bearer ' + Cookies.get("token")
     },
@@ -339,7 +339,7 @@ $('#modal-pay').on('show.bs.modal', function (event) {
   $('#paymentReady').click(function() {
     $.ajax({ // Billing info api call
       type: "PUT",
-      url: "https://api.aliachile.com/dev/invoice/" + invoiceId,
+      url: "https://api-prod.aliachile.com/invoice/" + invoiceId,
       headers: {
         Authorization: 'Bearer ' + Cookies.get("token")
       },
@@ -353,4 +353,3 @@ $('#modal-pay').on('show.bs.modal', function (event) {
     })
   });
 });
-
