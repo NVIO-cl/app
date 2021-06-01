@@ -1,6 +1,6 @@
 $.ajax({
   type: "GET",
-  url: "https://api-prod.aliachile.com/billing",
+  url: process.env.API_ENDPOINT + "/dev/billing",
   headers: {
       Authorization: 'Bearer ' + Cookies.get("token") // <- SACAR DE COOKIES
   },
