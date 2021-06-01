@@ -114,12 +114,12 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
     pages = [1]
   }
 
-  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, f:f, base_url: req.url, pages: pages, pagesAmount:pagesAmount});
+  res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, base_url: req.url, pages: pages, pagesAmount:pagesAmount, planID: req.user['custom:plan_id']});
 });
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Producto";
-  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", "")});
+  res.render('inventory/create', {title: name, userID: req.user.user.replace("COMPANY#", ""), planID: req.user['custom:plan_id']});
 });
 
 router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
@@ -140,7 +140,7 @@ router.get('/detail/:id',passport.authenticate('jwt', {session: false, failureRe
   getProduct = await db.queryv2(paramsProduct);
   var product = getProduct.Items[0];
 
-  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId, message:message});
+  res.render('inventory/detail', {title: name, userID: req.user.user.replace("COMPANY#", ""), product: product, productId: productId, planID: req.user['custom:plan_id']});
 });
 
 router.post('/edit', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) =>{

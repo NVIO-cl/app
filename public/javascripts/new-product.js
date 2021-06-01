@@ -11,14 +11,14 @@ $(document).ready(function(){
       <div class="col-xs-2 col-md-4">
         <div class="form-group">
           <label for="attributeName"><strong>Atributo</strong></br></label>
-          <input class="form-control" type="text" placeholder="Ej: Talla" id="attributes[${attributeCount}][name]" name="attributes[${attributeCount}][name]">
+          <input class="form-control" type="text" placeholder="Ej: Talla" id="attributes[${attributeCount}][name]" name="attributes[${attributeCount}][name]" autocomplete='off'>
           <div class="invalid-feedback">El nombre del atributo no puede estar vacío</div>
         </div>
       </div>
       <div class="col-xs-2 col-md-4">
         <div class="form-group">
           <label for="attributeValues"><strong>Valores</strong></br></label>
-          <input class="form-control" type="text" placeholder="Ej: S, M, L, XL" id="attributes[${attributeCount}][values]" name="attributes[${attributeCount}][values]">
+          <input class="form-control" type="text" placeholder="Ej: S, M, L, XL" id="attributes[${attributeCount}][values]" name="attributes[${attributeCount}][values]" autocomplete='off'>
           <div class="invalid-feedback">El atributo debe tener al menos un valor</div>
         </div>
       </div>
@@ -318,12 +318,12 @@ $(document).ready(function(){
                 <div class="col-xs-2 col-sm-12 col-md-12">
                   <div class="form-group">
                     <label for="productPrice"><strong>Precio</strong></label>
-                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}" >
+                    <input class="form-control" id="subproduct[${i}][price]" name="subproduct[${i}][price]" type="number" placeholder="Ej: 8000" value="${productPrice}" autocomplete="off">
                     <div class="invalid-feedback">El precio no puede estar vacío y debe ser mayor a cero</div>
                   </div>
                   <div class="form-group" id="subproduct[${i}][stockGroup]">
                     <label for="productStock"><strong>Stock</strong><br></label>
-                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25" >
+                    <input class="form-control" id="subproduct[${i}][stock]" name="subproduct[${i}][stock]" type="number" placeholder="Ej: 25" autocomplete="off">
                     <div class="invalid-feedback">El stock no puede estar vacío y debe ser mayor a cero</div>
                   </div>
                 </div>
