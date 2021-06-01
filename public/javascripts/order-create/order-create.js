@@ -77,6 +77,12 @@ today = yyyy+'-'+mm+'-'+dd;
     }
   })
 
+  $( "#submit" ).click(function() {
+    $('#newOrder').submit(function(){
+      $(this).find('button[type=submit]').prop('disabled', true);
+    });
+  });
+
 });
 
 async function focusItem(e){}
