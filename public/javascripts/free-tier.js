@@ -3,7 +3,7 @@ document.getElementById('freePlan').onclick = callFree;
 function callFree(e){ // Switch to free plan
   $.ajax({
     type: "POST",
-    url: process.env.API_ENDPOINT + "/dev/subscription/cancel",
+    url: "https://api.aliachile.com/dev/subscription/cancel",
     headers: {
         Authorization: 'Bearer ' + Cookies.get("token")
     },
