@@ -526,6 +526,7 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     dynamoProduct.subproduct = []
     req.body.subproduct.forEach((item, i) => {
       dynamoProduct.subproduct[i] = item
+      dynamoProduct.subproduct[i].available = true
     });
   }
 
