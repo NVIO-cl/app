@@ -149,7 +149,11 @@ main.page.payment-page
                           .item
                               p.item-name Correo: #{companyData.paymentData.M.email.S}
                           .item(style='text-align: center;')
-                              p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda dejar en el comentario de transferencia "pedido #{orderID.slice(-6)}"!
+                              p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') 
+                                | Si tienes problemas, escríbenos a 
+                                a(href='mailto:soporte@aliachile.com') soporte@aliachile.com 
+                                | o a nuestro Instagram: 
+                                a(href='https://instagram.com/aliachile') @aliachile
                         else
                           .item(style='text-align: center;')
                               p.item-name(style='font-size: 18px;margin-top: 7%;margin-right: 8%;') &iexcl;Recuerda que debes pagar en efectivo al momento de recibir tu pedido!
