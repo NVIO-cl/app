@@ -204,7 +204,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       subproduct.attributes.forEach((attribute, i) => {
         attribute.name = req.body.attributesList[i].name
         attribute.value = attribute.attribute;
-        nameAssembly += attribute.name + " " + attribute.attribute
+        nameAssembly += attribute.name + " " + attribute.attribute + " ";
+        nameAssembly = nameAssembly.trim();
         delete attribute.attribute;
       });
 
@@ -525,6 +526,7 @@ router.post('/create', passport.authenticate('jwt', {session: false, failureRedi
     dynamoProduct.subproduct = []
     req.body.subproduct.forEach((item, i) => {
       dynamoProduct.subproduct[i] = item
+      dynamoProduct.subproduct[i].available = true
     });
   }
 
