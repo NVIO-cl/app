@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const validator = require('validator');
 const { nanoid } = require("nanoid");
-const { Client } = require('@elastic/elasticsearch')
+const { Client } = require('@elastic/elasticsearch');
 var db = require("../db");
 const client = new Client({
   node: process.env.ELASTIC_ENDPOINT,
@@ -11,7 +11,7 @@ const client = new Client({
     username: process.env.ELASTIC_USERNAME,
     password: process.env.ELASTIC_PASSWORD
   }
-})
+});
 
 // If the plan ID is lower than 1, redirect the user to the billing page
 router.use(passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),async (req,res,next)=>{
@@ -19,9 +19,9 @@ router.use(passport.authenticate('jwt', {session: false, failureRedirect: '/logi
     next();
   }
   else {
-    res.redirect('/billing')
+    res.redirect('/billing');
   }
-})
+});
 
 router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   const name = "Inventario";
@@ -43,12 +43,12 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
         }
       }
     }
-  }
+  };
 
   // Query contains paginationAmount
   var c = parseInt(req.query.c);
   if(!req.query.c){
-    var c = 5
+    c = 5;
     search['size'] = c;
   } else {
     search['size'] = c;
@@ -56,7 +56,7 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
 
   // Query contains product
   if (req.query.s){
-    var s = req.query.s
+    var s = req.query.s;
     let multi_match = {
       multi_match: {
         query: s,
@@ -68,50 +68,50 @@ router.get('/',passport.authenticate('jwt', {session: false, failureRedirect: '/
         ]
       }
     };
-    search.body.query.bool.must.push(multi_match)
+    search.body.query.bool.must.push(multi_match);
   }
 
   // Current page
-  var p = parseInt(req.query.p)
+  var p = parseInt(req.query.p);
   if(!req.query.p){
-    p = 1
+    p = 1;
   }
 
   // Elasticsearch pagination
   search['from'] = c*(p-1);
 
   // Query contains filter
-  var f = req.query.f
+  var f = req.query.f;
   if (f != undefined){
-    var f_query = f.split('_')
-    var variable = f_query[0]
-    var order = f_query[1]
-    search['sort'] = variable + ':' + order
+    var f_query = f.split('_');
+    var variable = f_query[0];
+    var order = f_query[1];
+    search['sort'] = variable + ':' + order;
   }
 
   // Query
   try{
-    var result = await client.search(search)
+    var result = await client.search(search);
   } catch (e) {
-    console.log(e.meta.body.error.root_cause)
+    console.log(e.meta.body.error.root_cause);
   }
 
 
   // Cálculo de páginas para frontend
-  var hitsAmount = result.body.hits.total.value
-  var pagesAmount = Math.ceil(hitsAmount/c)
-  var pages = [1, 2, 3]
+  var hitsAmount = result.body.hits.total.value;
+  var pagesAmount = Math.ceil(hitsAmount/c);
+  var pages = [1, 2, 3];
 
   if (pagesAmount >= 3){
     if (p==pagesAmount){
-      pages = [p-2, p-1, p]
+      pages = [p-2, p-1, p];
     } else if (p >= 3) {
-      pages = [p-1, p, p+1]
+      pages = [p-1, p, p+1];
     }
   } else if (pagesAmount == 2){
-    pages = [1, 2]
+    pages = [1, 2];
   } else {
-    pages = [1]
+    pages = [1];
   }
 
   res.render('inventory/index', {title: name, userID: req.user.user.replace("COMPANY#", ""), results: result.body.hits.hits, c: c, s: s, p:p, base_url: req.url, pages: pages, pagesAmount:pagesAmount, planID: req.user['custom:plan_id']});
@@ -187,14 +187,14 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
 
     // Parse the attributes
     req.body.attributesList.forEach((attribute, i) => {
-      attribute.values = attribute.values.split(",")
+      attribute.values = attribute.values.split(",");
       attribute.values.forEach((value, n) => {
-        attribute.values[n] = value.trim()
+        attribute.values[n] = value.trim();
       });
     });
-
     // Check each subproduct
     req.body.subproduct.forEach((subproduct, i) => {
+
       // Change variable name
       subproduct.attributes = subproduct.attribute
       delete subproduct.attribute
@@ -205,9 +205,10 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
         attribute.name = req.body.attributesList[i].name
         attribute.value = attribute.attribute;
         nameAssembly += attribute.name + " " + attribute.attribute + " ";
-        nameAssembly = nameAssembly.trim();
         delete attribute.attribute;
       });
+      nameAssembly = nameAssembly.trim();
+
 
       if (subproduct.price == '' || subproduct.price == 0) {
         res.redirect(req.headers.referer);
@@ -243,8 +244,8 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
       }
 
       //Check if attribute values are not present, disable it. If they are, enable it.
-      subproduct.attributes.forEach((attribute, i) => {
-        if (!req.body.attributesList[i].values.includes(attribute.value)) {
+      subproduct.attributes.forEach((attribute, n) => {
+        if (!req.body.attributesList[n].values.includes(attribute.value)) {
           disableSubproducts.push(subproduct)
           subproduct.available = false;
         }
@@ -276,22 +277,6 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
     var uniqueDisableSubproducts = new Set(disableSubproducts);
     disableSubproducts = Array.from(uniqueDisableSubproducts)
 
-    // If there are subproducts to be disabled, do it.
-    if (disableSubproducts.length > 0) {
-      for (var subproduct of disableSubproducts) {
-        var getID = req.user.user.slice(-6) + product.SK.slice(-6) + subproduct.id
-        var body = await client.update({
-          index: 'products',
-          id: getID,
-          body: {
-            doc: {
-              available: false
-            }
-          }
-        })
-      }
-    }
-
     // Update all the subproducts in Elasticsearch
     for (var subproduct of req.body.subproduct) {
       var updateID = req.user.user.slice(-6) + product.SK.slice(-6) + subproduct.id;
@@ -308,6 +293,26 @@ router.post('/edit', passport.authenticate('jwt', {session: false, failureRedire
           }
         }
       })
+    }
+
+    // If there are subproducts to be disabled, do it.
+    if (disableSubproducts.length > 0) {
+      for (var subproduct of disableSubproducts) {
+        var getID = req.user.user.slice(-6) + product.SK.slice(-6) + subproduct.id
+        try {
+          var body = await client.update({
+            index: 'products',
+            id: getID,
+            body: {
+              doc: {
+                available: false
+              }
+            }
+          })
+        } catch (e) {
+          console.log(e);
+        }
+      }
     }
 
     // Update the product in DynamoDB
