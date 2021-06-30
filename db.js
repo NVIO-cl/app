@@ -25,7 +25,6 @@ module.exports = {
   },
 
   scan: async function(params) {
-    console.log("RUNNING SCAN");
     try {
       var dynamoDbClient = new aws.DynamoDB();
       const scanOutput = await dynamoDbClient.scan(params).promise();
@@ -54,13 +53,11 @@ module.exports = {
       if(process.env.NODE_ENV == 'develop'){
         console.log(err);
       }
-
       return err;
     }
   },
 
   put: async function(params){
-    console.log("RUNNING PUT");
     try {
       var docClient = new aws.DynamoDB.DocumentClient();
       const putOutput = await docClient.put(params).promise();
@@ -72,7 +69,6 @@ module.exports = {
       if(process.env.NODE_ENV == 'develop'){
         console.log(err);
       }
-
       return err;
     }
   },
@@ -123,4 +119,4 @@ module.exports = {
       }
     }
   }
-}
+};
