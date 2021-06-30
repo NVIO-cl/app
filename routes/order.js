@@ -75,6 +75,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     }
     if (req.body.shippingCost < 0) {
       valid = false;
+      console.log("ERROR: USER " + req.user.user + " TRIED TO PUT SHIPPING COST < 0 WHILE CREATING AN ORDER");
       res.redirect('/order/create');
     }
   }
@@ -86,23 +87,27 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   var itemList = [];
   var cost = 0;
   req.body.items.forEach((item, i) => {
-    if (!validator.isInt(item.quantity)) {
+    if (!validator.isInt(item.quantity.replace('.',""))) {
+      console.log("ERROR: USER " + req.user.user + " TRIED TO PUT AN ITEM WITH QUANTITY NaN WHILE CREATING AN ORDER");
       valid = false;
       res.redirect('/order/create');
     }
-    if (!validator.isInt(item.price)) {
+    if (!validator.isInt(item.price.replace('.',""))) {
+      console.log("ERROR: USER " + req.user.user + " TRIED TO PUT AN ITEM WITH PRICE NaN WHILE CREATING AN ORDER");
       valid = false;
       res.redirect('/order/create');
     }
-    itemList[i] = {}
+    itemList[i] = {};
     itemList[i].product = item.product;
     itemList[i].quantity = parseInt(item.quantity.replace('.',""));
     if (itemList[i].quantity <=0) {
       valid = false;
+      console.log("ERROR: USER " + req.user.user + " TRIED TO PUT AN ITEM WITH QUANTITY <= 0 WHILE CREATING AN ORDER");
       res.redirect('/order/create');
     }
     itemList[i].price = parseInt(item.price.replace('.',""));
     if (itemList[i].price <=0) {
+      console.log("ERROR: USER " + req.user.user + " TRIED TO PUT AN ITEM WITH PRICE <= 0 WHILE CREATING AN ORDER");
       valid = false;
       res.redirect('/order/create');
     }
@@ -113,6 +118,9 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
     }
   });
   if (valid) {
+    if(process.env.NODE_ENV == 'develop'){
+      console.log("VALID ORDER");
+    }
     colcheck();
   }
 
