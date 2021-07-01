@@ -111,7 +111,6 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       valid = false;
       res.redirect('/order/create');
     }
-    console.log(item.price);
     // Replace "." with "" because everyone can make happy mistakes. This is not an elegant solution though. Too bad!
     cost = parseInt(cost + item.price.replace('.',"") * item.quantity.replace('.',""));
 
@@ -124,6 +123,8 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       console.log("VALID ORDER");
     }
     colcheck();
+  } else {
+    console.log("ERROR: USER " + req.user.user + " ORDER CREATION WAS INVALID!");
   }
 
 
