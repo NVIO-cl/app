@@ -38,15 +38,18 @@ router.post('/login', upload.none(), function (req, res, next) {
   //Passport Authentication
   passport.authenticate('local', {session: false}, (err, user, info) => {
     if (err || !user) {
-      console.log(err);
-      if (err == 'UserNotConfirmedException') {
-        res.cookie('message', {type:'danger', content:'Correo no verificado. Por favor confirma tu correo.'});
+      console.log("Reason: " + err.message);
+      if (err.message == 'User is not confirmed.') {
+        res.cookie('message', {type:'danger', content:'Correo no verificado. Por favor confirma tu correo. Si sigues con problemas, escríbenos a soporte@aliachile.com'});
       }
-      else if (err == 'NotAuthorizedException'){
+      else if (err.message == 'Incorrect username or password.'){
+        res.cookie('message', {type:'danger', content:'Correo o contraseña incorrecto.'});
+      }
+      else if (err.message == 'User is disabled.'){
         res.cookie('message', {type:'danger', content:'Cuenta deshabilitada. Por favor contactar a soporte@aliachile.com'});
       }
       else {
-        res.cookie('message', {type:'danger', content:'Correo o contraseña incorrecto.'});
+        res.cookie('message', {type:'danger', content:'Ocurrió un error al iniciar sesión. Si el problema continúa, escríbenos a soporte@aliachile.com'});
       }
       return res.redirect('/login');
     }
