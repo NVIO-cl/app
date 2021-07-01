@@ -83,6 +83,7 @@ async function(email, password, cb) {
           // It's an old user but it checks out. Set the plan to 0 by default.
           cognitoUser.updateAttributes(attributeList, function(err,res){
             if (err) {
+              console.log("ERROR UPDATING ATTRIBUTES");
               console.log(err);
             }
             else {
@@ -97,7 +98,7 @@ async function(email, password, cb) {
                   };
                   return cb(null, tokens, {message: 'Logged In Successfully'});
                 }, onFailure: function(err){
-                  return cb(err.code, null, {message: 'Error'});
+                  return cb(err, null, {message: 'Error'});
                 }
               });
             }
@@ -143,7 +144,7 @@ async function(email, password, cb) {
                     };
                     return cb(null, tokens, {message: 'Logged In Successfully'});
                   }, onFailure: function(err){
-                    return cb(err.code, null, {message: 'Error'});
+                    return cb(err, null, {message: 'Error'});
                   }
                 });
               }
@@ -155,8 +156,8 @@ async function(email, password, cb) {
       });
   	},
     onFailure: function(err) {
-      console.log("ERROR LOGGING IN");
-        return cb(err.code, null, {message: 'Error'});
+        console.log("ERROR LOGGING IN " + email);
+        return cb(err, null, {message: 'Error'});
     }
   });
 }));
