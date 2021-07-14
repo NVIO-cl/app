@@ -20,6 +20,7 @@ else {
   console.log("ENV port is " + process.env.PORT);
 }
 console.log("This server is running in " + process.env.NODE_ENV + " mode.");
+console.log("Current date: " + Date.now());
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
