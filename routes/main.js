@@ -619,4 +619,9 @@ router.get('/excel',passport.authenticate('jwt', {session: false, failureRedirec
   wb.write('Pedidos.xlsx', res);
 });
 
+router.get('/tutoriales',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
+  const name = "Tutoriales";
+  res.render('tutoriales', { title: 'Alia', userID: req.user.user.replace("COMPANY#", ""), userPlanID: req.user['custom:plan_id']});
+});
+
 module.exports = router;
