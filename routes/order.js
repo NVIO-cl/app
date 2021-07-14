@@ -4,7 +4,7 @@ const passport = require('passport');
 const { nanoid } = require("nanoid");
 const validator = require('validator');
 //const {Client, Status} = require("@googlemaps/google-maps-services-js");
-const { Client } = require('@elastic/elasticsearch')
+const { Client } = require('@elastic/elasticsearch');
 var multer  = require('multer');
 var upload = multer();
 var Jimp = require('jimp');
@@ -28,7 +28,7 @@ const client = new Client({
     username: process.env.ELASTIC_USERNAME,
     password: process.env.ELASTIC_PASSWORD
   }
-})
+});
 
 router.get('/create',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
   //Get user data
@@ -38,10 +38,10 @@ router.get('/create',passport.authenticate('jwt', {session: false, failureRedire
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
-  }
+  };
 
   userData = await db.queryv2(params);
-  paymentData = userData.Items[0].paymentData
+  paymentData = userData.Items[0].paymentData;
   if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
     noTransfer = true;
   }
@@ -59,9 +59,9 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
   }
 
   if (req.body.shipping == 'local') {
-    req.body.shippingDate = ''
-    req.body.locality = 'Retiro en tienda'
-    req.body.shippingMethod = req.body.pickupAddress
+    req.body.shippingDate = '';
+    req.body.locality = 'Retiro en tienda';
+    req.body.shippingMethod = req.body.pickupAddress;
   }
   else if(req.body.shipping == 'domicilio') {
     req.body.pickupDate = '';
@@ -137,7 +137,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
       "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
       "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
       "ExpressionAttributeValues": {":cd420": {"S": req.user.user},":cd421": {"S": "ORDER#"+orderID}}
-    }
+    };
     orderQuery = await db.query(params);
     //Check for colission
     if (orderQuery.Count == 0) {
@@ -195,7 +195,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
           "items": itemList,
           "paymentType": payment,
         }
-      })
+      });
 
       // Check if items are in the inventory and subtract the quantity
       for (var item of itemList) {
@@ -213,17 +213,17 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
                 }
               }
             }
-          })
+          });
           // Get the product data in DynamoDB
           var paramsProduct = {
             "TableName": process.env.AWS_DYNAMODB_TABLE,
             "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
             "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
             "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": "PRODUCT#"+item.inventoryId.substring(6,12)}
-          }
+          };
           // Do the query
           productQuery = await db.queryv2(paramsProduct);
-          var params = {}
+          var params = {};
           // If it's a subproduct, we have to subtract to the master product too
           if (item.inventoryId.length == 18) {
             //subtract the quantity to the main product in Elasticsearch. If it goes below zero, cap it to 0. (should warn the user in frontend)
@@ -239,12 +239,12 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
                   }
                 }
               }
-            })
+            });
             // subtract the quantity on the main and subproduct in DynamoDB
             // If main product stock is not null, then it uses stock control
             if (productQuery.Items[0].stock != null) {
               // Get the subproduct index
-              subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18))
+              subproductIndex = productQuery.Items[0].subproduct.findIndex(x=>x.id===item.inventoryId.substring(12,18));
               // Set the parameters for updating the product
               params = {
                 "TableName": process.env.AWS_DYNAMODB_TABLE,
@@ -255,7 +255,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
                 "UpdateExpression": "set stock = stock - :val, subproduct["+subproductIndex+"].stock = subproduct["+subproductIndex+"].stock - :val",
                 "ExpressionAttributeValues": {":val":item.quantity},
                 "ReturnValues": "UPDATED_NEW"
-              }
+              };
               // Do the update
               updateResult = await db.update(params);
             }
@@ -271,7 +271,7 @@ router.post('/create',passport.authenticate('jwt', {session: false, failureRedir
               "UpdateExpression": "set stock = stock - :val",
               "ExpressionAttributeValues": {":val":item.quantity},
               "ReturnValues": "UPDATED_NEW"
-            }
+            };
             // Do the update
             updateResult = await db.update(params);
           }
@@ -298,10 +298,10 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": req.user.user,":cd421": req.user.user.replace("COMPANY", "PROFILE")}
-  }
+  };
 
   userData = await db.queryv2(paramsUser);
-  paymentData = userData.Items[0].paymentData
+  paymentData = userData.Items[0].paymentData;
   if (paymentData.accNum == '' || paymentData.accType == '' || paymentData.bank == '' || paymentData.email == '' || paymentData.name == '' || paymentData.rut == '' || paymentData.accNum == ' ' || paymentData.accType == ' ' || paymentData.bank == ' ' || paymentData.email == ' ' || paymentData.name == ' ' || paymentData.rut == ' ' ) {
     noTransfer = true;
   }
@@ -311,13 +311,13 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
     "KeyConditionExpression": "#cd420 = :cd420 And #cd421 = :cd421",
     "ExpressionAttributeNames": {"#cd420":"PK","#cd421":"SK"},
     "ExpressionAttributeValues": {":cd420": companyID,":cd421": orderID}
-  }
+  };
   getOrder = await db.queryv2(paramsOrder);
   var order = getOrder.Items[0];
 
-  var message
+  var message;
   if (req.cookies.message) {
-    message = req.cookies.message
+    message = req.cookies.message;
     res.clearCookie('message');
   }
 
@@ -327,9 +327,9 @@ router.get('/edit/:id',passport.authenticate('jwt', {session: false, failureRedi
 router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirect: '/login'}),  async(req, res) => {
 
   if (req.body.shipping == 'local') {
-    req.body.shippingDate = ''
-    req.body.locality = 'Retiro en tienda'
-    req.body.shippingMethod = req.body.pickupAddress
+    req.body.shippingDate = '';
+    req.body.locality = 'Retiro en tienda';
+    req.body.shippingMethod = req.body.pickupAddress;
   }
   else if(req.body.shipping == 'domicilio') {
     req.body.pickupDate = '';
@@ -353,7 +353,7 @@ router.post('/edit',passport.authenticate('jwt', {session: false, failureRedirec
     if (!validator.isInt(item.price)) {
       res.redirect('/order/edit/'+req.headers.referer.slice(req.headers.referer.length - 6));
     }
-    itemList[i] = {}
+    itemList[i] = {};
     itemList[i].product = item.product;
     itemList[i].quantity = parseInt(item.quantity);
     if (itemList[i].quantity <=0) {
@@ -752,21 +752,29 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
 
   //Check fields
   if (await !validator.isAlpha(req.body.nombre.trim().replace(" ", ""),'es-ES')) {
+    console.log("Error order " + orderID);
+    console.log("Nombre not valid");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await !validator.isAlpha(req.body.apellido.trim().replace(" ", ""),'es-ES')) {
+    console.log("Error order " + orderID);
+    console.log("Apellido not valid");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await validator.isEmpty(req.body.telefono)) {
+    console.log("Error order " + orderID);
+    console.log("Teléfono is empty");
     res.redirect(req.headers.referer);
     valid = false;
   }
 
   if (await !validator.isEmail(req.body.email)) {
+    console.log("Error order " + orderID);
+    console.log("Email not an email");
     res.redirect(req.headers.referer);
     valid = false;
   }
@@ -778,12 +786,19 @@ router.post('/fill', upload.single('comprobante'), async(req,res)=> {
       if (req.file) {
         if (await !req.file.mimetype.startsWith("image")) {
           res.redirect(req.headers.referer);
+          console.log("Error order " + orderID);
+          console.log("File uploaded is not an image");
         }
         else {
+          try {
+            var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
+            var scaled = await file.scaleToFit(500, 1000);
+            var buffer = await scaled.getBufferAsync(Jimp.AUTO);
+          } catch (e) {
+            console.log("Error order " + orderID + " while scaling the image.");
+            console.log(e);
+          }
 
-          var file = await Jimp.read(Buffer.from(req.file.buffer, 'base64'))
-          var scaled = await file.scaleToFit(500, 1000);
-          var buffer = await scaled.getBufferAsync(Jimp.AUTO);
           var s3 = new aws.S3({params: {Bucket: process.env.AWS_S3_BUCKET}, endpoint: process.env.AWS_S3_ENDPOINT});
           var params = {
             Bucket: process.env.AWS_S3_BUCKET,
