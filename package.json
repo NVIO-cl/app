@@ -13,7 +13,7 @@
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "debug": "^2.6.9",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "excel4node": "^1.7.2",
     "express": "^4.17.1",
     "http-errors": "^1.8.0",
