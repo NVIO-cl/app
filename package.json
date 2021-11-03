@@ -28,7 +28,7 @@
     "passport-local": "^1.0.0",
     "pug": "^3.0.1",
     "rut.js": "^1.0.2",
-    "validator": "^13.5.2"
+    "validator": "^13.7.0"
   },
   "description": "Alia App",
   "main": "app.js",
