@@ -7,7 +7,7 @@
   "dependencies": {
     "@elastic/elasticsearch": "^7.14.0",
     "@googlemaps/google-maps-services-js": "^3.1.16",
-    "amazon-cognito-identity-js": "^5.1.0",
+    "amazon-cognito-identity-js": "^5.2.5",
     "aws-sdk": "^2.973.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
