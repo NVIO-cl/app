@@ -5,7 +5,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.14.0",
+    "@elastic/elasticsearch": "^8.2.0",
     "@googlemaps/google-maps-services-js": "^3.1.16",
     "amazon-cognito-identity-js": "^5.1.0",
     "aws-sdk": "^2.973.0",
